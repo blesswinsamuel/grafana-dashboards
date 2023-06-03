@@ -2679,6 +2679,6 @@
   },
   "timezone": "browser",
   "title": "Postgres",
-  "uid": "postgres-metrics",
+  "uid": "postgres",
   "version": 0
 }

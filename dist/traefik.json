@@ -82,8 +82,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 3,
+        "h": 9,
+        "w": 4,
         "x": 0,
         "y": 1
       },
@@ -166,9 +166,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 3,
+        "h": 9,
+        "w": 4,
+        "x": 4,
         "y": 1
       },
       "height": null,
@@ -250,9 +250,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 6,
+        "h": 9,
+        "w": 4,
+        "x": 8,
         "y": 1
       },
       "height": null,
@@ -334,9 +334,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 9,
+        "h": 9,
+        "w": 4,
+        "x": 12,
         "y": 1
       },
       "height": null,
@@ -418,9 +418,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 12,
+        "h": 9,
+        "w": 4,
+        "x": 16,
         "y": 1
       },
       "height": null,
@@ -512,9 +512,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 15,
+        "h": 9,
+        "w": 4,
+        "x": 20,
         "y": 1
       },
       "height": null,
@@ -606,10 +606,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 18,
-        "y": 1
+        "h": 9,
+        "w": 4,
+        "x": 0,
+        "y": 10
       },
       "height": null,
       "hideTimeOverride": false,
@@ -679,7 +679,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 19
       },
       "height": null,
       "hideTimeOverride": false,
@@ -752,7 +752,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 5
+        "y": 20
       },
       "height": null,
       "hideTimeOverride": false,
@@ -857,7 +857,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 5
+        "y": 20
       },
       "height": null,
       "hideTimeOverride": false,
@@ -943,7 +943,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -962,7 +965,7 @@
         "h": 9,
         "w": 6,
         "x": 0,
-        "y": 14
+        "y": 29
       },
       "height": null,
       "hideTimeOverride": false,
@@ -1045,7 +1048,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -1064,7 +1070,7 @@
         "h": 9,
         "w": 6,
         "x": 6,
-        "y": 14
+        "y": 29
       },
       "height": null,
       "hideTimeOverride": false,
@@ -1147,7 +1153,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -1166,7 +1175,7 @@
         "h": 9,
         "w": 6,
         "x": 12,
-        "y": 14
+        "y": 29
       },
       "height": null,
       "hideTimeOverride": false,
@@ -1268,7 +1277,7 @@
         "h": 9,
         "w": 6,
         "x": 18,
-        "y": 14
+        "y": 29
       },
       "height": null,
       "hideTimeOverride": false,
@@ -1341,7 +1350,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 38
       },
       "height": null,
       "hideTimeOverride": false,
@@ -1414,7 +1423,7 @@
         "h": 9,
         "w": 8,
         "x": 0,
-        "y": 24
+        "y": 39
       },
       "height": null,
       "hideTimeOverride": false,
@@ -1519,7 +1528,7 @@
         "h": 9,
         "w": 8,
         "x": 8,
-        "y": 24
+        "y": 39
       },
       "height": null,
       "hideTimeOverride": false,
@@ -1624,7 +1633,7 @@
         "h": 9,
         "w": 8,
         "x": 16,
-        "y": 24
+        "y": 39
       },
       "height": null,
       "hideTimeOverride": false,
@@ -1710,7 +1719,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -1729,7 +1741,7 @@
         "h": 9,
         "w": 6,
         "x": 0,
-        "y": 33
+        "y": 48
       },
       "height": null,
       "hideTimeOverride": false,
@@ -1812,7 +1824,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -1831,7 +1846,7 @@
         "h": 9,
         "w": 6,
         "x": 6,
-        "y": 33
+        "y": 48
       },
       "height": null,
       "hideTimeOverride": false,
@@ -1914,7 +1929,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -1933,7 +1951,7 @@
         "h": 9,
         "w": 6,
         "x": 12,
-        "y": 33
+        "y": 48
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2035,7 +2053,7 @@
         "h": 9,
         "w": 6,
         "x": 18,
-        "y": 33
+        "y": 48
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2121,7 +2139,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -2140,7 +2161,7 @@
         "h": 9,
         "w": 6,
         "x": 0,
-        "y": 42
+        "y": 57
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2223,7 +2244,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -2242,7 +2266,7 @@
         "h": 9,
         "w": 6,
         "x": 6,
-        "y": 42
+        "y": 57
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2325,7 +2349,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -2344,7 +2371,7 @@
         "h": 9,
         "w": 6,
         "x": 12,
-        "y": 42
+        "y": 57
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2446,7 +2473,7 @@
         "h": 9,
         "w": 6,
         "x": 18,
-        "y": 42
+        "y": 57
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2532,7 +2559,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -2551,7 +2581,7 @@
         "h": 9,
         "w": 6,
         "x": 0,
-        "y": 51
+        "y": 66
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2634,7 +2664,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -2653,7 +2686,7 @@
         "h": 9,
         "w": 6,
         "x": 6,
-        "y": 51
+        "y": 66
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2736,7 +2769,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -2755,7 +2791,7 @@
         "h": 9,
         "w": 6,
         "x": 12,
-        "y": 51
+        "y": 66
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2857,7 +2893,7 @@
         "h": 9,
         "w": 6,
         "x": 18,
-        "y": 51
+        "y": 66
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2943,7 +2979,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -2962,7 +3001,7 @@
         "h": 9,
         "w": 6,
         "x": 0,
-        "y": 60
+        "y": 75
       },
       "height": null,
       "hideTimeOverride": false,
@@ -3045,7 +3084,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -3064,7 +3106,7 @@
         "h": 9,
         "w": 6,
         "x": 6,
-        "y": 60
+        "y": 75
       },
       "height": null,
       "hideTimeOverride": false,
@@ -3147,7 +3189,10 @@
             },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {},
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
             "thresholdsStyle": {
               "mode": "off"
             }
@@ -3166,7 +3211,7 @@
         "h": 9,
         "w": 6,
         "x": 12,
-        "y": 60
+        "y": 75
       },
       "height": null,
       "hideTimeOverride": false,
@@ -3268,7 +3313,7 @@
         "h": 9,
         "w": 6,
         "x": 18,
-        "y": 60
+        "y": 75
       },
       "height": null,
       "hideTimeOverride": false,
@@ -3341,7 +3386,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 69
+        "y": 84
       },
       "height": null,
       "hideTimeOverride": false,
@@ -3384,7 +3429,10 @@
                 },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {},
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
                 "thresholdsStyle": {
                   "mode": "off"
                 }
@@ -3403,7 +3451,7 @@
             "h": 9,
             "w": 12,
             "x": 0,
-            "y": 70
+            "y": 85
           },
           "height": null,
           "hideTimeOverride": false,
@@ -3505,7 +3553,7 @@
             "h": 9,
             "w": 12,
             "x": 12,
-            "y": 70
+            "y": 85
           },
           "height": null,
           "hideTimeOverride": false,
@@ -3587,7 +3635,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 79
+        "y": 94
       },
       "height": null,
       "hideTimeOverride": false,
@@ -3660,7 +3708,7 @@
         "h": 9,
         "w": 4,
         "x": 0,
-        "y": 80
+        "y": 95
       },
       "height": null,
       "hideTimeOverride": false,
@@ -3765,7 +3813,7 @@
         "h": 9,
         "w": 5,
         "x": 4,
-        "y": 80
+        "y": 95
       },
       "height": null,
       "hideTimeOverride": false,
@@ -3870,7 +3918,7 @@
         "h": 9,
         "w": 5,
         "x": 9,
-        "y": 80
+        "y": 95
       },
       "height": null,
       "hideTimeOverride": false,
@@ -3975,7 +4023,7 @@
         "h": 9,
         "w": 5,
         "x": 14,
-        "y": 80
+        "y": 95
       },
       "height": null,
       "hideTimeOverride": false,
@@ -4095,7 +4143,7 @@
         "h": 9,
         "w": 5,
         "x": 19,
-        "y": 80
+        "y": 95
       },
       "height": null,
       "hideTimeOverride": false,
@@ -4275,7 +4323,7 @@
         "h": 9,
         "w": 4,
         "x": 0,
-        "y": 89
+        "y": 104
       },
       "height": null,
       "hideTimeOverride": false,
@@ -4380,7 +4428,7 @@
         "h": 9,
         "w": 5,
         "x": 4,
-        "y": 89
+        "y": 104
       },
       "height": null,
       "hideTimeOverride": false,
@@ -4485,7 +4533,7 @@
         "h": 9,
         "w": 5,
         "x": 9,
-        "y": 89
+        "y": 104
       },
       "height": null,
       "hideTimeOverride": false,
@@ -4590,7 +4638,7 @@
         "h": 9,
         "w": 5,
         "x": 14,
-        "y": 89
+        "y": 104
       },
       "height": null,
       "hideTimeOverride": false,
@@ -4695,7 +4743,7 @@
         "h": 9,
         "w": 5,
         "x": 19,
-        "y": 89
+        "y": 104
       },
       "height": null,
       "hideTimeOverride": false,
@@ -4800,7 +4848,7 @@
         "h": 9,
         "w": 4,
         "x": 0,
-        "y": 98
+        "y": 113
       },
       "height": null,
       "hideTimeOverride": false,
@@ -4905,7 +4953,7 @@
         "h": 9,
         "w": 5,
         "x": 4,
-        "y": 98
+        "y": 113
       },
       "height": null,
       "hideTimeOverride": false,

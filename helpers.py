@@ -73,7 +73,6 @@ def generate_dashboard(
     dashboard,
     filename,
 ):
-    # Setting GRAFANA_URL is optional. If set, the dashboard will be uploaded to the specified grafana server for easier development.
     grafana_url = getenv("GRAFANA_URL", "")
 
     def upload_to_grafana(dashboard_data, verify=True):
@@ -87,7 +86,7 @@ def generate_dashboard(
         )
         print(f"{r.status_code} - {r.content}")
 
-    with open(filename, "w") as f:
+    with open("dist/" + filename, "w") as f:
         my_dashboard_json = get_dashboard_json_for_file(dashboard)
         f.write(my_dashboard_json)
         print(f"Dashboard saved to {filename}")
