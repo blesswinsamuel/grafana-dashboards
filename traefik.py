@@ -1,15 +1,11 @@
 import grafanalib.core as G
 from grafanalib import formatunits as UNITS
 
-from helpers import GolangResourceUsagePanels, QueryExpr, RowPanel, StatPanel, TimeSeriesPanel, auto_layout, generate_dashboard
+from helpers import GolangResourceUsagePanels, QueryExpr, RowPanel, StatPanel, TimeSeriesPanel, auto_layout, avg_duration_query, generate_dashboard
 
 
 def cleanup_service_label(query):
     return f'label_replace({query}, "service", "$1", "service", "([^-]+-[^@]+)@.*")'
-
-
-def avg_duration_query(histogram_metric, selector, grouping):
-    return f"sum(rate({histogram_metric}_sum{selector}[$__rate_interval])) by ({grouping}) / sum(rate({histogram_metric}_count{selector}[$__rate_interval])) by ({grouping})"
 
 
 error_thresholds = [G.Threshold("green", 0, 0.0), G.Threshold("red", 1, 1.0)]
@@ -102,7 +98,7 @@ my_dashboard = G.Dashboard(
                 panels=[
                     [
                         TimeSeriesPanel("TLS requests", [QueryExpr('sum(increase(traefik_service_requests_tls_total{namespace=~"$namespace", instance=~"$instance"}[$__interval])) by (service, tls_cipher, version)', "{{ service }} {{ tls_cipher }} {{ version }}")], unit=UNITS.SHORT, style="bars"),
-                        TimeSeriesPanel("TLS certs expiration timestamp", [QueryExpr('max(traefik_tls_certs_not_after{namespace=~"$namespace", instance=~"$instance"}) by (cn, sans, serial) * 1000', "{{ cn }} {{ sans }} {{ serial }}")], unit=UNITS.DATE_TIME_FROM_NOW, legendCalcs=["last"], axisMin=None),
+                        TimeSeriesPanel("TLS certs expiration timestamp", [QueryExpr('max(traefik_tls_certs_not_after{namespace=~"$namespace", instance=~"$instance"}) by (cn, sans, serial) * 1000', "{{ cn }} {{ sans }} {{ serial }}")], unit=UNITS.DATE_TIME_FROM_NOW),
                     ],
                 ],
             ),

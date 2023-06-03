@@ -1,0 +1,7 @@
+version: 3
+
+tasks:
+  generate-all:
+    cmds:
+      - poetry run python postgres.py
+      - poetry run python traefik.py

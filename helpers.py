@@ -104,15 +104,8 @@ class QueryExpr:
     refId: str = None
 
 
-def _get_targets(exprs: List[QueryExpr]):
-    return [
-        G.Target(
-            expr="" + qe.expr,
-            legendFormat="" + qe.legendFormat,
-            refId=qe.refId if qe.refId else chr(ord("A") + i),
-        )
-        for (i, qe) in enumerate(exprs)
-    ]
+def _get_targets(exprs: List[QueryExpr], instant=False, format=G.TIME_SERIES_TARGET_FORMAT):
+    return [G.Target(expr="" + qe.expr, legendFormat="" + qe.legendFormat, refId=qe.refId if qe.refId else chr(ord("A") + i), instant=instant, format=format) for (i, qe) in enumerate(exprs)]
 
 
 def StatPanel(title, exprs, unit=None, thresholds=None, mode="value"):
@@ -160,6 +153,9 @@ def TimeSeriesPanel(title, exprs: List[QueryExpr], unit=UNITS.SHORT, legendCalcs
         maxDataPoints = 60
         fillOpacity = 30
         stacking = {"mode": "normal", "group": "A"}
+    if unit == UNITS.DATE_TIME_FROM_NOW:
+        axisMin = None
+        legendCalcs = ["last"]
     # style: line, bars, points
     return G.TimeSeries(
         title=title,
@@ -181,6 +177,64 @@ def TimeSeriesPanel(title, exprs: List[QueryExpr], unit=UNITS.SHORT, legendCalcs
                     sortBy=sortBy,
                     sortDesc=True,
                 ),
+            ),
+        ),
+    )
+
+
+def TablePanel(title, exprs: List[QueryExpr], unit=UNITS.SHORT, w=0, h=0, columnOrder=None, excludeColumns=None, overrides=[], sortBy=[], valueMappings=None, renameColumns=None, merge=False, unitMappings=None):
+    transformations = []
+    if merge:
+        transformations += [{"id": "merge"}]
+    transformationsOrganize = None
+    if columnOrder is not None or excludeColumns is not None or renameColumns is not None:
+        transformationsOrganize = {"id": "organize", "options": {}}
+        transformations += [transformationsOrganize]
+    if columnOrder is not None:
+        transformationsOrganize["options"]["indexByName"] = {col: i for (i, col) in enumerate(columnOrder)}
+    if excludeColumns is not None:
+        transformationsOrganize["options"]["excludeByName"] = {col: True for col in excludeColumns}
+    if renameColumns is not None:
+        transformationsOrganize["options"]["renameByName"] = renameColumns
+    sortByOption = []
+    for col in sortBy:
+        sortByOption += [{"displayName": col, "desc": True}]
+    if valueMappings is not None:
+        overrides += [
+            {
+                "matcher": {"id": "byName", "options": column},
+                "properties": [
+                    {
+                        "id": "mappings",
+                        "value": [
+                            {
+                                "type": "value",
+                                "options": {value: {"text": mapped_value, "color": color, "index": i} for (i, (value, (mapped_value, color))) in enumerate(mappings.items())},
+                            },
+                        ],
+                    },
+                ],
+            }
+            for column, mappings in valueMappings.items()
+        ]
+    if unitMappings is not None:
+        overrides += [
+            {
+                "matcher": {"id": "byName", "options": column},
+                "properties": [{"id": "unit", "value": unit}],
+            }
+            for column, unit in unitMappings.items()
+        ]
+    return G.Table(
+        title=title,
+        dataSource="${datasource}",
+        targets=_get_targets(exprs, instant=True, format=G.TABLE_TARGET_FORMAT),
+        gridPos=G.GridPos(w=w, h=h, x=0, y=0),
+        transformations=transformations,
+        overrides=overrides,
+        extraJson=dict(
+            options=dict(
+                sortBy=sortByOption,
             ),
         ),
     )
@@ -252,3 +306,7 @@ def GolangResourceUsagePanels(title="Resource Usage", selector=""):
             ],
         ],
     )
+
+
+def avg_duration_query(histogram_metric, selector, grouping):
+    return f"sum(rate({histogram_metric}_sum{selector}[$__rate_interval])) by ({grouping}) / sum(rate({histogram_metric}_count{selector}[$__rate_interval])) by ({grouping})"
