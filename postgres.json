@@ -192,7 +192,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -297,7 +297,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -402,7 +402,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -548,7 +548,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -653,7 +653,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -758,7 +758,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -863,7 +863,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -968,7 +968,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1073,7 +1073,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1219,7 +1219,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1251,7 +1251,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 4,
         "x": 0,
         "y": 31
@@ -1267,11 +1267,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
+            "max",
             "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single"
@@ -1320,7 +1324,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1352,7 +1356,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 5,
         "x": 4,
         "y": 31
@@ -1368,11 +1372,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
+            "max",
             "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single"
@@ -1421,7 +1429,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1453,7 +1461,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 5,
         "x": 9,
         "y": 31
@@ -1469,11 +1477,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
+            "max",
             "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single"
@@ -1522,7 +1534,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1554,7 +1566,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 5,
         "x": 14,
         "y": 31
@@ -1570,11 +1582,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
+            "max",
             "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single"
@@ -1638,7 +1654,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1670,7 +1686,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 5,
         "x": 19,
         "y": 31
@@ -1686,11 +1702,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
+            "max",
             "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single"
@@ -1814,7 +1834,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1846,10 +1866,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 4,
         "x": 0,
-        "y": 39
+        "y": 40
       },
       "height": null,
       "hideTimeOverride": false,
@@ -1862,11 +1882,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
+            "max",
             "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single"
@@ -1915,7 +1939,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1947,10 +1971,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 5,
         "x": 4,
-        "y": 39
+        "y": 40
       },
       "height": null,
       "hideTimeOverride": false,
@@ -1963,11 +1987,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
+            "max",
             "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single"
@@ -2016,7 +2044,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -2048,10 +2076,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 5,
         "x": 9,
-        "y": 39
+        "y": 40
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2064,11 +2092,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
+            "max",
             "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single"
@@ -2117,7 +2149,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -2149,10 +2181,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 5,
         "x": 14,
-        "y": 39
+        "y": 40
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2165,11 +2197,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
+            "max",
             "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single"
@@ -2218,7 +2254,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -2250,10 +2286,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 5,
         "x": 19,
-        "y": 39
+        "y": 40
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2266,11 +2302,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
+            "max",
             "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single"
@@ -2319,7 +2359,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -2351,10 +2391,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 4,
         "x": 0,
-        "y": 47
+        "y": 49
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2367,11 +2407,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
+            "max",
             "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single"
@@ -2420,7 +2464,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 5,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -2447,15 +2491,15 @@
             "mode": "absolute",
             "steps": []
           },
-          "unit": "decbytes"
+          "unit": "short"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 5,
         "x": 4,
-        "y": 47
+        "y": 49
       },
       "height": null,
       "hideTimeOverride": false,
@@ -2468,11 +2512,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
+            "max",
             "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single"
@@ -2484,15 +2532,15 @@
       "targets": [
         {
           "datasource": null,
-          "expr": "avg(go_memstats_heap_objects{job=~\"$job\", namespace=~\"$namespace\"})",
+          "expr": "avg(go_memstats_heap_objects{job=~\"$job\", namespace=~\"$namespace\"}) by (pod)",
           "format": "time_series",
           "hide": false,
           "instant": false,
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "objects",
+          "legendFormat": "{{ pod }}",
           "metric": "",
-          "query": "avg(go_memstats_heap_objects{job=~\"$job\", namespace=~\"$namespace\"})",
+          "query": "avg(go_memstats_heap_objects{job=~\"$job\", namespace=~\"$namespace\"}) by (pod)",
           "refId": "A",
           "step": 10,
           "target": ""
@@ -2504,165 +2552,6 @@
       "transformations": [],
       "transparent": false,
       "type": "timeseries"
-    },
-    {
-      "cacheTimeout": null,
-      "datasource": "${datasource}",
-      "description": null,
-      "editable": true,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "decimals": null,
-          "mappings": [],
-          "noValue": "none",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": ""
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 9,
-        "y": 47
-      },
-      "height": null,
-      "hideTimeOverride": false,
-      "id": 27,
-      "interval": null,
-      "links": [],
-      "maxDataPoints": 100,
-      "maxPerRow": null,
-      "minSpan": null,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "name"
-      },
-      "repeat": null,
-      "repeatDirection": null,
-      "span": null,
-      "targets": [
-        {
-          "datasource": null,
-          "expr": "go_info{job=~\"$job\", namespace=~\"$namespace\"}",
-          "format": "time_series",
-          "hide": false,
-          "instant": true,
-          "interval": "",
-          "intervalFactor": 2,
-          "legendFormat": "{{ version }}",
-          "metric": "",
-          "query": "go_info{job=~\"$job\", namespace=~\"$namespace\"}",
-          "refId": "A",
-          "step": 10,
-          "target": ""
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Go Info",
-      "transformations": [],
-      "transparent": true,
-      "type": "stat"
-    },
-    {
-      "cacheTimeout": null,
-      "datasource": "${datasource}",
-      "description": null,
-      "editable": true,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "decimals": null,
-          "mappings": [],
-          "noValue": "none",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "index": 0,
-                "line": true,
-                "op": "gt",
-                "value": "null",
-                "yaxis": "left"
-              }
-            ]
-          },
-          "unit": "dateTimeFromNow"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 12,
-        "y": 47
-      },
-      "height": null,
-      "hideTimeOverride": false,
-      "id": 28,
-      "interval": null,
-      "links": [],
-      "maxDataPoints": 100,
-      "maxPerRow": null,
-      "minSpan": null,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value"
-      },
-      "repeat": null,
-      "repeatDirection": null,
-      "span": null,
-      "targets": [
-        {
-          "datasource": null,
-          "expr": "go_memstats_last_gc_time_seconds{job=~\"$job\", namespace=~\"$namespace\"} * 1000",
-          "format": "time_series",
-          "hide": false,
-          "instant": false,
-          "interval": "",
-          "intervalFactor": 2,
-          "legendFormat": "",
-          "metric": "",
-          "query": "go_memstats_last_gc_time_seconds{job=~\"$job\", namespace=~\"$namespace\"} * 1000",
-          "refId": "A",
-          "step": 10,
-          "target": ""
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Last GC time",
-      "transformations": [],
-      "transparent": true,
-      "type": "stat"
     }
   ],
   "refresh": null,
