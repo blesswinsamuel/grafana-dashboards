@@ -5,3 +5,8 @@ tasks:
     cmds:
       - poetry run python postgres.py
       - poetry run python traefik.py
+
+  generate:
+    cmds:
+      # - go run . {{ .CLI_ARGS }}
+      - poetry run python {{ .CLI_ARGS }}.py
