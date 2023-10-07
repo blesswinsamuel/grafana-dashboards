@@ -3,10 +3,15 @@ version: 3
 tasks:
   generate-all:
     cmds:
-      - poetry run python postgres.py
-      - poetry run python traefik.py
+      - bun run dashboards/postgres.ts
+      - bun run dashboards/traefik.ts
+      - bun run dashboards/cert-manager.ts
 
   generate:
     cmds:
       # - go run . {{ .CLI_ARGS }}
-      - poetry run python {{ .CLI_ARGS }}.py
+      - bun run dashboards/{{ .CLI_ARGS }}.ts
+
+  dev:
+    cmds:
+      - bun run --watch dashboards/{{ .CLI_ARGS }}.ts

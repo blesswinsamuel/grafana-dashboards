@@ -1,9 +1,11 @@
 // https://github.com/grafana/grafana/tree/main/packages/grafana-schema
 import { Dashboard, DataSourceRef, Panel, RowPanel, VariableHide, VariableModel, VariableRefresh, defaultVariableModel } from '@grafana/schema'
 import * as fs from 'fs/promises'
+export { NewGoRuntimeMetrics } from './go-runtime'
 export { NewBarGaugePanel, NewPieChartPanel, NewStatPanel, NewTablePanel, NewTimeSeriesPanel } from './panels'
 export type { BarGaugePanelOpts, PieChartPanelOpts, StatPanelOpts, TablePanelOpts, Target, TimeSeriesPanelOpts } from './panels'
 export { Unit } from './units'
+export { overridesMatchByName, tableIndexByName } from './utils'
 
 export type DataSourceVariableOpts = {
   name: string
@@ -174,13 +176,7 @@ export function autoLayout(panelRows: PanelRowAndGroups): Array<Panel | RowPanel
   return autoLayoutInner(panelRows)[0]
 }
 
-export async function writeDashboardAndPostToGrafana(opts: {
-  grafanaURL: string
-  grafanaUsername?: string
-  grafanaPassword?: string
-  dashboard: Dashboard
-  filename: string
-}) {
+export async function writeDashboardAndPostToGrafana(opts: { grafanaURL: string; grafanaUsername?: string; grafanaPassword?: string; dashboard: Dashboard; filename: string }) {
   const { grafanaURL, dashboard } = opts
   await fs.writeFile(opts.filename, JSON.stringify(dashboard, null, 2))
   if (grafanaURL) {

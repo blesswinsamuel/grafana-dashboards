@@ -29,16 +29,8 @@ import {
   defaultPanel,
 } from '@grafana/schema'
 import { Options as BarGaugePanelOptions } from '@grafana/schema/dist/esm/raw/composable/bargauge/panelcfg/x/BarGaugePanelCfg_types.gen'
-import {
-  PieChartLegendValues,
-  Options as PieChartPanelOptions,
-  PieChartType,
-} from '@grafana/schema/dist/esm/raw/composable/piechart/panelcfg/x/PieChartPanelCfg_types.gen'
-import {
-  PromQueryFormat,
-  PrometheusDataQuery,
-  QueryEditorMode,
-} from '@grafana/schema/dist/esm/raw/composable/prometheus/dataquery/x/PrometheusDataQuery_types.gen'
+import { PieChartLegendValues, Options as PieChartPanelOptions, PieChartType } from '@grafana/schema/dist/esm/raw/composable/piechart/panelcfg/x/PieChartPanelCfg_types.gen'
+import { PromQueryFormat, PrometheusDataQuery, QueryEditorMode } from '@grafana/schema/dist/esm/raw/composable/prometheus/dataquery/x/PrometheusDataQuery_types.gen'
 import { Options as SingleStatPanelOptions } from '@grafana/schema/dist/esm/raw/composable/stat/panelcfg/x/StatPanelCfg_types.gen'
 import { Options as TablePanelOptions } from '@grafana/schema/dist/esm/raw/composable/table/panelcfg/x/TablePanelCfg_types.gen'
 import { Options as TimeSeriesPanelOptions } from '@grafana/schema/dist/esm/raw/composable/timeseries/panelcfg/x/TimeSeriesPanelCfg_types.gen'
