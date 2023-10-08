@@ -5,7 +5,7 @@ export { NewGoRuntimeMetrics } from './go-runtime'
 export { NewBarGaugePanel, NewPieChartPanel, NewStatPanel, NewTablePanel, NewTimeSeriesPanel } from './panels'
 export type { BarGaugePanelOpts, PieChartPanelOpts, StatPanelOpts, TablePanelOpts, Target, TimeSeriesPanelOpts } from './panels'
 export { Unit } from './units'
-export { overridesMatchByName, tableIndexByName } from './utils'
+export { averageDurationQuery, overridesMatchByName, tableIndexByName } from './utils'
 
 export type DataSourceVariableOpts = {
   name: string
@@ -97,6 +97,8 @@ export function NewQueryVariable(opts: VariableOpts): VariableModel {
     multi: opts.multi,
     // @ts-ignore
     includeAll: opts.includeAll,
+    // @ts-ignore
+    sort: 1, // SORT_ALPHA_DESC
     refresh: opts.refresh || VariableRefresh.onTimeRangeChanged,
     options: [],
   }
@@ -176,7 +178,7 @@ export function autoLayout(panelRows: PanelRowAndGroups): Array<Panel | RowPanel
   return autoLayoutInner(panelRows)[0]
 }
 
-export async function writeDashboardAndPostToGrafana(opts: { grafanaURL: string; grafanaUsername?: string; grafanaPassword?: string; dashboard: Dashboard; filename: string }) {
+export async function writeDashboardAndPostToGrafana(opts: { grafanaURL?: string; grafanaUsername?: string; grafanaPassword?: string; dashboard: Dashboard; filename: string }) {
   const { grafanaURL, dashboard } = opts
   await fs.writeFile(opts.filename, JSON.stringify(dashboard, null, 2))
   if (grafanaURL) {

@@ -16,12 +16,14 @@ import {
   GraphTresholdsStyleMode,
   LegendDisplayMode,
   LineInterpolation,
+  MappingType,
   Panel,
   ScaleDistribution,
   SortOrder,
   StackingMode,
   TableCellHeight,
   ThresholdsConfig,
+  ThresholdsMode,
   TooltipDisplayMode,
   ValueMapping,
   VisibilityMode,
@@ -111,6 +113,7 @@ export type TimeSeriesPanelOpts = CommonPanelOpts & {
   options?: RecursivePartial<TimeSeriesPanelOptions>
 }
 export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
+  opts.type = opts.type ?? 'line'
   const panel: Panel<Record<string, unknown>, GraphFieldConfig> = {
     ...defaultPanel,
     datasource: opts.datasource,
@@ -164,7 +167,7 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
     options: deepMerge<TimeSeriesPanelOptions>(
       {
         legend: {
-          calcs: ['mean', 'max'],
+          calcs: { bar: ['sum'], line: ['mean', 'max'] }[opts.type],
           displayMode: LegendDisplayMode.Table,
           placement: 'bottom',
           showLegend: true,
@@ -179,7 +182,6 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
     transformations: opts.transformations ?? [],
     transparent: false,
   }
-  opts.type = opts.type ?? 'line'
   switch (opts.type) {
     case 'bar':
       panel.fieldConfig.defaults.custom!.drawStyle = GraphDrawStyle.Bars
@@ -216,8 +218,8 @@ export function NewStatPanel(opts: StatPanelOpts): Panel {
     targets: fromTargets(opts.targets, opts.datasource),
     fieldConfig: {
       defaults: {
-        mappings: opts.mappings,
-        thresholds: opts.thresholds,
+        mappings: opts.mappings ?? (opts.defaultUnit === Unit.DATE_TIME_FROM_NOW ? [{ type: MappingType.ValueToText, options: { '0': { text: '-', index: 0 } } }] : []),
+        thresholds: opts.thresholds ?? { mode: ThresholdsMode.Absolute, steps: [{ color: 'green', value: null }] },
         unit: opts.defaultUnit,
       },
       overrides: opts.overrides ?? [],
