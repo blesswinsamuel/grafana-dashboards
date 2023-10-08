@@ -16,21 +16,9 @@ export function NewGoRuntimeMetrics({ datasource, selector = '' }: { datasource?
       //   targets: [{ expr: `sum by (pod) (increase(go_gc_duration_seconds_count${selector}[$__interval]))`, legendFormat: '{{ pod }}' }],
       //   defaultUnit: Unit.SHORT,
       // }),
-      NewTimeSeriesPanel({
-        title: 'File Descriptors',
-        targets: [{ expr: `sum by (pod) (process_open_fds${selector})`, legendFormat: '{{ pod }}' }],
-        defaultUnit: Unit.SHORT,
-      }),
-      NewTimeSeriesPanel({
-        title: 'CPU Usage',
-        targets: [{ expr: `sum by (pod) (rate(process_cpu_seconds_total${selector}[$__rate_interval]))`, legendFormat: '{{ pod }}' }],
-        defaultUnit: Unit.SHORT,
-      }),
-      NewTimeSeriesPanel({
-        title: 'Memory Usage',
-        targets: [{ expr: `sum by (pod) (process_resident_memory_bytes${selector}[$__rate_interval])`, legendFormat: '{{ pod }}' }],
-        defaultUnit: Unit.BYTES_SI,
-      }),
+      NewTimeSeriesPanel({ title: 'File Descriptors', targets: [{ expr: `sum by (pod) (process_open_fds${selector})`, legendFormat: '{{ pod }}' }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'CPU Usage', targets: [{ expr: `sum by (pod) (rate(process_cpu_seconds_total${selector}[$__rate_interval]))`, legendFormat: '{{ pod }}' }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'Memory Usage', targets: [{ expr: `sum by (pod) (process_resident_memory_bytes${selector}[$__rate_interval])`, legendFormat: '{{ pod }}' }], defaultUnit: Unit.BYTES_SI }),
       NewTimeSeriesPanel({
         title: 'Stack Memory Usage',
         targets: [
@@ -51,43 +39,17 @@ export function NewGoRuntimeMetrics({ datasource, selector = '' }: { datasource?
         ],
         defaultUnit: Unit.BYTES_SI,
       }),
-      NewTimeSeriesPanel({
-        title: 'Heap Objects',
-        targets: [{ expr: `avg by (pod) (go_memstats_heap_objects${selector})`, legendFormat: '{{ pod }}' }],
-        defaultUnit: Unit.SHORT,
-      }),
+      NewTimeSeriesPanel({ title: 'Heap Objects', targets: [{ expr: `avg by (pod) (go_memstats_heap_objects${selector})`, legendFormat: '{{ pod }}' }], defaultUnit: Unit.SHORT }),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({
-        title: 'Threads',
-        targets: [{ expr: `sum by (pod) (go_threads${selector})`, legendFormat: '{{ pod }}' }],
-        defaultUnit: Unit.SHORT,
-      }),
-      NewTimeSeriesPanel({
-        title: 'Goroutines',
-        targets: [{ expr: `sum by (pod) (go_goroutines${selector})`, legendFormat: '{{ pod }}' }],
-        defaultUnit: Unit.SHORT,
-      }),
-      NewTimeSeriesPanel({
-        title: 'Go Alloc Rate',
-        targets: [{ expr: `sum by (pod) (rate(go_memstats_alloc_bytes_total${selector}[$__rate_interval]))`, legendFormat: '{{ pod }}' }],
-        defaultUnit: Unit.BYTES_PER_SEC_SI,
-      }),
-      NewTimeSeriesPanel({
-        title: 'Go Alloc Bytes',
-        targets: [{ expr: `sum by (pod) (go_memstats_alloc_bytes${selector})`, legendFormat: '{{ pod }}' }],
-        defaultUnit: Unit.BYTES_SI,
-      }),
-      NewTimeSeriesPanel({
-        title: 'Go GC Per Second',
-        targets: [{ expr: `sum by (pod) (rate(go_gc_duration_seconds_count${selector}[$__rate_interval]))`, legendFormat: '{{ pod }}' }],
-        defaultUnit: Unit.SHORT,
-      }),
-      NewTimeSeriesPanel({
-        title: 'Go GC Duration Seconds',
-        targets: [{ expr: `sum by (pod) (rate(go_gc_duration_seconds_sum${selector}[$__rate_interval]))`, legendFormat: '{{ pod }}' }],
-        defaultUnit: Unit.SECONDS,
-      }),
+      NewTimeSeriesPanel({ title: 'Threads', targets: [{ expr: `sum by (pod) (go_threads${selector})`, legendFormat: '{{ pod }}' }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'Goroutines', targets: [{ expr: `sum by (pod) (go_goroutines${selector})`, legendFormat: '{{ pod }}' }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'Go Alloc Rate', targets: [{ expr: `sum by (pod) (rate(go_memstats_alloc_bytes_total${selector}[$__rate_interval]))`, legendFormat: '{{ pod }}' }], defaultUnit: Unit.BYTES_PER_SEC_SI }),
+      NewTimeSeriesPanel({ title: 'Go Alloc Bytes', targets: [{ expr: `sum by (pod) (go_memstats_alloc_bytes${selector})`, legendFormat: '{{ pod }}' }], defaultUnit: Unit.BYTES_SI }),
+      NewTimeSeriesPanel({ title: 'Go GC Per Second', targets: [{ expr: `sum by (pod) (rate(go_gc_duration_seconds_count${selector}[$__rate_interval]))`, legendFormat: '{{ pod }}' }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'Go GC Duration Seconds', targets: [{ expr: `sum by (pod) (rate(go_gc_duration_seconds_sum${selector}[$__rate_interval]))`, legendFormat: '{{ pod }}' }], defaultUnit: Unit.SECONDS }),
     ]),
+    // # stat_panel_name("Go Info", f'go_info{selector}', "{{ version }}"),
+    // # stat_panel_value("Last GC time", f'go_memstats_last_gc_time_seconds{selector} * 1000', unit=UNITS.DATE_TIME_FROM_NOW),
   ])
 }

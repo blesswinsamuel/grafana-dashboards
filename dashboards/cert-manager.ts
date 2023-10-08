@@ -1,18 +1,6 @@
 import { Dashboard, DashboardCursorSync, DataSourceRef, defaultDashboard } from '@grafana/schema'
-import {
-  NewPanelGroup,
-  NewPanelRow,
-  NewPrometheusDatasource as NewPrometheusDatasourceVariable,
-  NewTablePanel,
-  NewTimeSeriesPanel,
-  PanelRowAndGroups,
-  Unit,
-  autoLayout,
-  overridesMatchByName,
-  tableIndexByName,
-  writeDashboardAndPostToGrafana,
-} from '../src/grafana-helpers'
-import path = require('path')
+import * as path from 'path'
+import { NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, averageDurationQuery, overridesMatchByName, tableIndexByName, writeDashboardAndPostToGrafana } from '../src/grafana-helpers'
 
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -61,52 +49,16 @@ const panels: PanelRowAndGroups = [
     ]),
   ]),
   NewPanelRow({ datasource, height: 8 }, [
-    NewTimeSeriesPanel({
-      title: 'The number of sync() calls made by a controller',
-      targets: [{ expr: 'sum(increase(certmanager_controller_sync_call_count[$__interval])) by (controller)', legendFormat: '{{ controller }}' }],
-      defaultUnit: Unit.SHORT,
-      type: 'bar',
-    }),
-    NewTimeSeriesPanel({
-      title: 'The number of requests made by the ACME client',
-      targets: [{ expr: 'sum(increase(certmanager_http_acme_client_request_count[$__interval])) by (host, method, path, scheme, status) > 0', legendFormat: '{{ host }} {{ method }} {{ path }} {{ scheme }} {{ status }}' }],
-      defaultUnit: Unit.SHORT,
-      type: 'bar',
-    }),
+    NewTimeSeriesPanel({ title: 'The number of sync() calls made by a controller', targets: [{ expr: 'sum(increase(certmanager_controller_sync_call_count[$__interval])) by (controller)', legendFormat: '{{ controller }}' }], defaultUnit: Unit.SHORT, type: 'bar' }),
+    NewTimeSeriesPanel({ title: 'The number of requests made by the ACME client', targets: [{ expr: 'sum(increase(certmanager_http_acme_client_request_count[$__interval])) by (host, method, path, scheme, status) > 0', legendFormat: '{{ host }} {{ method }} {{ path }} {{ scheme }} {{ status }}' }], defaultUnit: Unit.SHORT, type: 'bar' }),
     // TimeSeriesPanel("The clock time", [QueryExpr("max(certmanager_clock_time_seconds_gauge[$__interval]) * 1000", "")], unit=UNITS.DATE_TIME_FROM_NOW),
   ]),
   NewPanelRow({ datasource, height: 8 }, [
-    NewTimeSeriesPanel({
-      title: 'Expiration time',
-      targets: [
-        {
-          expr: 'max(certmanager_certificate_expiration_timestamp_seconds[$__interval]) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000',
-          legendFormat: '{{ issuer_group }} {{ issuer_kind }} {{ issuer_name }} {{ name }} {{ namespace }}',
-        },
-      ],
-      defaultUnit: Unit.DATE_TIME_FROM_NOW,
-    }),
-    NewTimeSeriesPanel({
-      title: 'Renewal time',
-      targets: [
-        {
-          expr: 'max(certmanager_certificate_renewal_timestamp_seconds[$__interval]) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000',
-          legendFormat: '{{ issuer_group }} {{ issuer_kind }} {{ issuer_name }} {{ name }} {{ namespace }}',
-        },
-      ],
-      defaultUnit: Unit.DATE_TIME_FROM_NOW,
-    }),
-    NewTimeSeriesPanel({
-      title: 'Avg HTTP request latencies for the ACME client',
-      targets: [{ expr: averageDurationQuery('certmanager_http_acme_client_request_duration_seconds', '{}', 'host, method, path, scheme, status'), legendFormat: '{{ host }} {{ method }} {{ path }} {{ scheme }} {{ status }}' }],
-      defaultUnit: Unit.SECONDS,
-    }),
+    NewTimeSeriesPanel({ title: 'Expiration time', targets: [{ expr: 'max(certmanager_certificate_expiration_timestamp_seconds[$__interval]) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000', legendFormat: '{{ issuer_group }} {{ issuer_kind }} {{ issuer_name }} {{ name }} {{ namespace }}' }], defaultUnit: Unit.DATE_TIME_FROM_NOW }),
+    NewTimeSeriesPanel({ title: 'Renewal time', targets: [{ expr: 'max(certmanager_certificate_renewal_timestamp_seconds[$__interval]) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000', legendFormat: '{{ issuer_group }} {{ issuer_kind }} {{ issuer_name }} {{ name }} {{ namespace }}' }], defaultUnit: Unit.DATE_TIME_FROM_NOW }),
+    NewTimeSeriesPanel({ title: 'Avg HTTP request latencies for the ACME client', targets: [{ expr: averageDurationQuery('certmanager_http_acme_client_request_duration_seconds', '{}', 'host, method, path, scheme, status'), legendFormat: '{{ host }} {{ method }} {{ path }} {{ scheme }} {{ status }}' }], defaultUnit: Unit.SECONDS }),
   ]),
 ]
-
-function averageDurationQuery(histogram_metric: string, selector: string, grouping: string): string {
-  return `sum(rate(${histogram_metric}_sum${selector}[$__rate_interval])) by (${grouping}) / sum(rate(${histogram_metric}_count${selector}[$__rate_interval])) by (${grouping})`
-}
 
 const dashboard: Dashboard = {
   ...defaultDashboard,

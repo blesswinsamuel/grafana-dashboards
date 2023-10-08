@@ -20,3 +20,7 @@ export const tableIndexByName = (columns: string[]): { [key: string]: number } =
   }
   return indexByName
 }
+
+export function averageDurationQuery(histogram_metric: string, selector: string, grouping: string): string {
+  return `sum(rate(${histogram_metric}_sum${selector}[$__rate_interval])) by (${grouping}) / sum(rate(${histogram_metric}_count${selector}[$__rate_interval])) by (${grouping})`
+}
