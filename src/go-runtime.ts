@@ -1,8 +1,8 @@
 import { DataSourceRef } from '@grafana/schema'
 import { NewPanelGroup, NewPanelRow, NewTimeSeriesPanel, PanelGroup, Unit } from './grafana-helpers'
 
-export function NewGoRuntimeMetrics({ datasource, selector = '' }: { datasource?: DataSourceRef; selector?: string }): PanelGroup {
-  return NewPanelGroup({ title: 'Go Runtime Metrics' }, [
+export function NewGoRuntimeMetrics({ datasource, title, selector = '' }: { datasource?: DataSourceRef; title?: string; selector?: string }): PanelGroup {
+  return NewPanelGroup({ title: title ?? 'Go Runtime Metrics' }, [
     NewPanelRow({ datasource, height: 8 }, [
       // NewTimeSeriesPanel({
       //   type: 'bar',
