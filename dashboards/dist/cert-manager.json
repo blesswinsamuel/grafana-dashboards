@@ -219,8 +219,7 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "sum"
           ],
           "displayMode": "table",
           "placement": "bottom",
@@ -304,8 +303,7 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "sum"
           ],
           "displayMode": "table",
           "placement": "bottom",
