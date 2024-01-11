@@ -460,6 +460,69 @@
       "targets": [
         {
           "editorMode": "code",
+          "expr": "sum(1 - smartctl_device_smart_status{instance=~\"$instance\"})",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "stat",
+      "title": "SMART failed",
+      "gridPos": {
+        "x": 21,
+        "y": 1,
+        "w": 3,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "text": {}
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
           "expr": "smartctl_device{instance=~\"$instance\"}",
           "range": false,
           "instant": true,
@@ -536,6 +599,248 @@
       "targets": [
         {
           "editorMode": "code",
+          "expr": "label_keep(smartctl_device{instance=~\"$instance\"}, \"device\", \"model_name\")",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "DEVICE"
+        },
+        {
+          "editorMode": "code",
+          "expr": "label_keep(smartctl_device_temperature{instance=~\"$instance\", temperature_type=\"current\"}, \"device\")",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "TEMP"
+        },
+        {
+          "editorMode": "code",
+          "expr": "label_keep(smartctl_device_smartctl_exit_status{instance=~\"$instance\"}, \"device\")",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "EXIT"
+        },
+        {
+          "editorMode": "code",
+          "expr": "label_keep(smartctl_device_smart_status{instance=~\"$instance\"}, \"device\")",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "PASSED"
+        },
+        {
+          "editorMode": "code",
+          "expr": "label_keep(smartctl_device_power_on_seconds{instance=~\"$instance\"}, \"device\")",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "POWON"
+        },
+        {
+          "editorMode": "code",
+          "expr": "label_keep(smartctl_device_power_cycle_count{instance=~\"$instance\"}, \"device\")",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "PCC"
+        },
+        {
+          "editorMode": "code",
+          "expr": "label_keep(smartctl_device_interface_speed{instance=~\"$instance\", speed_type=\"current\"}, \"device\")",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "INTSPEED"
+        },
+        {
+          "editorMode": "code",
+          "expr": "label_keep(smartctl_device_capacity_bytes{instance=~\"$instance\"}, \"device\")",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "CAPBYTES"
+        },
+        {
+          "editorMode": "code",
+          "expr": "label_keep(smartctl_device_capacity_blocks{instance=~\"$instance\"}, \"device\")",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "CAPBLOCKS"
+        },
+        {
+          "editorMode": "code",
+          "expr": "label_keep(smartctl_device_block_size{blocks_type=\"logical\", instance=~\"$instance\"}, \"device\")",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "BLKSIZELOG"
+        },
+        {
+          "editorMode": "code",
+          "expr": "label_keep(smartctl_device_block_size{blocks_type=\"physical\", instance=~\"$instance\"}, \"device\")",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "BLKSIZEPHY"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "device",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "(device|model_name|Value\\s.*)"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value #DEVICE": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "device": "Device",
+              "model_name": "Model name",
+              "Value #TEMP": "Temperature",
+              "Value #EXIT": "Exit status",
+              "Value #PASSED": "Passed",
+              "Value #POWON": "Power on seconds",
+              "Value #PCC": "Power Cycle Count",
+              "Value #INTSPEED": "Device interface speed",
+              "Value #CAPBYTES": "Capacity Bytes",
+              "Value #CAPBLOCKS": "Capacity Blocks",
+              "Value #BLKSIZELOG": "Block size (logical)",
+              "Value #BLKSIZEPHY": "Block size (physical)"
+            }
+          }
+        }
+      ],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "table",
+      "title": "SMART overview",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 24,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Temperature"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Power on seconds"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Device interface speed"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Capacity Bytes"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Capacity Blocks"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Block size (logical)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Block size (physical)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "md",
+        "frameIndex": -1,
+        "showHeader": true
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
           "expr": "smartctl_device_attribute{instance=~\"$instance\"}",
           "range": false,
           "instant": true,
@@ -581,7 +886,7 @@
       "title": "SMART attributes",
       "gridPos": {
         "x": 0,
-        "y": 12,
+        "y": 20,
         "w": 24,
         "h": 8
       },
@@ -602,7 +907,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 20,
+        "y": 28,
         "w": 24,
         "h": 1
       }
@@ -631,7 +936,7 @@
       "title": "Temperature",
       "gridPos": {
         "x": 0,
-        "y": 21,
+        "y": 29,
         "w": 6,
         "h": 8
       },
@@ -716,7 +1021,7 @@
       "title": "Smartctl exit status",
       "gridPos": {
         "x": 6,
-        "y": 21,
+        "y": 29,
         "w": 6,
         "h": 8
       },
@@ -798,10 +1103,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "General smartctl status",
+      "title": "SMART passed",
       "gridPos": {
         "x": 12,
-        "y": 21,
+        "y": 29,
         "w": 6,
         "h": 8
       },
@@ -886,7 +1191,7 @@
       "title": "Power on seconds",
       "gridPos": {
         "x": 18,
-        "y": 21,
+        "y": 29,
         "w": 6,
         "h": 8
       },
@@ -971,7 +1276,7 @@
       "title": "Power cycle count",
       "gridPos": {
         "x": 0,
-        "y": 29,
+        "y": 37,
         "w": 6,
         "h": 8
       },
@@ -1056,7 +1361,7 @@
       "title": "Write percentage used",
       "gridPos": {
         "x": 6,
-        "y": 29,
+        "y": 37,
         "w": 6,
         "h": 8
       },
@@ -1141,7 +1446,7 @@
       "title": "NVMe capacity bytes",
       "gridPos": {
         "x": 12,
-        "y": 29,
+        "y": 37,
         "w": 6,
         "h": 8
       },
@@ -1227,7 +1532,7 @@
       "description": "Contains the number of Error Information log entries over the life of the controller",
       "gridPos": {
         "x": 18,
-        "y": 29,
+        "y": 37,
         "w": 6,
         "h": 8
       },
@@ -1313,7 +1618,7 @@
       "description": "Contains the number of occurrences where the controller detected an unrecovered data integrity error. Errors such as uncorrectable ECC, CRC checksum failure, or LBA tag mismatch are included in this field",
       "gridPos": {
         "x": 0,
-        "y": 37,
+        "y": 45,
         "w": 8,
         "h": 8
       },
@@ -1398,7 +1703,7 @@
       "title": "SMART error log count",
       "gridPos": {
         "x": 8,
-        "y": 37,
+        "y": 45,
         "w": 8,
         "h": 8
       },
@@ -1483,7 +1788,7 @@
       "title": "Critical warnings for state of controller",
       "gridPos": {
         "x": 16,
-        "y": 37,
+        "y": 45,
         "w": 8,
         "h": 8
       },
@@ -1568,7 +1873,7 @@
       "title": "Interface speed (current)",
       "gridPos": {
         "x": 0,
-        "y": 45,
+        "y": 53,
         "w": 12,
         "h": 8
       },
@@ -1653,7 +1958,7 @@
       "title": "Interface speed (max)",
       "gridPos": {
         "x": 12,
-        "y": 45,
+        "y": 53,
         "w": 12,
         "h": 8
       },
@@ -1738,7 +2043,7 @@
       "title": "Capacity Bytes",
       "gridPos": {
         "x": 0,
-        "y": 53,
+        "y": 61,
         "w": 6,
         "h": 8
       },
@@ -1823,7 +2128,7 @@
       "title": "Capacity Blocks",
       "gridPos": {
         "x": 6,
-        "y": 53,
+        "y": 61,
         "w": 6,
         "h": 8
       },
@@ -1908,7 +2213,7 @@
       "title": "Bytes written",
       "gridPos": {
         "x": 12,
-        "y": 53,
+        "y": 61,
         "w": 6,
         "h": 8
       },
@@ -1993,7 +2298,7 @@
       "title": "Bytes read",
       "gridPos": {
         "x": 18,
-        "y": 53,
+        "y": 61,
         "w": 6,
         "h": 8
       },
@@ -2078,7 +2383,7 @@
       "title": "Block size (logical)",
       "gridPos": {
         "x": 0,
-        "y": 61,
+        "y": 69,
         "w": 6,
         "h": 8
       },
@@ -2163,7 +2468,7 @@
       "title": "Block size (physical)",
       "gridPos": {
         "x": 6,
-        "y": 61,
+        "y": 69,
         "w": 6,
         "h": 8
       },
@@ -2249,7 +2554,7 @@
       "description": "When the Available Spare falls below the threshold indicated in this field, an asynchronous event completion may occur. The value is indicated as a normalized percentage (0 to 100%)",
       "gridPos": {
         "x": 12,
-        "y": 61,
+        "y": 69,
         "w": 6,
         "h": 8
       },
@@ -2335,7 +2640,7 @@
       "description": "Normalized percentage (0 to 100%) of the remaining spare capacity available",
       "gridPos": {
         "x": 18,
-        "y": 61,
+        "y": 69,
         "w": 6,
         "h": 8
       },
@@ -2403,7 +2708,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 69,
+        "y": 77,
         "w": 24,
         "h": 1
       }
@@ -2432,7 +2737,7 @@
       "title": "File Descriptors",
       "gridPos": {
         "x": 0,
-        "y": 70,
+        "y": 78,
         "w": 4,
         "h": 8
       },
@@ -2517,7 +2822,7 @@
       "title": "CPU Usage",
       "gridPos": {
         "x": 4,
-        "y": 70,
+        "y": 78,
         "w": 4,
         "h": 8
       },
@@ -2602,7 +2907,7 @@
       "title": "Memory Usage",
       "gridPos": {
         "x": 8,
-        "y": 70,
+        "y": 78,
         "w": 4,
         "h": 8
       },
@@ -2696,7 +3001,7 @@
       "title": "Stack Memory Usage",
       "gridPos": {
         "x": 12,
-        "y": 70,
+        "y": 78,
         "w": 4,
         "h": 8
       },
@@ -2826,7 +3131,7 @@
       "title": "Heap Memory Usage",
       "gridPos": {
         "x": 16,
-        "y": 70,
+        "y": 78,
         "w": 4,
         "h": 8
       },
@@ -2911,7 +3216,7 @@
       "title": "Heap Objects",
       "gridPos": {
         "x": 20,
-        "y": 70,
+        "y": 78,
         "w": 4,
         "h": 8
       },
@@ -2996,7 +3301,7 @@
       "title": "Threads",
       "gridPos": {
         "x": 0,
-        "y": 78,
+        "y": 86,
         "w": 4,
         "h": 8
       },
@@ -3081,7 +3386,7 @@
       "title": "Goroutines",
       "gridPos": {
         "x": 4,
-        "y": 78,
+        "y": 86,
         "w": 4,
         "h": 8
       },
@@ -3166,7 +3471,7 @@
       "title": "Go Alloc Rate",
       "gridPos": {
         "x": 8,
-        "y": 78,
+        "y": 86,
         "w": 4,
         "h": 8
       },
@@ -3251,7 +3556,7 @@
       "title": "Go Alloc Bytes",
       "gridPos": {
         "x": 12,
-        "y": 78,
+        "y": 86,
         "w": 4,
         "h": 8
       },
@@ -3336,7 +3641,7 @@
       "title": "Go GC Per Second",
       "gridPos": {
         "x": 16,
-        "y": 78,
+        "y": 86,
         "w": 4,
         "h": 8
       },
@@ -3421,7 +3726,7 @@
       "title": "Go GC Duration Seconds",
       "gridPos": {
         "x": 20,
-        "y": 78,
+        "y": 86,
         "w": 4,
         "h": 8
       },

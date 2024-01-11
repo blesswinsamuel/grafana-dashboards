@@ -3,3 +3,4 @@
 - Postgres
 - Traefik
 - Cert Manager
+- Smartctl

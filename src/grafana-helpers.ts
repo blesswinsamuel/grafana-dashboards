@@ -5,7 +5,7 @@ export { NewGoRuntimeMetrics } from './go-runtime'
 export { NewBarGaugePanel, NewPieChartPanel, NewStatPanel, NewTablePanel, NewTimeSeriesPanel } from './panels'
 export type { BarGaugePanelOpts, PieChartPanelOpts, StatPanelOpts, TablePanelOpts, Target, TimeSeriesPanelOpts } from './panels'
 export { Unit } from './units'
-export { averageDurationQuery, overridesMatchByName, tableIndexByName } from './utils'
+export { averageDurationQuery, overridesMatchByName, tableExcludeByName, tableIndexByName } from './utils'
 
 export type DataSourceVariableOpts = {
   name: string

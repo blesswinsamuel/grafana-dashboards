@@ -1,6 +1,6 @@
 import { Dashboard, DashboardCursorSync, DataSourceRef, ThresholdsConfig, ThresholdsMode, defaultDashboard } from '@grafana/schema'
 import * as path from 'path'
-import { NewGoRuntimeMetrics, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, tableIndexByName, writeDashboardAndPostToGrafana } from '../src/grafana-helpers'
+import { NewGoRuntimeMetrics, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, tableExcludeByName, tableIndexByName, writeDashboardAndPostToGrafana } from '../src/grafana-helpers'
 
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -24,6 +24,7 @@ const panels: PanelRowAndGroups = [
       NewStatPanel({ title: 'Media errors', targets: [{ expr: 'sum(smartctl_device_media_errors{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
       NewStatPanel({ title: 'SMART error log count', targets: [{ expr: 'sum(smartctl_device_error_log_count{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
       NewStatPanel({ title: 'Critical warnings', targets: [{ expr: 'sum(smartctl_device_critical_warning{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
+      NewStatPanel({ title: 'SMART failed', targets: [{ expr: 'sum(1 - smartctl_device_smart_status{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       NewTablePanel({
@@ -47,6 +48,79 @@ const panels: PanelRowAndGroups = [
                 interface: 'Interface',
                 model_family: 'Model family',
                 sata_version: 'SATA version',
+              },
+            },
+          },
+        ],
+      }),
+    ]),
+    NewPanelRow({ datasource, height: 8 }, [
+      NewTablePanel({
+        title: 'SMART overview',
+        targets: [
+          { refId: 'DEVICE', expr: 'label_keep(smartctl_device{instance=~"$instance"}, "device", "model_name")', format: 'table', type: 'instant' },
+          { refId: 'TEMP', expr: 'label_keep(smartctl_device_temperature{instance=~"$instance", temperature_type="current"}, "device")', format: 'table', type: 'instant' },
+          { refId: 'EXIT', expr: 'label_keep(smartctl_device_smartctl_exit_status{instance=~"$instance"}, "device")', format: 'table', type: 'instant' },
+          { refId: 'PASSED', expr: 'label_keep(smartctl_device_smart_status{instance=~"$instance"}, "device")', format: 'table', type: 'instant' },
+          { refId: 'POWON', expr: 'label_keep(smartctl_device_power_on_seconds{instance=~"$instance"}, "device")', format: 'table', type: 'instant' },
+          { refId: 'PCC', expr: 'label_keep(smartctl_device_power_cycle_count{instance=~"$instance"}, "device")', format: 'table', type: 'instant' },
+          { refId: 'INTSPEED', expr: 'label_keep(smartctl_device_interface_speed{instance=~"$instance", speed_type="current"}, "device")', format: 'table', type: 'instant' },
+          { refId: 'CAPBYTES', expr: 'label_keep(smartctl_device_capacity_bytes{instance=~"$instance"}, "device")', format: 'table', type: 'instant' },
+          { refId: 'CAPBLOCKS', expr: 'label_keep(smartctl_device_capacity_blocks{instance=~"$instance"}, "device")', format: 'table', type: 'instant' },
+          { refId: 'BLKSIZELOG', expr: 'label_keep(smartctl_device_block_size{blocks_type="logical", instance=~"$instance"}, "device")', format: 'table', type: 'instant' },
+          { refId: 'BLKSIZEPHY', expr: 'label_keep(smartctl_device_block_size{blocks_type="physical", instance=~"$instance"}, "device")', format: 'table', type: 'instant' },
+        ],
+        overrides: [
+          {
+            matcher: { id: 'byName', options: 'Temperature' },
+            properties: [{ id: 'unit', value: Unit.CELSIUS }],
+          },
+          {
+            matcher: { id: 'byName', options: 'Power on seconds' },
+            properties: [{ id: 'unit', value: Unit.SECONDS }],
+          },
+          {
+            matcher: { id: 'byName', options: 'Device interface speed' },
+            properties: [{ id: 'unit', value: Unit.BITS_PER_SEC_SI }],
+          },
+          {
+            matcher: { id: 'byName', options: 'Capacity Bytes' },
+            properties: [{ id: 'unit', value: Unit.BYTES_IEC }],
+          },
+          {
+            matcher: { id: 'byName', options: 'Capacity Blocks' },
+            properties: [{ id: 'unit', value: Unit.SHORT }],
+          },
+          {
+            matcher: { id: 'byName', options: 'Block size (logical)' },
+            properties: [{ id: 'unit', value: Unit.BYTES_IEC }],
+          },
+          {
+            matcher: { id: 'byName', options: 'Block size (physical)' },
+            properties: [{ id: 'unit', value: Unit.BYTES_IEC }],
+          },
+        ],
+        transformations: [
+          { id: 'joinByField', options: { byField: 'device', mode: 'outer' } },
+          { id: 'filterFieldsByName', options: { include: { pattern: '(device|model_name|Value\\s.*)' } } },
+          {
+            id: 'organize',
+            options: {
+              excludeByName: tableExcludeByName(['Time', 'Value #DEVICE']),
+              indexByName: {},
+              renameByName: {
+                device: 'Device',
+                model_name: 'Model name',
+                'Value #TEMP': 'Temperature',
+                'Value #EXIT': 'Exit status',
+                'Value #PASSED': 'Passed',
+                'Value #POWON': 'Power on seconds',
+                'Value #PCC': 'Power Cycle Count',
+                'Value #INTSPEED': 'Device interface speed',
+                'Value #CAPBYTES': 'Capacity Bytes',
+                'Value #CAPBLOCKS': 'Capacity Blocks',
+                'Value #BLKSIZELOG': 'Block size (logical)',
+                'Value #BLKSIZEPHY': 'Block size (physical)',
               },
             },
           },
@@ -82,7 +156,7 @@ const panels: PanelRowAndGroups = [
     NewPanelRow({ datasource, height: 8 }, [
       NewTimeSeriesPanel({ title: 'Temperature', targets: [{ expr: 'smartctl_device_temperature{instance=~"$instance", temperature_type="current"}', legendFormat: '{{ device }}' }], defaultUnit: Unit.CELSIUS }),
       NewTimeSeriesPanel({ title: 'Smartctl exit status', targets: [{ expr: 'smartctl_device_smartctl_exit_status{instance=~"$instance"}', legendFormat: '{{ device }}' }], defaultUnit: Unit.SHORT }),
-      NewTimeSeriesPanel({ title: 'General smartctl status', targets: [{ expr: 'smartctl_device_smart_status{instance=~"$instance"}', legendFormat: '{{ device }}' }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'SMART passed', targets: [{ expr: 'smartctl_device_smart_status{instance=~"$instance"}', legendFormat: '{{ device }}' }], defaultUnit: Unit.SHORT }),
       NewTimeSeriesPanel({ title: 'Power on seconds', targets: [{ expr: 'smartctl_device_power_on_seconds{instance=~"$instance"}', legendFormat: '{{ device }}' }], defaultUnit: Unit.SECONDS }),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
