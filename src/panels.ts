@@ -2,6 +2,8 @@ import {
   AxisColorMode,
   AxisPlacement,
   BarGaugeDisplayMode,
+  BarGaugeNamePlacement,
+  BarGaugeSizing,
   BarGaugeValueMode,
   BigValueColorMode,
   BigValueGraphMode,
@@ -45,6 +47,7 @@ type RecursivePartial<T> = {
 
 export type Target = {
   expr: string
+  // interval?: string
   legendFormat?: string
   refId?: string
   type?: 'range' | 'instant' | 'both'
@@ -81,6 +84,8 @@ function fromTargets(targets: Target[], datasource: DataSourceRef): (PrometheusD
       datasource,
       editorMode: QueryEditorMode.Code,
       expr: target.expr,
+      // //@ts-ignore
+      // interval: target.interval,
       legendFormat: target.legendFormat,
       range: target.type === 'range' || target.type === 'both',
       instant: target.type === 'instant' || target.type === 'both',
@@ -105,6 +110,8 @@ export type CommonPanelOpts = {
 
   width?: number
   height?: number
+  maxDataPoints?: number
+  interval?: string
 }
 
 export type TimeSeriesPanelOpts = CommonPanelOpts & {
@@ -120,6 +127,8 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
     type: 'timeseries',
     title: opts.title,
     description: opts.description,
+    interval: opts.interval,
+    maxDataPoints: opts.maxDataPoints,
     gridPos: { x: 0, y: 0, w: opts.width ?? 0, h: opts.height ?? 0 },
     targets: fromTargets(opts.targets, opts.datasource),
     fieldConfig: {
@@ -214,6 +223,8 @@ export function NewStatPanel(opts: StatPanelOpts): Panel {
     type: 'stat',
     title: opts.title,
     description: opts.description,
+    interval: opts.interval,
+    maxDataPoints: opts.maxDataPoints,
     gridPos: { x: 0, y: 0, w: opts.width ?? 0, h: opts.height ?? 0 },
     targets: fromTargets(opts.targets, opts.datasource),
     fieldConfig: {
@@ -235,6 +246,8 @@ export function NewStatPanel(opts: StatPanelOpts): Panel {
       colorMode: BigValueColorMode.Background,
       graphMode: BigValueGraphMode.Area,
       justifyMode: BigValueJustifyMode.Auto,
+      showPercentChange: false,
+      wideLayout: true,
       text: {},
     } satisfies SingleStatPanelOptions,
     transformations: opts.transformations ?? [],
@@ -254,6 +267,8 @@ export function NewBarGaugePanel(opts: BarGaugePanelOpts): Panel {
     type: 'bargauge',
     title: opts.title,
     description: opts.description,
+    interval: opts.interval,
+    maxDataPoints: opts.maxDataPoints,
     gridPos: { x: 0, y: 0, w: opts.width ?? 0, h: opts.height ?? 0 },
     targets: fromTargets(opts.targets, opts.datasource),
     fieldConfig: {
@@ -274,8 +289,11 @@ export function NewBarGaugePanel(opts: BarGaugePanelOpts): Panel {
       displayMode: BarGaugeDisplayMode.Basic,
       valueMode: BarGaugeValueMode.Color,
       showUnfilled: true,
+      namePlacement: BarGaugeNamePlacement.Left,
+      sizing: BarGaugeSizing.Manual,
       minVizWidth: 0,
       minVizHeight: 15,
+      maxVizHeight: 300,
       text: {},
       ...opts.options,
     } satisfies BarGaugePanelOptions,
@@ -296,6 +314,8 @@ export function NewTablePanel(opts: TablePanelOpts): Panel {
     type: 'table',
     title: opts.title,
     description: opts.description,
+    interval: opts.interval,
+    maxDataPoints: opts.maxDataPoints,
     gridPos: { x: 0, y: 0, w: opts.width ?? 0, h: opts.height ?? 0 },
     targets: fromTargets(opts.targets, opts.datasource),
     fieldConfig: {
@@ -329,6 +349,8 @@ export function NewPieChartPanel(opts: PieChartPanelOpts): Panel {
     type: 'piechart',
     title: opts.title,
     description: opts.description,
+    interval: opts.interval,
+    maxDataPoints: opts.maxDataPoints,
     gridPos: { x: 0, y: 0, w: opts.width ?? 0, h: opts.height ?? 0 },
     targets: fromTargets(opts.targets, opts.datasource),
     fieldConfig: {

@@ -1,5 +1,5 @@
 // https://github.com/grafana/grafana/tree/main/packages/grafana-schema
-import { Dashboard, DataSourceRef, Panel, RowPanel, VariableHide, VariableModel, VariableRefresh, defaultVariableModel } from '@grafana/schema'
+import { Dashboard, DataSourceRef, Panel, RowPanel, VariableModel, VariableRefresh, defaultVariableModel } from '@grafana/schema'
 import * as fs from 'fs/promises'
 export { NewGoRuntimeMetrics } from './go-runtime'
 export { NewBarGaugePanel, NewPieChartPanel, NewStatPanel, NewTablePanel, NewTimeSeriesPanel } from './panels'
@@ -63,9 +63,8 @@ export function NewPanelGroup(opts: { title: string; collapsed?: boolean }, pane
 export function NewPrometheusDatasource(opts: DataSourceVariableOpts): VariableModel {
   return {
     ...defaultVariableModel,
-    id: undefined,
     datasource: null,
-    hide: VariableHide.dontHide,
+    hide: 0,
     type: 'datasource',
     label: opts.label,
     name: opts.name,
@@ -86,9 +85,8 @@ export type VariableOpts = {
 export function NewQueryVariable(opts: VariableOpts): VariableModel {
   return {
     ...defaultVariableModel,
-    id: undefined,
     datasource: opts.datasource,
-    hide: VariableHide.dontHide,
+    hide: 0,
     type: 'query',
     label: opts.label,
     name: opts.name,
@@ -179,7 +177,7 @@ export function autoLayout(panelRows: PanelRowAndGroups): Array<Panel | RowPanel
 }
 
 export async function writeDashboardAndPostToGrafana(opts: { grafanaURL?: string; grafanaUsername?: string; grafanaPassword?: string; dashboard: Dashboard; filename: string }) {
-  const { grafanaURL, dashboard } = opts
+  const { grafanaURL = process.env.GRAFANA_URL, dashboard } = opts
   await fs.writeFile(opts.filename, JSON.stringify(dashboard, null, 2))
   if (grafanaURL) {
     dashboard['uid'] = `${dashboard['uid']}-debug`

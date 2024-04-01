@@ -145,7 +145,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_smartctl_exit_status{instance=~\"$instance\"})",
+          "expr": "max(smartctl_device_smartctl_exit_status{instance=~\"$instance\"})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -684,6 +684,14 @@
           "instant": true,
           "format": "table",
           "refId": "BLKSIZEPHY"
+        },
+        {
+          "editorMode": "code",
+          "expr": "label_keep(smartctl_device_error_log_count{instance=~\"$instance\"}, \"device\")",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "ERRLOGCNT"
         }
       ],
       "transformations": [
@@ -722,7 +730,8 @@
               "Value #CAPBYTES": "Capacity Bytes",
               "Value #CAPBLOCKS": "Capacity Blocks",
               "Value #BLKSIZELOG": "Block size (logical)",
-              "Value #BLKSIZEPHY": "Block size (physical)"
+              "Value #BLKSIZEPHY": "Block size (physical)",
+              "Value #ERRLOGCNT": "Error log count"
             }
           }
         }

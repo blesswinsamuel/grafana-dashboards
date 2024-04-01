@@ -2,6 +2,9 @@ import { Dashboard, DashboardCursorSync, DataSourceRef, ThresholdsConfig, Thresh
 import * as path from 'path'
 import { NewGoRuntimeMetrics, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, tableExcludeByName, tableIndexByName, writeDashboardAndPostToGrafana } from '../src/grafana-helpers'
 
+// https://github.com/matusnovak/prometheus-smartctl
+// https://grafana.com/grafana/dashboards/10664-smart-disk-data/
+
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
 }
@@ -19,7 +22,7 @@ const panels: PanelRowAndGroups = [
     NewPanelRow({ datasource, height: 3 }, [
       NewStatPanel({ title: 'Devices count', targets: [{ expr: 'smartctl_devices{instance=~"$instance"}' }], defaultUnit: Unit.SHORT }),
       NewStatPanel({ title: 'Missing devices', targets: [{ expr: 'smartctl_devices{instance=~"$instance"} - sum(smartctl_device{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
-      NewStatPanel({ title: 'Exit status', targets: [{ expr: 'sum(smartctl_device_smartctl_exit_status{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
+      NewStatPanel({ title: 'Exit status', targets: [{ expr: 'max(smartctl_device_smartctl_exit_status{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
       NewStatPanel({ title: 'Error log entries', targets: [{ expr: 'sum(smartctl_device_num_err_log_entries{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
       NewStatPanel({ title: 'Media errors', targets: [{ expr: 'sum(smartctl_device_media_errors{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
       NewStatPanel({ title: 'SMART error log count', targets: [{ expr: 'sum(smartctl_device_error_log_count{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
@@ -69,6 +72,7 @@ const panels: PanelRowAndGroups = [
           { refId: 'CAPBLOCKS', expr: 'label_keep(smartctl_device_capacity_blocks{instance=~"$instance"}, "device")', format: 'table', type: 'instant' },
           { refId: 'BLKSIZELOG', expr: 'label_keep(smartctl_device_block_size{blocks_type="logical", instance=~"$instance"}, "device")', format: 'table', type: 'instant' },
           { refId: 'BLKSIZEPHY', expr: 'label_keep(smartctl_device_block_size{blocks_type="physical", instance=~"$instance"}, "device")', format: 'table', type: 'instant' },
+          { refId: 'ERRLOGCNT', expr: 'label_keep(smartctl_device_error_log_count{instance=~"$instance"}, "device")', format: 'table', type: 'instant' },
         ],
         overrides: [
           {
@@ -121,6 +125,7 @@ const panels: PanelRowAndGroups = [
                 'Value #CAPBLOCKS': 'Capacity Blocks',
                 'Value #BLKSIZELOG': 'Block size (logical)',
                 'Value #BLKSIZEPHY': 'Block size (physical)',
+                'Value #ERRLOGCNT': 'Error log count',
               },
             },
           },
@@ -199,7 +204,6 @@ const dashboard: Dashboard = {
   ...defaultDashboard,
   description: 'Dashboard for smartctl',
   graphTooltip: DashboardCursorSync.Crosshair,
-  style: 'dark',
   tags: ['smartctl'],
   time: {
     from: 'now-6h',

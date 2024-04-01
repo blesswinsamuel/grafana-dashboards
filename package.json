@@ -5,7 +5,7 @@
     "src/**/*"
   ],
   "dependencies": {
-    "@grafana/schema": "^10.1.2"
+    "@grafana/schema": "^10.2.3"
   },
   "devDependencies": {
     "@types/node": "^20.6.3"
