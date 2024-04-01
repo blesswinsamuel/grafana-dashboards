@@ -72,6 +72,8 @@
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
+        "showPercentChange": false,
+        "wideLayout": true,
         "text": {}
       }
     },
@@ -135,6 +137,8 @@
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
+        "showPercentChange": false,
+        "wideLayout": true,
         "text": {}
       }
     },
@@ -198,6 +202,8 @@
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
+        "showPercentChange": false,
+        "wideLayout": true,
         "text": {}
       }
     },
@@ -261,6 +267,8 @@
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
+        "showPercentChange": false,
+        "wideLayout": true,
         "text": {}
       }
     },
@@ -324,6 +332,8 @@
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
+        "showPercentChange": false,
+        "wideLayout": true,
         "text": {}
       }
     },
@@ -387,6 +397,8 @@
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
+        "showPercentChange": false,
+        "wideLayout": true,
         "text": {}
       }
     },
@@ -450,6 +462,8 @@
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
+        "showPercentChange": false,
+        "wideLayout": true,
         "text": {}
       }
     },
@@ -513,6 +527,8 @@
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
+        "showPercentChange": false,
+        "wideLayout": true,
         "text": {}
       }
     },
@@ -599,7 +615,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "label_keep(smartctl_device{instance=~\"$instance\"}, \"device\", \"model_name\")",
+          "expr": "sum(smartctl_device{instance=~\"$instance\"}) by (device, model_name)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -607,7 +623,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "label_keep(smartctl_device_temperature{instance=~\"$instance\", temperature_type=\"current\"}, \"device\")",
+          "expr": "sum(smartctl_device_temperature{instance=~\"$instance\", temperature_type=\"current\"}) by (device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -615,7 +631,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "label_keep(smartctl_device_smartctl_exit_status{instance=~\"$instance\"}, \"device\")",
+          "expr": "sum(smartctl_device_smartctl_exit_status{instance=~\"$instance\"}) by (device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -623,7 +639,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "label_keep(smartctl_device_smart_status{instance=~\"$instance\"}, \"device\")",
+          "expr": "sum(smartctl_device_smart_status{instance=~\"$instance\"}) by (device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -631,7 +647,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "label_keep(smartctl_device_power_on_seconds{instance=~\"$instance\"}, \"device\")",
+          "expr": "sum(smartctl_device_power_on_seconds{instance=~\"$instance\"}) by (device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -639,7 +655,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "label_keep(smartctl_device_power_cycle_count{instance=~\"$instance\"}, \"device\")",
+          "expr": "sum(smartctl_device_power_cycle_count{instance=~\"$instance\"}) by (device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -647,7 +663,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "label_keep(smartctl_device_interface_speed{instance=~\"$instance\", speed_type=\"current\"}, \"device\")",
+          "expr": "sum(smartctl_device_interface_speed{instance=~\"$instance\", speed_type=\"current\"}) by (device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -655,7 +671,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "label_keep(smartctl_device_capacity_bytes{instance=~\"$instance\"}, \"device\")",
+          "expr": "sum(smartctl_device_capacity_bytes{instance=~\"$instance\"}) by (device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -663,7 +679,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "label_keep(smartctl_device_capacity_blocks{instance=~\"$instance\"}, \"device\")",
+          "expr": "sum(smartctl_device_capacity_blocks{instance=~\"$instance\"}) by (device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -671,7 +687,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "label_keep(smartctl_device_block_size{blocks_type=\"logical\", instance=~\"$instance\"}, \"device\")",
+          "expr": "sum(smartctl_device_block_size{blocks_type=\"logical\", instance=~\"$instance\"}) by (device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -679,7 +695,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "label_keep(smartctl_device_block_size{blocks_type=\"physical\", instance=~\"$instance\"}, \"device\")",
+          "expr": "sum(smartctl_device_block_size{blocks_type=\"physical\", instance=~\"$instance\"}) by (device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -687,7 +703,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "label_keep(smartctl_device_error_log_count{instance=~\"$instance\"}, \"device\")",
+          "expr": "sum(smartctl_device_error_log_count{instance=~\"$instance\"}) by (device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -943,6 +959,7 @@
       },
       "type": "timeseries",
       "title": "Temperature",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 29,
@@ -1003,8 +1020,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -1028,6 +1044,7 @@
       },
       "type": "timeseries",
       "title": "Smartctl exit status",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 6,
         "y": 29,
@@ -1088,8 +1105,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -1113,6 +1129,7 @@
       },
       "type": "timeseries",
       "title": "SMART passed",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 29,
@@ -1173,8 +1190,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -1198,6 +1214,7 @@
       },
       "type": "timeseries",
       "title": "Power on seconds",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 18,
         "y": 29,
@@ -1258,8 +1275,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -1283,6 +1299,7 @@
       },
       "type": "timeseries",
       "title": "Power cycle count",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 37,
@@ -1343,8 +1360,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -1368,6 +1384,7 @@
       },
       "type": "timeseries",
       "title": "Write percentage used",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 6,
         "y": 37,
@@ -1428,8 +1445,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -1453,6 +1469,7 @@
       },
       "type": "timeseries",
       "title": "NVMe capacity bytes",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 37,
@@ -1513,8 +1530,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -1539,6 +1555,7 @@
       "type": "timeseries",
       "title": "Number of error log entries",
       "description": "Contains the number of Error Information log entries over the life of the controller",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 18,
         "y": 37,
@@ -1599,8 +1616,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -1625,6 +1641,7 @@
       "type": "timeseries",
       "title": "Number of media errors",
       "description": "Contains the number of occurrences where the controller detected an unrecovered data integrity error. Errors such as uncorrectable ECC, CRC checksum failure, or LBA tag mismatch are included in this field",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 45,
@@ -1685,8 +1702,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -1710,6 +1726,7 @@
       },
       "type": "timeseries",
       "title": "SMART error log count",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 8,
         "y": 45,
@@ -1770,8 +1787,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -1795,6 +1811,7 @@
       },
       "type": "timeseries",
       "title": "Critical warnings for state of controller",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 16,
         "y": 45,
@@ -1855,8 +1872,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -1880,6 +1896,7 @@
       },
       "type": "timeseries",
       "title": "Interface speed (current)",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 53,
@@ -1940,8 +1957,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -1965,6 +1981,7 @@
       },
       "type": "timeseries",
       "title": "Interface speed (max)",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 53,
@@ -2025,8 +2042,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -2050,6 +2066,7 @@
       },
       "type": "timeseries",
       "title": "Capacity Bytes",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 61,
@@ -2110,8 +2127,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -2135,6 +2151,7 @@
       },
       "type": "timeseries",
       "title": "Capacity Blocks",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 6,
         "y": 61,
@@ -2195,8 +2212,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -2220,6 +2236,7 @@
       },
       "type": "timeseries",
       "title": "Bytes written",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 61,
@@ -2280,8 +2297,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -2305,6 +2321,7 @@
       },
       "type": "timeseries",
       "title": "Bytes read",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 18,
         "y": 61,
@@ -2365,8 +2382,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -2390,6 +2406,7 @@
       },
       "type": "timeseries",
       "title": "Block size (logical)",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 69,
@@ -2450,8 +2467,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -2475,6 +2491,7 @@
       },
       "type": "timeseries",
       "title": "Block size (physical)",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 6,
         "y": 69,
@@ -2535,8 +2552,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -2561,6 +2577,7 @@
       "type": "timeseries",
       "title": "Available spare threshold",
       "description": "When the Available Spare falls below the threshold indicated in this field, an asynchronous event completion may occur. The value is indicated as a normalized percentage (0 to 100%)",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 69,
@@ -2621,8 +2638,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -2647,6 +2663,7 @@
       "type": "timeseries",
       "title": "Available spare",
       "description": "Normalized percentage (0 to 100%) of the remaining spare capacity available",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 18,
         "y": 69,
@@ -2707,8 +2724,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "type": "row",
@@ -2744,6 +2760,7 @@
       },
       "type": "timeseries",
       "title": "File Descriptors",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 78,
@@ -2804,8 +2821,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -2829,6 +2845,7 @@
       },
       "type": "timeseries",
       "title": "CPU Usage",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 4,
         "y": 78,
@@ -2889,8 +2906,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -2914,6 +2930,7 @@
       },
       "type": "timeseries",
       "title": "Memory Usage",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 8,
         "y": 78,
@@ -2974,8 +2991,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -3008,6 +3024,7 @@
       },
       "type": "timeseries",
       "title": "Stack Memory Usage",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 78,
@@ -3068,8 +3085,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -3138,6 +3154,7 @@
       },
       "type": "timeseries",
       "title": "Heap Memory Usage",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 16,
         "y": 78,
@@ -3198,8 +3215,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -3223,6 +3239,7 @@
       },
       "type": "timeseries",
       "title": "Heap Objects",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 20,
         "y": 78,
@@ -3283,8 +3300,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -3308,6 +3324,7 @@
       },
       "type": "timeseries",
       "title": "Threads",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 86,
@@ -3368,8 +3385,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -3393,6 +3409,7 @@
       },
       "type": "timeseries",
       "title": "Goroutines",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 4,
         "y": 86,
@@ -3453,8 +3470,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -3478,6 +3494,7 @@
       },
       "type": "timeseries",
       "title": "Go Alloc Rate",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 8,
         "y": 86,
@@ -3538,8 +3555,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -3563,6 +3579,7 @@
       },
       "type": "timeseries",
       "title": "Go Alloc Bytes",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 86,
@@ -3623,8 +3640,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -3648,6 +3664,7 @@
       },
       "type": "timeseries",
       "title": "Go GC Per Second",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 16,
         "y": 86,
@@ -3708,8 +3725,7 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
@@ -3733,6 +3749,7 @@
       },
       "type": "timeseries",
       "title": "Go GC Duration Seconds",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 20,
         "y": 86,
@@ -3793,12 +3810,10 @@
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     }
   ],
   "schemaVersion": 36,
-  "style": "dark",
   "tags": [
     "smartctl"
   ],
@@ -3817,9 +3832,8 @@
         "multi": false,
         "options": [],
         "skipUrlSync": false,
-        "description": null,
-        "hide": 0,
         "datasource": null,
+        "hide": 0,
         "type": "datasource",
         "label": "Prometheus",
         "name": "DS_PROMETHEUS",
@@ -3829,11 +3843,10 @@
         "multi": true,
         "options": [],
         "skipUrlSync": false,
-        "description": null,
-        "hide": 0,
         "datasource": {
           "uid": "${DS_PROMETHEUS}"
         },
+        "hide": 0,
         "type": "query",
         "label": "Instance",
         "name": "instance",
