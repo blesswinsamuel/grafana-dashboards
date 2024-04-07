@@ -866,7 +866,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_attribute{instance=~\"$instance\"}",
+          "expr": "smartctl_device_attribute{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -885,12 +885,13 @@
             },
             "indexByName": {
               "device": 0,
-              "attribute_id": 1,
-              "attribute_name": 2,
-              "attribute_value_type": 3,
-              "attribute_flags_long": 4,
-              "attribute_flags_short": 5,
-              "Value": 6
+              "model_name": 1,
+              "attribute_id": 2,
+              "attribute_name": 3,
+              "attribute_value_type": 4,
+              "attribute_flags_long": 5,
+              "attribute_flags_short": 6,
+              "Value": 7
             },
             "renameByName": {
               "device": "Device",
@@ -898,7 +899,51 @@
               "attribute_flags_short": "Attribute flags (short)",
               "attribute_id": "Attribute ID",
               "attribute_name": "Attribute name",
-              "attribute_value_type": "Attribute value type"
+              "attribute_value_type": "Attribute value type",
+              "model_name": "Model Name"
+            }
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Device": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Model Name": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Attribute ID": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Attribute name": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Attribute flags (long)": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Attribute flags (short)": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Attribute value type": {
+                "aggregations": [
+                  "allValues"
+                ],
+                "operation": "aggregate"
+              },
+              "Value": {
+                "aggregations": [
+                  "allValues"
+                ],
+                "operation": "aggregate"
+              }
             }
           }
         }
@@ -944,8 +989,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_temperature{instance=~\"$instance\", temperature_type=\"current\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_temperature{instance=~\"$instance\",temperature_type=\"current\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1029,8 +1074,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_smartctl_exit_status{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_smartctl_exit_status{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1114,8 +1159,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_smart_status{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_smart_status{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1199,8 +1244,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_power_on_seconds{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (increase(smartctl_device_power_on_seconds{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"}))",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1213,7 +1258,8 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "Power on seconds",
+      "title": "Power on duration",
+      "interval": "1h",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 18,
@@ -1233,25 +1279,25 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -1264,8 +1310,7 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "sum"
           ],
           "displayMode": "table",
           "placement": "bottom",
@@ -1284,8 +1329,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_power_cycle_count{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_power_cycle_count{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1369,8 +1414,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_percentage_used{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_percentage_used{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1454,8 +1499,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_nvme_capacity_bytes{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_nvme_capacity_bytes{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1539,8 +1584,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_num_err_log_entries{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_num_err_log_entries{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1625,8 +1670,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_media_errors{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_media_errors{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1711,8 +1756,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_error_log_count{instance=~\"$instance\", error_log_type=\"summary\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_error_log_count{instance=~\"$instance\",error_log_type=\"summary\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1796,8 +1841,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_critical_warning{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_critical_warning{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1881,8 +1926,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_interface_speed{instance=~\"$instance\", speed_type=\"current\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_interface_speed{instance=~\"$instance\",speed_type=\"current\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1966,8 +2011,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_interface_speed{instance=~\"$instance\", speed_type=\"max\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_interface_speed{instance=~\"$instance\",speed_type=\"max\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2051,8 +2096,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_capacity_bytes{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_capacity_bytes{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2136,8 +2181,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_capacity_blocks{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_capacity_blocks{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2221,8 +2266,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_bytes_written{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_bytes_written{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2306,8 +2351,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_bytes_read{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_bytes_read{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2391,8 +2436,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_block_size{blocks_type=\"logical\", instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_block_size{instance=~\"$instance\",blocks_type=\"logical\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2476,8 +2521,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_block_size{blocks_type=\"physical\", instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_block_size{instance=~\"$instance\",blocks_type=\"physical\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2561,8 +2606,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_available_spare_threshold{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_available_spare_threshold{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2647,8 +2692,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_available_spare{instance=~\"$instance\"}",
-          "legendFormat": "{{ device }}",
+          "expr": "sum by (model_name) (smartctl_device_available_spare{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
           "format": "time_series",
