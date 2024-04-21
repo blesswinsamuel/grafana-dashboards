@@ -18,7 +18,7 @@ const errorThresholds: ThresholdsConfig = {
 }
 
 function queryWithModelName(query: string, extraSelectors: string = '', func: string = ''): string {
-  let r = `${query}{instance=~"$instance"${extraSelectors ? ',' + extraSelectors : ''}} * on(device) group_left(model_name) smartctl_device{instance=~"$instance"}`
+  let r = `${query}{instance=~"$instance", job="$job"${extraSelectors ? ',' + extraSelectors : ''}} * on(device, instance) group_left(model_name) smartctl_device{instance=~"$instance"}`
   if (func) {
     r = `${func}(${r})`
   }
@@ -28,19 +28,19 @@ function queryWithModelName(query: string, extraSelectors: string = '', func: st
 const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Overview' }, [
     NewPanelRow({ datasource, height: 3 }, [
-      NewStatPanel({ title: 'Devices count', targets: [{ expr: 'smartctl_devices{instance=~"$instance"}' }], defaultUnit: Unit.SHORT }),
-      NewStatPanel({ title: 'Missing devices', targets: [{ expr: 'smartctl_devices{instance=~"$instance"} - sum(smartctl_device{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
-      NewStatPanel({ title: 'Exit status', targets: [{ expr: 'max(smartctl_device_smartctl_exit_status{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
-      NewStatPanel({ title: 'Error log entries', targets: [{ expr: 'sum(smartctl_device_num_err_log_entries{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
-      NewStatPanel({ title: 'Media errors', targets: [{ expr: 'sum(smartctl_device_media_errors{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
-      NewStatPanel({ title: 'SMART error log count', targets: [{ expr: 'sum(smartctl_device_error_log_count{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
-      NewStatPanel({ title: 'Critical warnings', targets: [{ expr: 'sum(smartctl_device_critical_warning{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
-      NewStatPanel({ title: 'SMART failed', targets: [{ expr: 'sum(1 - smartctl_device_smart_status{instance=~"$instance"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
+      NewStatPanel({ title: 'Devices count', targets: [{ expr: 'sum(smartctl_devices{instance=~"$instance", job="$job"})' }], defaultUnit: Unit.SHORT }),
+      NewStatPanel({ title: 'Missing devices', targets: [{ expr: 'sum(smartctl_devices{instance=~"$instance", job="$job"}) - sum(smartctl_device{instance=~"$instance", job="$job"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
+      NewStatPanel({ title: 'Exit status', targets: [{ expr: 'max(smartctl_device_smartctl_exit_status{instance=~"$instance", job="$job"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
+      NewStatPanel({ title: 'Error log entries', targets: [{ expr: 'sum(smartctl_device_num_err_log_entries{instance=~"$instance", job="$job"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
+      NewStatPanel({ title: 'Media errors', targets: [{ expr: 'sum(smartctl_device_media_errors{instance=~"$instance", job="$job"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
+      NewStatPanel({ title: 'SMART error log count', targets: [{ expr: 'sum(smartctl_device_error_log_count{instance=~"$instance", job="$job"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
+      NewStatPanel({ title: 'Critical warnings', targets: [{ expr: 'sum(smartctl_device_critical_warning{instance=~"$instance", job="$job"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
+      NewStatPanel({ title: 'SMART failed', targets: [{ expr: 'sum(1 - smartctl_device_smart_status{instance=~"$instance", job="$job"})' }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       NewTablePanel({
         title: 'Device Info',
-        targets: [{ expr: 'smartctl_device{instance=~"$instance"}', format: 'table', type: 'instant' }],
+        targets: [{ expr: 'smartctl_device{instance=~"$instance", job="$job"}', format: 'table', type: 'instant' }],
         transformations: [
           {
             id: 'organize',
@@ -69,58 +69,41 @@ const panels: PanelRowAndGroups = [
       NewTablePanel({
         title: 'SMART overview',
         targets: [
-          { refId: 'DEVICE', expr: 'sum(smartctl_device{instance=~"$instance"}) by (device, model_name)', format: 'table', type: 'instant' },
-          { refId: 'TEMP', expr: 'sum(smartctl_device_temperature{instance=~"$instance", temperature_type="current"}) by (device)', format: 'table', type: 'instant' },
-          { refId: 'EXIT', expr: 'sum(smartctl_device_smartctl_exit_status{instance=~"$instance"}) by (device)', format: 'table', type: 'instant' },
-          { refId: 'PASSED', expr: 'sum(smartctl_device_smart_status{instance=~"$instance"}) by (device)', format: 'table', type: 'instant' },
-          { refId: 'POWON', expr: 'sum(smartctl_device_power_on_seconds{instance=~"$instance"}) by (device)', format: 'table', type: 'instant' },
-          { refId: 'PCC', expr: 'sum(smartctl_device_power_cycle_count{instance=~"$instance"}) by (device)', format: 'table', type: 'instant' },
-          { refId: 'INTSPEED', expr: 'sum(smartctl_device_interface_speed{instance=~"$instance", speed_type="current"}) by (device)', format: 'table', type: 'instant' },
-          { refId: 'CAPBYTES', expr: 'sum(smartctl_device_capacity_bytes{instance=~"$instance"}) by (device)', format: 'table', type: 'instant' },
-          { refId: 'CAPBLOCKS', expr: 'sum(smartctl_device_capacity_blocks{instance=~"$instance"}) by (device)', format: 'table', type: 'instant' },
-          { refId: 'BLKSIZELOG', expr: 'sum(smartctl_device_block_size{blocks_type="logical", instance=~"$instance"}) by (device)', format: 'table', type: 'instant' },
-          { refId: 'BLKSIZEPHY', expr: 'sum(smartctl_device_block_size{blocks_type="physical", instance=~"$instance"}) by (device)', format: 'table', type: 'instant' },
-          { refId: 'ERRLOGCNT', expr: 'sum(smartctl_device_error_log_count{instance=~"$instance"}) by (device)', format: 'table', type: 'instant' },
+          { refId: 'DEVICE', expr: 'sum(smartctl_device{instance=~"$instance", job="$job"}) by (instance, device, model_name)', format: 'table', type: 'instant' },
+          { refId: 'TEMP', expr: 'sum(smartctl_device_temperature{instance=~"$instance", job="$job", temperature_type="current"}) by (instance, device)', format: 'table', type: 'instant' },
+          { refId: 'EXIT', expr: 'sum(smartctl_device_smartctl_exit_status{instance=~"$instance", job="$job"}) by (instance, device)', format: 'table', type: 'instant' },
+          { refId: 'PASSED', expr: 'sum(smartctl_device_smart_status{instance=~"$instance", job="$job"}) by (instance, device)', format: 'table', type: 'instant' },
+          { refId: 'POWON', expr: 'sum(smartctl_device_power_on_seconds{instance=~"$instance", job="$job"}) by (instance, device)', format: 'table', type: 'instant' },
+          { refId: 'PCC', expr: 'sum(smartctl_device_power_cycle_count{instance=~"$instance", job="$job"}) by (instance, device)', format: 'table', type: 'instant' },
+          { refId: 'INTSPEED', expr: 'sum(smartctl_device_interface_speed{instance=~"$instance", job="$job", speed_type="current"}) by (instance, device)', format: 'table', type: 'instant' },
+          { refId: 'CAPBYTES', expr: 'sum(smartctl_device_capacity_bytes{instance=~"$instance", job="$job"}) by (instance, device)', format: 'table', type: 'instant' },
+          { refId: 'CAPBLOCKS', expr: 'sum(smartctl_device_capacity_blocks{instance=~"$instance", job="$job"}) by (instance, device)', format: 'table', type: 'instant' },
+          { refId: 'BLKSIZELOG', expr: 'sum(smartctl_device_block_size{blocks_type="logical", instance=~"$instance", job="$job"}) by (instance, device)', format: 'table', type: 'instant' },
+          { refId: 'BLKSIZEPHY', expr: 'sum(smartctl_device_block_size{blocks_type="physical", instance=~"$instance", job="$job"}) by (instance, device)', format: 'table', type: 'instant' },
+          { refId: 'ERRLOGCNT', expr: 'sum(smartctl_device_error_log_count{instance=~"$instance", job="$job"}) by (instance, device)', format: 'table', type: 'instant' },
         ],
         overrides: [
-          {
-            matcher: { id: 'byName', options: 'Temperature' },
-            properties: [{ id: 'unit', value: Unit.CELSIUS }],
-          },
-          {
-            matcher: { id: 'byName', options: 'Power on seconds' },
-            properties: [{ id: 'unit', value: Unit.SECONDS }],
-          },
-          {
-            matcher: { id: 'byName', options: 'Device interface speed' },
-            properties: [{ id: 'unit', value: Unit.BITS_PER_SEC_SI }],
-          },
-          {
-            matcher: { id: 'byName', options: 'Capacity Bytes' },
-            properties: [{ id: 'unit', value: Unit.BYTES_IEC }],
-          },
-          {
-            matcher: { id: 'byName', options: 'Capacity Blocks' },
-            properties: [{ id: 'unit', value: Unit.SHORT }],
-          },
-          {
-            matcher: { id: 'byName', options: 'Block size (logical)' },
-            properties: [{ id: 'unit', value: Unit.BYTES_IEC }],
-          },
-          {
-            matcher: { id: 'byName', options: 'Block size (physical)' },
-            properties: [{ id: 'unit', value: Unit.BYTES_IEC }],
-          },
+          { matcher: { id: 'byName', options: 'Device' }, properties: [{ id: 'custom.width', value: 70 }] },
+          { matcher: { id: 'byName', options: 'Instance' }, properties: [{ id: 'custom.width', value: 320 }] },
+          { matcher: { id: 'byName', options: 'Model name' }, properties: [{ id: 'custom.width', value: 220 }] },
+          { matcher: { id: 'byName', options: 'Temperature' }, properties: [{ id: 'unit', value: Unit.CELSIUS }] },
+          { matcher: { id: 'byName', options: 'Power on seconds' }, properties: [{ id: 'unit', value: Unit.SECONDS }] },
+          { matcher: { id: 'byName', options: 'Device interface speed' }, properties: [{ id: 'unit', value: Unit.BITS_PER_SEC_SI }] },
+          { matcher: { id: 'byName', options: 'Capacity Bytes' }, properties: [{ id: 'unit', value: Unit.BYTES_IEC }] },
+          { matcher: { id: 'byName', options: 'Capacity Blocks' }, properties: [{ id: 'unit', value: Unit.SHORT }] },
+          { matcher: { id: 'byName', options: 'Block size (logical)' }, properties: [{ id: 'unit', value: Unit.BYTES_IEC }] },
+          { matcher: { id: 'byName', options: 'Block size (physical)' }, properties: [{ id: 'unit', value: Unit.BYTES_IEC }] },
         ],
         transformations: [
-          { id: 'joinByField', options: { byField: 'device', mode: 'outer' } },
-          { id: 'filterFieldsByName', options: { include: { pattern: '(device|model_name|Value\\s.*)' } } },
+          { id: 'merge', options: {} },
+          { id: 'filterFieldsByName', options: { include: { pattern: '(device|model_name|instance|Value\\s.*)' } } },
           {
             id: 'organize',
             options: {
               excludeByName: tableExcludeByName(['Time', 'Value #DEVICE']),
               indexByName: {},
               renameByName: {
+                instance: 'Instance',
                 device: 'Device',
                 model_name: 'Model name',
                 'Value #TEMP': 'Temperature',
@@ -143,12 +126,12 @@ const panels: PanelRowAndGroups = [
     NewPanelRow({ datasource, height: 8 }, [
       NewTablePanel({
         title: 'SMART attributes',
-        targets: [{ expr: 'smartctl_device_attribute{instance=~"$instance"} * on(device) group_left(model_name) smartctl_device{instance=~"$instance"}', format: 'table', type: 'instant' }],
+        targets: [{ expr: 'smartctl_device_attribute{instance=~"$instance", job="$job"} * on(device, instance) group_left(model_name) smartctl_device{instance=~"$instance", job="$job"}', format: 'table', type: 'instant' }],
         transformations: [
           {
             id: 'organize',
             options: {
-              excludeByName: { __name__: true, Time: true, instance: true, job: true },
+              excludeByName: { __name__: true, Time: true, job: true },
               indexByName: tableIndexByName(['device', 'model_name', 'attribute_id', 'attribute_name', 'attribute_value_type', 'attribute_flags_long', 'attribute_flags_short', 'Value']),
               renameByName: {
                 device: 'Device',
@@ -165,6 +148,7 @@ const panels: PanelRowAndGroups = [
             id: 'groupBy',
             options: {
               fields: {
+                Instance: { aggregations: [], operation: 'groupby' },
                 Device: { aggregations: [], operation: 'groupby' },
                 'Model Name': { aggregations: [], operation: 'groupby' },
                 'Attribute ID': { aggregations: [], operation: 'groupby' },
@@ -217,12 +201,8 @@ const panels: PanelRowAndGroups = [
       NewTimeSeriesPanel({ title: 'Available spare', description: 'Normalized percentage (0 to 100%) of the remaining spare capacity available', targets: [{ expr: queryWithModelName('smartctl_device_available_spare'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.PERCENT }),
     ]),
   ]),
-  NewGoRuntimeMetrics({ datasource, selector: '{instance=~"$instance"}' }),
+  NewGoRuntimeMetrics({ datasource, selector: '{instance=~"$instance", job="$job"}' }),
 ]
-
-function cleanupServiceLabel(query: string): string {
-  return `label_replace(${query}, "service", "$1", "service", "([^-]+-[^@]+)@.*")`
-}
 
 const dashboard: Dashboard = {
   ...defaultDashboard,
@@ -238,7 +218,12 @@ const dashboard: Dashboard = {
   version: 1,
   panels: autoLayout(panels),
   templating: {
-    list: [NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }), NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(smartctl_version, instance)', includeAll: true, multi: true })],
+    list: [
+      //
+      NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }),
+      NewQueryVariable({ datasource, name: 'job', label: 'Job', query: 'label_values(smartctl_version, job)' }),
+      NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(smartctl_version{job="$job"}, instance)', includeAll: true, multi: true }),
+    ],
   },
 }
 

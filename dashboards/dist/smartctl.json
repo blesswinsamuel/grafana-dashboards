@@ -23,7 +23,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_devices{instance=~\"$instance\"}",
+          "expr": "sum(smartctl_devices{instance=~\"$instance\", job=\"$job\"})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -84,7 +84,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_devices{instance=~\"$instance\"} - sum(smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum(smartctl_devices{instance=~\"$instance\", job=\"$job\"}) - sum(smartctl_device{instance=~\"$instance\", job=\"$job\"})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -149,7 +149,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "max(smartctl_device_smartctl_exit_status{instance=~\"$instance\"})",
+          "expr": "max(smartctl_device_smartctl_exit_status{instance=~\"$instance\", job=\"$job\"})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -214,7 +214,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_num_err_log_entries{instance=~\"$instance\"})",
+          "expr": "sum(smartctl_device_num_err_log_entries{instance=~\"$instance\", job=\"$job\"})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -279,7 +279,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_media_errors{instance=~\"$instance\"})",
+          "expr": "sum(smartctl_device_media_errors{instance=~\"$instance\", job=\"$job\"})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -344,7 +344,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_error_log_count{instance=~\"$instance\"})",
+          "expr": "sum(smartctl_device_error_log_count{instance=~\"$instance\", job=\"$job\"})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -409,7 +409,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_critical_warning{instance=~\"$instance\"})",
+          "expr": "sum(smartctl_device_critical_warning{instance=~\"$instance\", job=\"$job\"})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -474,7 +474,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(1 - smartctl_device_smart_status{instance=~\"$instance\"})",
+          "expr": "sum(1 - smartctl_device_smart_status{instance=~\"$instance\", job=\"$job\"})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -539,7 +539,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device{instance=~\"$instance\"}",
+          "expr": "smartctl_device{instance=~\"$instance\", job=\"$job\"}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -615,7 +615,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device{instance=~\"$instance\"}) by (device, model_name)",
+          "expr": "sum(smartctl_device{instance=~\"$instance\", job=\"$job\"}) by (instance, device, model_name)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -623,7 +623,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_temperature{instance=~\"$instance\", temperature_type=\"current\"}) by (device)",
+          "expr": "sum(smartctl_device_temperature{instance=~\"$instance\", job=\"$job\", temperature_type=\"current\"}) by (instance, device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -631,7 +631,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_smartctl_exit_status{instance=~\"$instance\"}) by (device)",
+          "expr": "sum(smartctl_device_smartctl_exit_status{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -639,7 +639,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_smart_status{instance=~\"$instance\"}) by (device)",
+          "expr": "sum(smartctl_device_smart_status{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -647,7 +647,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_power_on_seconds{instance=~\"$instance\"}) by (device)",
+          "expr": "sum(smartctl_device_power_on_seconds{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -655,7 +655,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_power_cycle_count{instance=~\"$instance\"}) by (device)",
+          "expr": "sum(smartctl_device_power_cycle_count{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -663,7 +663,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_interface_speed{instance=~\"$instance\", speed_type=\"current\"}) by (device)",
+          "expr": "sum(smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\", speed_type=\"current\"}) by (instance, device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -671,7 +671,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_capacity_bytes{instance=~\"$instance\"}) by (device)",
+          "expr": "sum(smartctl_device_capacity_bytes{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -679,7 +679,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_capacity_blocks{instance=~\"$instance\"}) by (device)",
+          "expr": "sum(smartctl_device_capacity_blocks{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -687,7 +687,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_block_size{blocks_type=\"logical\", instance=~\"$instance\"}) by (device)",
+          "expr": "sum(smartctl_device_block_size{blocks_type=\"logical\", instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -695,7 +695,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_block_size{blocks_type=\"physical\", instance=~\"$instance\"}) by (device)",
+          "expr": "sum(smartctl_device_block_size{blocks_type=\"physical\", instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -703,7 +703,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_error_log_count{instance=~\"$instance\"}) by (device)",
+          "expr": "sum(smartctl_device_error_log_count{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
           "range": false,
           "instant": true,
           "format": "table",
@@ -712,17 +712,14 @@
       ],
       "transformations": [
         {
-          "id": "joinByField",
-          "options": {
-            "byField": "device",
-            "mode": "outer"
-          }
+          "id": "merge",
+          "options": {}
         },
         {
           "id": "filterFieldsByName",
           "options": {
             "include": {
-              "pattern": "(device|model_name|Value\\s.*)"
+              "pattern": "(device|model_name|instance|Value\\s.*)"
             }
           }
         },
@@ -735,6 +732,7 @@
             },
             "indexByName": {},
             "renameByName": {
+              "instance": "Instance",
               "device": "Device",
               "model_name": "Model name",
               "Value #TEMP": "Temperature",
@@ -767,6 +765,42 @@
       "fieldConfig": {
         "defaults": {},
         "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Device"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Instance"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 320
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Model name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 220
+              }
+            ]
+          },
           {
             "matcher": {
               "id": "byName",
@@ -866,7 +900,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "smartctl_device_attribute{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"}",
+          "expr": "smartctl_device_attribute{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\"}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -880,7 +914,6 @@
             "excludeByName": {
               "__name__": true,
               "Time": true,
-              "instance": true,
               "job": true
             },
             "indexByName": {
@@ -908,6 +941,10 @@
           "id": "groupBy",
           "options": {
             "fields": {
+              "Instance": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
               "Device": {
                 "aggregations": [],
                 "operation": "groupby"
@@ -989,7 +1026,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_temperature{instance=~\"$instance\",temperature_type=\"current\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_temperature{instance=~\"$instance\", job=\"$job\",temperature_type=\"current\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -1074,7 +1111,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_smartctl_exit_status{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_smartctl_exit_status{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -1159,7 +1196,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_smart_status{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_smart_status{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -1244,7 +1281,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (increase(smartctl_device_power_on_seconds{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"}))",
+          "expr": "sum by (model_name) (increase(smartctl_device_power_on_seconds{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"}))",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -1329,7 +1366,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_power_cycle_count{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_power_cycle_count{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -1414,7 +1451,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_percentage_used{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_percentage_used{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -1499,7 +1536,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_nvme_capacity_bytes{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_nvme_capacity_bytes{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -1584,7 +1621,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_num_err_log_entries{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_num_err_log_entries{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -1670,7 +1707,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_media_errors{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_media_errors{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -1756,7 +1793,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_error_log_count{instance=~\"$instance\",error_log_type=\"summary\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_error_log_count{instance=~\"$instance\", job=\"$job\",error_log_type=\"summary\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -1841,7 +1878,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_critical_warning{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_critical_warning{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -1926,7 +1963,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_interface_speed{instance=~\"$instance\",speed_type=\"current\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\",speed_type=\"current\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -2011,7 +2048,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_interface_speed{instance=~\"$instance\",speed_type=\"max\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\",speed_type=\"max\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -2096,7 +2133,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_capacity_bytes{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_capacity_bytes{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -2181,7 +2218,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_capacity_blocks{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_capacity_blocks{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -2266,7 +2303,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_bytes_written{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_bytes_written{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -2351,7 +2388,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_bytes_read{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_bytes_read{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -2436,7 +2473,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_block_size{instance=~\"$instance\",blocks_type=\"logical\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_block_size{instance=~\"$instance\", job=\"$job\",blocks_type=\"logical\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -2521,7 +2558,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_block_size{instance=~\"$instance\",blocks_type=\"physical\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_block_size{instance=~\"$instance\", job=\"$job\",blocks_type=\"physical\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -2606,7 +2643,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_available_spare_threshold{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_available_spare_threshold{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -2692,7 +2729,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_available_spare{instance=~\"$instance\"} * on(device) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "expr": "sum by (model_name) (smartctl_device_available_spare{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
           "legendFormat": "{{ model_name }}",
           "range": true,
           "instant": false,
@@ -2790,7 +2827,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (process_open_fds{instance=~\"$instance\"})",
+          "expr": "sum by (pod) (process_open_fds{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "{{ pod }}",
           "range": true,
           "instant": false,
@@ -2875,7 +2912,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (rate(process_cpu_seconds_total{instance=~\"$instance\"}[$__rate_interval]))",
+          "expr": "sum by (pod) (rate(process_cpu_seconds_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }}",
           "range": true,
           "instant": false,
@@ -2960,7 +2997,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (process_resident_memory_bytes{instance=~\"$instance\"}[$__rate_interval])",
+          "expr": "sum by (pod) (process_resident_memory_bytes{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])",
           "legendFormat": "{{ pod }}",
           "range": true,
           "instant": false,
@@ -3045,7 +3082,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_stack_sys_bytes{instance=~\"$instance\"})",
+          "expr": "avg(go_memstats_stack_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "sys",
           "range": true,
           "instant": false,
@@ -3054,7 +3091,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_stack_inuse_bytes{instance=~\"$instance\"})",
+          "expr": "avg(go_memstats_stack_inuse_bytes{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "inuse",
           "range": true,
           "instant": false,
@@ -3139,7 +3176,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_heap_sys_bytes{instance=~\"$instance\"})",
+          "expr": "avg(go_memstats_heap_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "sys",
           "range": true,
           "instant": false,
@@ -3148,7 +3185,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_heap_idle_bytes{instance=~\"$instance\"})",
+          "expr": "avg(go_memstats_heap_idle_bytes{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "idle",
           "range": true,
           "instant": false,
@@ -3157,7 +3194,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_heap_released_bytes{instance=~\"$instance\"})",
+          "expr": "avg(go_memstats_heap_released_bytes{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "released",
           "range": true,
           "instant": false,
@@ -3166,7 +3203,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_next_gc_bytes{instance=~\"$instance\"})",
+          "expr": "avg(go_memstats_next_gc_bytes{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "next_gc",
           "range": true,
           "instant": false,
@@ -3175,7 +3212,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_heap_inuse_bytes{instance=~\"$instance\"})",
+          "expr": "avg(go_memstats_heap_inuse_bytes{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "inuse",
           "range": true,
           "instant": false,
@@ -3184,7 +3221,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_heap_alloc_bytes{instance=~\"$instance\"})",
+          "expr": "avg(go_memstats_heap_alloc_bytes{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "alloc",
           "range": true,
           "instant": false,
@@ -3269,7 +3306,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "avg by (pod) (go_memstats_heap_objects{instance=~\"$instance\"})",
+          "expr": "avg by (pod) (go_memstats_heap_objects{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "{{ pod }}",
           "range": true,
           "instant": false,
@@ -3354,7 +3391,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (go_threads{instance=~\"$instance\"})",
+          "expr": "sum by (pod) (go_threads{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "{{ pod }}",
           "range": true,
           "instant": false,
@@ -3439,7 +3476,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (go_goroutines{instance=~\"$instance\"})",
+          "expr": "sum by (pod) (go_goroutines{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "{{ pod }}",
           "range": true,
           "instant": false,
@@ -3524,7 +3561,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (rate(go_memstats_alloc_bytes_total{instance=~\"$instance\"}[$__rate_interval]))",
+          "expr": "sum by (pod) (rate(go_memstats_alloc_bytes_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }}",
           "range": true,
           "instant": false,
@@ -3609,7 +3646,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (go_memstats_alloc_bytes{instance=~\"$instance\"})",
+          "expr": "sum by (pod) (go_memstats_alloc_bytes{instance=~\"$instance\", job=\"$job\"})",
           "legendFormat": "{{ pod }}",
           "range": true,
           "instant": false,
@@ -3694,7 +3731,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (rate(go_gc_duration_seconds_count{instance=~\"$instance\"}[$__rate_interval]))",
+          "expr": "sum by (pod) (rate(go_gc_duration_seconds_count{instance=~\"$instance\", job=\"$job\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }}",
           "range": true,
           "instant": false,
@@ -3779,7 +3816,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (rate(go_gc_duration_seconds_sum{instance=~\"$instance\"}[$__rate_interval]))",
+          "expr": "sum by (pod) (rate(go_gc_duration_seconds_sum{instance=~\"$instance\", job=\"$job\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }}",
           "range": true,
           "instant": false,
@@ -3885,6 +3922,20 @@
         "query": "prometheus"
       },
       {
+        "options": [],
+        "skipUrlSync": false,
+        "datasource": {
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "hide": 0,
+        "type": "query",
+        "label": "Job",
+        "name": "job",
+        "query": "label_values(smartctl_version, job)",
+        "sort": 1,
+        "refresh": 2
+      },
+      {
         "multi": true,
         "options": [],
         "skipUrlSync": false,
@@ -3895,7 +3946,7 @@
         "type": "query",
         "label": "Instance",
         "name": "instance",
-        "query": "label_values(smartctl_version, instance)",
+        "query": "label_values(smartctl_version{job=\"$job\"}, instance)",
         "includeAll": true,
         "sort": 1,
         "refresh": 2
