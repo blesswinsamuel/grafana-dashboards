@@ -73,7 +73,6 @@ const dashboard: Dashboard = {
   ...defaultDashboard,
   description: 'Dashboard for postgres',
   graphTooltip: DashboardCursorSync.Crosshair,
-  style: 'dark',
   tags: ['postgres'],
   time: {
     from: 'now-6h',

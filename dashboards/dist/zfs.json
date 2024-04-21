@@ -1,0 +1,1720 @@
+{
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "type": "row",
+      "title": "Overview",
+      "panels": [],
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "count(zfs_pool_allocated_bytes{instance=~\"$instance\"})",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "stat",
+      "title": "Pools",
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 12,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "showPercentChange": false,
+        "wideLayout": true,
+        "text": {}
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "count(zfs_dataset_logical_used_bytes{instance=~\"$instance\"})",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "stat",
+      "title": "Datasets",
+      "gridPos": {
+        "x": 12,
+        "y": 1,
+        "w": 12,
+        "h": 3
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "showPercentChange": false,
+        "wideLayout": true,
+        "text": {}
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_pool_allocated_bytes{instance=~\"$instance\"}) by (pool)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "ALLOCATED"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_pool_deduplication_ratio{instance=~\"$instance\"}) by (pool)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "DUPLICATION_RATIO"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_pool_fragmentation_ratio{instance=~\"$instance\"}) by (pool)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "FRAGMENTATION_RATIO"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_pool_free_bytes{instance=~\"$instance\"}) by (pool)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "FREE"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_pool_freeing_bytes{instance=~\"$instance\"}) by (pool)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "FREEING"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_pool_health{instance=~\"$instance\"}) by (pool)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "HEALTH"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_pool_leaked_bytes{instance=~\"$instance\"}) by (pool)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "LEAKED"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_pool_readonly{instance=~\"$instance\"}) by (pool)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "READONLY"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_pool_size_bytes{instance=~\"$instance\"}) by (pool)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "SIZE"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "(pool|Value\\s.*)"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "pool": "Pool",
+              "Value #ALLOCATED": "Allocated",
+              "Value #DUPLICATION_RATIO": "Deduplication Ratio",
+              "Value #FRAGMENTATION_RATIO": "Fragmentation Ratio",
+              "Value #FREE": "Free",
+              "Value #FREEING": "Freeing",
+              "Value #HEALTH": "Health",
+              "Value #LEAKED": "Leaked",
+              "Value #READONLY": "Readonly",
+              "Value #SIZE": "Size"
+            }
+          }
+        }
+      ],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "table",
+      "title": "ZFS Pools",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 24,
+        "h": 5
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Allocated"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Deduplication Ratio"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Fragmentation Ratio"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Free"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Freeing"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Health"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Leaked"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Readonly"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Size"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "md",
+        "frameIndex": -1,
+        "showHeader": true
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_dataset_available_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "AVAILABLE"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_dataset_logical_used_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "LOGICAL_USED"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_dataset_quota_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "QUOTA"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_dataset_referenced_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "REFERENCED"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_dataset_used_by_dataset_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "USED_BY"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_dataset_used_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "USED"
+        },
+        {
+          "editorMode": "code",
+          "expr": "sum(zfs_dataset_written_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "WRITTEN"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "(name|pool|type|Value\\s.*)"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "name": "Name",
+              "pool": "Pool",
+              "type": "Type",
+              "Value #AVAILABLE": "Available",
+              "Value #LOGICAL_USED": "Logical Used",
+              "Value #QUOTA": "Quota",
+              "Value #REFERENCED": "Referenced",
+              "Value #USED_BY": "Used by",
+              "Value #USED": "Used",
+              "Value #WRITTEN": "Written"
+            }
+          }
+        }
+      ],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "table",
+      "title": "ZFS Datasets",
+      "gridPos": {
+        "x": 0,
+        "y": 9,
+        "w": 24,
+        "h": 14
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Available"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Logical Used"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Quota"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Referenced"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Used by"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Used"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Written"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "md",
+        "frameIndex": -1,
+        "showHeader": true
+      }
+    },
+    {
+      "type": "row",
+      "title": "Go Runtime Metrics",
+      "panels": [],
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 23,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum by (pod) (process_open_fds{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "{{ pod }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "File Descriptors",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 4,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum by (pod) (rate(process_cpu_seconds_total{instance=~\"$instance\",job=\"zfs\"}[$__rate_interval]))",
+          "legendFormat": "{{ pod }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "CPU Usage",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 4,
+        "y": 24,
+        "w": 4,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum by (pod) (process_resident_memory_bytes{instance=~\"$instance\",job=\"zfs\"}[$__rate_interval])",
+          "legendFormat": "{{ pod }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Memory Usage",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 8,
+        "y": 24,
+        "w": 4,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "avg(go_memstats_stack_sys_bytes{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "sys",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "avg(go_memstats_stack_inuse_bytes{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "inuse",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "B"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Stack Memory Usage",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 12,
+        "y": 24,
+        "w": 4,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "avg(go_memstats_heap_sys_bytes{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "sys",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "avg(go_memstats_heap_idle_bytes{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "idle",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "B"
+        },
+        {
+          "editorMode": "code",
+          "expr": "avg(go_memstats_heap_released_bytes{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "released",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "C"
+        },
+        {
+          "editorMode": "code",
+          "expr": "avg(go_memstats_next_gc_bytes{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "next_gc",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "D"
+        },
+        {
+          "editorMode": "code",
+          "expr": "avg(go_memstats_heap_inuse_bytes{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "inuse",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "E"
+        },
+        {
+          "editorMode": "code",
+          "expr": "avg(go_memstats_heap_alloc_bytes{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "alloc",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "F"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Heap Memory Usage",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 16,
+        "y": 24,
+        "w": 4,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "avg by (pod) (go_memstats_heap_objects{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "{{ pod }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Heap Objects",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 20,
+        "y": 24,
+        "w": 4,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum by (pod) (go_threads{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "{{ pod }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Threads",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 0,
+        "y": 32,
+        "w": 4,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum by (pod) (go_goroutines{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "{{ pod }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Goroutines",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 4,
+        "y": 32,
+        "w": 4,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum by (pod) (rate(go_memstats_alloc_bytes_total{instance=~\"$instance\",job=\"zfs\"}[$__rate_interval]))",
+          "legendFormat": "{{ pod }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Go Alloc Rate",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 8,
+        "y": 32,
+        "w": 4,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum by (pod) (go_memstats_alloc_bytes{instance=~\"$instance\",job=\"zfs\"})",
+          "legendFormat": "{{ pod }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Go Alloc Bytes",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 12,
+        "y": 32,
+        "w": 4,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum by (pod) (rate(go_gc_duration_seconds_count{instance=~\"$instance\",job=\"zfs\"}[$__rate_interval]))",
+          "legendFormat": "{{ pod }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Go GC Per Second",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 16,
+        "y": 32,
+        "w": 4,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "tags": [],
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum by (pod) (rate(go_gc_duration_seconds_sum{instance=~\"$instance\",job=\"zfs\"}[$__rate_interval]))",
+          "legendFormat": "{{ pod }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Go GC Duration Seconds",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 20,
+        "y": 32,
+        "w": 4,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    }
+  ],
+  "schemaVersion": 36,
+  "tags": [
+    "zfs"
+  ],
+  "timezone": "browser",
+  "description": "Dashboard for ZFS",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "title": "ZFS",
+  "uid": "zfs",
+  "version": 1,
+  "templating": {
+    "list": [
+      {
+        "multi": false,
+        "options": [],
+        "skipUrlSync": false,
+        "datasource": null,
+        "hide": 0,
+        "type": "datasource",
+        "label": "Prometheus",
+        "name": "DS_PROMETHEUS",
+        "query": "prometheus"
+      },
+      {
+        "multi": true,
+        "options": [],
+        "skipUrlSync": false,
+        "datasource": {
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "hide": 0,
+        "type": "query",
+        "label": "Instance",
+        "name": "instance",
+        "query": "label_values(zfs_exporter_build_info, instance)",
+        "includeAll": true,
+        "sort": 1,
+        "refresh": 2
+      }
+    ]
+  }
+}
