@@ -1,0 +1,31 @@
+groups:
+  - name: omada-controller
+    rules:
+      - alert: OmadaDeviceDisconnected
+        expr: sum(increase(omada_device_uptime_seconds[1m])) by (ip, device,
+          device_type, mac, model, site) == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Device {{ $labels.device }} ({{ $labels.mac }}) is disconnected
+          description: Device {{ $labels.device }} ({{ $labels.mac }}) is disconnected
+            from the controller
+      - alert: OmadaDeviceHighCpuUsage
+        expr: max(omada_device_cpu_usage_percent) by (ip, device, device_type, mac,
+          model, site) > 90
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: Device {{ $labels.device }} ({{ $labels.mac }}) has high CPU usage
+          description: Device {{ $labels.device }} ({{ $labels.mac }}) has high CPU usage
+      - alert: OmadaDeviceHighMemoryUsage
+        expr: max(omada_device_mem_percentage) by (ip, device, device_type, mac, model,
+          site) > 90
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: Device {{ $labels.device }} ({{ $labels.mac }}) has high memory usage
+          description: Device {{ $labels.device }} ({{ $labels.mac }}) has high memory usage

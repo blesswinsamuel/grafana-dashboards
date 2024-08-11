@@ -1,6 +1,8 @@
 // https://github.com/grafana/grafana/tree/main/packages/grafana-schema
 import { Dashboard, DataSourceRef, Panel, RowPanel, VariableModel, VariableRefresh, defaultVariableModel } from '@grafana/schema'
 import * as fs from 'fs/promises'
+import * as yaml from 'yaml'
+import { RuleFile } from './alerts'
 export { NewGoRuntimeMetrics } from './go-runtime'
 export { NewBarGaugePanel, NewPieChartPanel, NewStatPanel, NewTablePanel, NewTimeSeriesPanel } from './panels'
 export type { BarGaugePanelOpts, PieChartPanelOpts, StatPanelOpts, TablePanelOpts, Target, TimeSeriesPanelOpts } from './panels'
@@ -80,13 +82,14 @@ export type VariableOpts = {
   refresh?: VariableRefresh
   multi?: boolean
   includeAll?: boolean
+  hide?: boolean
 }
 
 export function NewQueryVariable(opts: VariableOpts): VariableModel {
   return {
     ...defaultVariableModel,
     datasource: opts.datasource,
-    hide: 0,
+    hide: opts.hide ? 2 : 0,
     type: 'query',
     label: opts.label,
     name: opts.name,
@@ -201,5 +204,12 @@ export async function writeDashboardAndPostToGrafana(opts: { grafanaURL?: string
     console.log(response.status, response.statusText)
     const body = await response.json()
     console.log(body)
+  }
+}
+
+export async function writePrometheusRules(opts: { checkRules?: boolean; ruleFile: RuleFile; filename: string }) {
+  await fs.writeFile(opts.filename, yaml.stringify(opts.ruleFile))
+  if (opts.checkRules) {
+    // TODO: Check the rules using promtool
   }
 }

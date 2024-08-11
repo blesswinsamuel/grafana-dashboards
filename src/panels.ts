@@ -15,7 +15,7 @@ import {
   GraphDrawStyle,
   GraphFieldConfig,
   GraphGradientMode,
-  GraphTresholdsStyleMode,
+  GraphThresholdsStyleMode,
   LegendDisplayMode,
   LineInterpolation,
   MappingType,
@@ -102,11 +102,15 @@ export type CommonPanelOpts = {
   targets: Target[]
   // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts (use id field)
   defaultUnit?: Unit
+  min?: number
+  max?: number
 
   mappings?: ValueMapping[]
   thresholds?: ThresholdsConfig
   overrides?: FieldConfigSource['overrides']
   transformations?: Panel['transformations']
+
+  legendCalcs?: string[]
 
   width?: number
   height?: number
@@ -164,19 +168,21 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
             mode: StackingMode.None,
           },
           thresholdsStyle: {
-            mode: GraphTresholdsStyleMode.Off,
+            mode: GraphThresholdsStyleMode.Off,
           },
         },
         mappings: opts.mappings,
         thresholds: opts.thresholds,
         unit: opts.defaultUnit,
+        min: opts.min,
+        max: opts.max,
       },
       overrides: opts.overrides ?? [],
     },
     options: deepMerge<TimeSeriesPanelOptions>(
       {
         legend: {
-          calcs: { bar: ['sum'], line: ['mean', 'max'] }[opts.type],
+          calcs: opts.legendCalcs ?? { bar: ['sum'], line: ['mean', 'max'] }[opts.type],
           displayMode: LegendDisplayMode.Table,
           placement: 'bottom',
           showLegend: true,
@@ -214,6 +220,7 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
 
 export type StatPanelOpts = CommonPanelOpts & {
   reduceCalc?: 'lastNotNull' | 'last' | 'first' | 'mean' | 'min' | 'max' | 'sum' | 'count' | 'median' | 'diff' | 'range'
+  graphMode?: BigValueGraphMode
 }
 
 export function NewStatPanel(opts: StatPanelOpts): Panel {
@@ -244,7 +251,7 @@ export function NewStatPanel(opts: StatPanelOpts): Panel {
       orientation: VizOrientation.Auto,
       textMode: BigValueTextMode.Auto,
       colorMode: BigValueColorMode.Background,
-      graphMode: BigValueGraphMode.Area,
+      graphMode: opts.graphMode ?? BigValueGraphMode.Area,
       justifyMode: BigValueJustifyMode.Auto,
       showPercentChange: false,
       wideLayout: true,

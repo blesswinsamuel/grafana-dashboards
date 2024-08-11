@@ -5,10 +5,12 @@
     "src/**/*"
   ],
   "dependencies": {
-    "@grafana/schema": "^10.2.3"
+    "@grafana/schema": "^10.4.6",
+    "yaml": "^2.5.0"
   },
   "devDependencies": {
-    "@types/node": "^20.6.3"
+    "@types/node": "^20.14.15",
+    "prettier": "^3.3.3"
   },
   "prettier": {
     "trailingComma": "es5",

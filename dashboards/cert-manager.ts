@@ -64,7 +64,6 @@ const dashboard: Dashboard = {
   ...defaultDashboard,
   description: 'Dashboard for cert-manager',
   graphTooltip: DashboardCursorSync.Crosshair,
-  style: 'dark',
   tags: ['cert-manager'],
   time: {
     from: 'now-6h',
