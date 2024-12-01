@@ -143,7 +143,7 @@ function cleanupServiceLabel(query: string): string {
   return `label_replace(${query}, "service", "$1", "service", "([^-]+-[^@]+)@.*")`
 }
 
-const dashboard: Dashboard = {
+export const dashboard: Dashboard = {
   ...defaultDashboard,
   description: 'Dashboard for ZFS',
   graphTooltip: DashboardCursorSync.Crosshair,
@@ -160,9 +160,3 @@ const dashboard: Dashboard = {
     list: [NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }), NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(zfs_exporter_build_info, instance)', includeAll: true, multi: true })],
   },
 }
-
-writeDashboardAndPostToGrafana({
-  grafanaURL: process.env.GRAFANA_URL,
-  dashboard,
-  filename: path.join(__dirname, 'dist', 'zfs.json'),
-})

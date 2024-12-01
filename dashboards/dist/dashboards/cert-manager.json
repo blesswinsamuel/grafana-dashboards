@@ -19,7 +19,6 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -151,7 +150,6 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -170,6 +168,7 @@
       },
       "type": "timeseries",
       "title": "The number of sync() calls made by a controller",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 25,
@@ -223,19 +222,19 @@
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -254,6 +253,7 @@
       },
       "type": "timeseries",
       "title": "The number of requests made by the ACME client",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 25,
@@ -307,19 +307,19 @@
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -338,6 +338,7 @@
       },
       "type": "timeseries",
       "title": "Expiration time",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 33,
@@ -387,24 +388,24 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -423,6 +424,7 @@
       },
       "type": "timeseries",
       "title": "Renewal time",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 8,
         "y": 33,
@@ -472,24 +474,24 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -508,6 +510,7 @@
       },
       "type": "timeseries",
       "title": "Avg HTTP request latencies for the ACME client",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 16,
         "y": 33,
@@ -557,23 +560,23 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     }
   ],
   "schemaVersion": 36,
-  "style": "dark",
   "tags": [
     "cert-manager"
   ],
@@ -589,12 +592,12 @@
   "templating": {
     "list": [
       {
+        "includeAll": false,
         "multi": false,
         "options": [],
         "skipUrlSync": false,
-        "description": null,
-        "hide": 0,
         "datasource": null,
+        "hide": 0,
         "type": "datasource",
         "label": "Prometheus",
         "name": "DS_PROMETHEUS",

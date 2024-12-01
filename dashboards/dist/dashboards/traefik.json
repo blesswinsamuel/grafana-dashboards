@@ -19,11 +19,10 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_devices{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__range]))",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -36,7 +35,7 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "stat",
-      "title": "Devices count",
+      "title": "Request Count",
       "gridPos": {
         "x": 0,
         "y": 1,
@@ -62,10 +61,10 @@
       "options": {
         "reduceOptions": {
           "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": ""
+          ]
         },
         "orientation": "auto",
         "textMode": "auto",
@@ -80,11 +79,10 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_devices{instance=~\"$instance\", job=\"$job\"}) - sum(smartctl_device{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__range]))",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -97,7 +95,7 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "stat",
-      "title": "Missing devices",
+      "title": "Request Bytes",
       "gridPos": {
         "x": 3,
         "y": 1,
@@ -113,24 +111,20 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
               }
             ]
           },
-          "unit": "short"
+          "unit": "decbytes"
         },
         "overrides": []
       },
       "options": {
         "reduceOptions": {
           "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": ""
+          ]
         },
         "orientation": "auto",
         "textMode": "auto",
@@ -145,11 +139,10 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "max(smartctl_device_smartctl_exit_status{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__range]))",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -162,7 +155,7 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "stat",
-      "title": "Exit status",
+      "title": "Response Bytes",
       "gridPos": {
         "x": 6,
         "y": 1,
@@ -178,24 +171,20 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
               }
             ]
           },
-          "unit": "short"
+          "unit": "decbytes"
         },
         "overrides": []
       },
       "options": {
         "reduceOptions": {
           "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": ""
+          ]
         },
         "orientation": "auto",
         "textMode": "auto",
@@ -210,11 +199,10 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_num_err_log_entries{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "sum(increase(traefik_config_reloads_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__range]))",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -227,7 +215,7 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "stat",
-      "title": "Error log entries",
+      "title": "Config reloads",
       "gridPos": {
         "x": 9,
         "y": 1,
@@ -243,10 +231,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
               }
             ]
           },
@@ -257,10 +241,10 @@
       "options": {
         "reduceOptions": {
           "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": ""
+          ]
         },
         "orientation": "auto",
         "textMode": "auto",
@@ -275,11 +259,10 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_media_errors{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "sum(increase(traefik_config_reloads_failure_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__range]))",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -292,7 +275,7 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "stat",
-      "title": "Media errors",
+      "title": "Config reloads failures",
       "gridPos": {
         "x": 12,
         "y": 1,
@@ -308,10 +291,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
               }
             ]
           },
@@ -322,10 +301,10 @@
       "options": {
         "reduceOptions": {
           "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": ""
+          ]
         },
         "orientation": "auto",
         "textMode": "auto",
@@ -340,11 +319,10 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_error_log_count{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "max(traefik_config_last_reload_success{namespace=~\"$namespace\", instance=~\"$instance\"}[$__range]) * 1000",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -357,7 +335,7 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "stat",
-      "title": "SMART error log count",
+      "title": "Last successful config reload",
       "gridPos": {
         "x": 15,
         "y": 1,
@@ -366,31 +344,37 @@
       },
       "fieldConfig": {
         "defaults": {
-          "mappings": [],
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "-",
+                  "index": 0
+                }
+              }
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
               }
             ]
           },
-          "unit": "short"
+          "unit": "dateTimeFromNow"
         },
         "overrides": []
       },
       "options": {
         "reduceOptions": {
           "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": ""
+          ]
         },
         "orientation": "auto",
         "textMode": "auto",
@@ -405,11 +389,10 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(smartctl_device_critical_warning{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "max(traefik_config_last_reload_failure{namespace=~\"$namespace\", instance=~\"$instance\"}[$__range]) * 1000",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -422,7 +405,7 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "stat",
-      "title": "Critical warnings",
+      "title": "Last failed config reload",
       "gridPos": {
         "x": 18,
         "y": 1,
@@ -431,31 +414,37 @@
       },
       "fieldConfig": {
         "defaults": {
-          "mappings": [],
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "-",
+                  "index": 0
+                }
+              }
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
               }
             ]
           },
-          "unit": "short"
+          "unit": "dateTimeFromNow"
         },
         "overrides": []
       },
       "options": {
         "reduceOptions": {
           "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": ""
+          ]
         },
         "orientation": "auto",
         "textMode": "auto",
@@ -465,556 +454,16 @@
         "showPercentChange": false,
         "wideLayout": true,
         "text": {}
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "tags": [],
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum(1 - smartctl_device_smart_status{instance=~\"$instance\", job=\"$job\"})",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "stat",
-      "title": "SMART failed",
-      "gridPos": {
-        "x": 21,
-        "y": 1,
-        "w": 3,
-        "h": 3
-      },
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "showPercentChange": false,
-        "wideLayout": true,
-        "text": {}
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "tags": [],
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "smartctl_device{instance=~\"$instance\", job=\"$job\"}",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "A"
-        }
-      ],
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "__name__": true,
-              "Time": true,
-              "Value": true,
-              "instance": true,
-              "job": true
-            },
-            "indexByName": {
-              "device": 0,
-              "model_name": 1,
-              "form_factor": 2,
-              "serial_number": 3,
-              "protocol": 4,
-              "ata_version": 5,
-              "firmware_version": 6,
-              "ata_additional_product_id": 7,
-              "interface": 8,
-              "model_family": 9,
-              "sata_version": 10
-            },
-            "renameByName": {
-              "device": "Device",
-              "model_name": "Model name",
-              "form_factor": "Form factor",
-              "serial_number": "Serial number",
-              "protocol": "Protocol",
-              "ata_version": "ATA version",
-              "firmware_version": "Firmware version",
-              "ata_additional_product_id": "ATA additional product ID",
-              "interface": "Interface",
-              "model_family": "Model family",
-              "sata_version": "SATA version"
-            }
-          }
-        }
-      ],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "table",
-      "title": "Device Info",
-      "gridPos": {
-        "x": 0,
-        "y": 4,
-        "w": 24,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "options": {
-        "cellHeight": "md",
-        "frameIndex": -1,
-        "showHeader": true
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "tags": [],
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum(smartctl_device{instance=~\"$instance\", job=\"$job\"}) by (instance, device, model_name)",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "DEVICE"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(smartctl_device_temperature{instance=~\"$instance\", job=\"$job\", temperature_type=\"current\"}) by (instance, device)",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "TEMP"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(smartctl_device_smartctl_exit_status{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "EXIT"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(smartctl_device_smart_status{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "PASSED"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(smartctl_device_power_on_seconds{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "POWON"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(smartctl_device_power_cycle_count{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "PCC"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\", speed_type=\"current\"}) by (instance, device)",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "INTSPEED"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(smartctl_device_capacity_bytes{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "CAPBYTES"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(smartctl_device_capacity_blocks{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "CAPBLOCKS"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(smartctl_device_block_size{blocks_type=\"logical\", instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "BLKSIZELOG"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(smartctl_device_block_size{blocks_type=\"physical\", instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "BLKSIZEPHY"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(smartctl_device_error_log_count{instance=~\"$instance\", job=\"$job\"}) by (instance, device)",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "ERRLOGCNT"
-        }
-      ],
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "pattern": "(device|model_name|instance|Value\\s.*)"
-            }
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "Value #DEVICE": true
-            },
-            "indexByName": {},
-            "renameByName": {
-              "instance": "Instance",
-              "device": "Device",
-              "model_name": "Model name",
-              "Value #TEMP": "Temperature",
-              "Value #EXIT": "Exit status",
-              "Value #PASSED": "Passed",
-              "Value #POWON": "Power on seconds",
-              "Value #PCC": "Power Cycle Count",
-              "Value #INTSPEED": "Device interface speed",
-              "Value #CAPBYTES": "Capacity Bytes",
-              "Value #CAPBLOCKS": "Capacity Blocks",
-              "Value #BLKSIZELOG": "Block size (logical)",
-              "Value #BLKSIZEPHY": "Block size (physical)",
-              "Value #ERRLOGCNT": "Error log count"
-            }
-          }
-        }
-      ],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "table",
-      "title": "SMART overview",
-      "gridPos": {
-        "x": 0,
-        "y": 12,
-        "w": 24,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Device"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 70
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Instance"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 320
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Model name"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 220
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Temperature"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "celsius"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Power on seconds"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "s"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Device interface speed"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "bps"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Capacity Bytes"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "bytes"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Capacity Blocks"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Block size (logical)"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "bytes"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Block size (physical)"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "bytes"
-              }
-            ]
-          }
-        ]
-      },
-      "options": {
-        "cellHeight": "md",
-        "frameIndex": -1,
-        "showHeader": true
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "tags": [],
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "smartctl_device_attribute{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\"}",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "A"
-        }
-      ],
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "__name__": true,
-              "Time": true,
-              "job": true
-            },
-            "indexByName": {
-              "device": 0,
-              "model_name": 1,
-              "attribute_id": 2,
-              "attribute_name": 3,
-              "attribute_value_type": 4,
-              "attribute_flags_long": 5,
-              "attribute_flags_short": 6,
-              "Value": 7
-            },
-            "renameByName": {
-              "device": "Device",
-              "attribute_flags_long": "Attribute flags (long)",
-              "attribute_flags_short": "Attribute flags (short)",
-              "attribute_id": "Attribute ID",
-              "attribute_name": "Attribute name",
-              "attribute_value_type": "Attribute value type",
-              "model_name": "Model Name"
-            }
-          }
-        },
-        {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "Instance": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "Device": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "Model Name": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "Attribute ID": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "Attribute name": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "Attribute flags (long)": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "Attribute flags (short)": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "Attribute value type": {
-                "aggregations": [
-                  "allValues"
-                ],
-                "operation": "aggregate"
-              },
-              "Value": {
-                "aggregations": [
-                  "allValues"
-                ],
-                "operation": "aggregate"
-              }
-            }
-          }
-        }
-      ],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "table",
-      "title": "SMART attributes",
-      "gridPos": {
-        "x": 0,
-        "y": 20,
-        "w": 24,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "options": {
-        "cellHeight": "md",
-        "frameIndex": -1,
-        "showHeader": true
       }
     },
     {
       "type": "row",
-      "title": "Metrics",
+      "title": "Entrypoint Metrics",
       "panels": [],
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 28,
+        "y": 4,
         "w": 24,
         "h": 1
       }
@@ -1022,12 +471,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_temperature{instance=~\"$instance\", job=\"$job\",temperature_type=\"current\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum(traefik_entrypoint_open_connections{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval]) by (entrypoint, protocol)",
+          "legendFormat": "{{ entrypoint }} - {{ protocol }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1040,97 +488,12 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "Temperature",
+      "title": "Open connections by protocol",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
-        "y": 29,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "celsius"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "tags": [],
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_smartctl_exit_status{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Smartctl exit status",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 29,
-        "w": 6,
+        "y": 5,
+        "w": 12,
         "h": 8
       },
       "fieldConfig": {
@@ -1176,12 +539,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1192,12 +557,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_smart_status{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum(traefik_entrypoint_open_connections{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval]) by (entrypoint, method)",
+          "legendFormat": "{{ entrypoint }} - {{ method }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1210,12 +574,12 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "SMART passed",
+      "title": "Open connections by method",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
-        "y": 29,
-        "w": 6,
+        "y": 5,
+        "w": 12,
         "h": 8
       },
       "fieldConfig": {
@@ -1261,12 +625,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1277,12 +643,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (increase(smartctl_device_power_on_seconds{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"}))",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum(increase(traefik_entrypoint_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval])) by (entrypoint)",
+          "legendFormat": "{{ entrypoint }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1295,12 +660,11 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "Power on duration",
-      "interval": "1h",
+      "title": "Request Count",
       "maxDataPoints": 100,
       "gridPos": {
-        "x": 18,
-        "y": 29,
+        "x": 0,
+        "y": 13,
         "w": 6,
         "h": 8
       },
@@ -1340,7 +704,7 @@
               "mode": "off"
             }
           },
-          "unit": "s"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -1351,7 +715,9 @@
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1362,12 +728,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_power_cycle_count{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum(increase(traefik_entrypoint_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval])) by (entrypoint)",
+          "legendFormat": "{{ entrypoint }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1380,96 +745,11 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "Power cycle count",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 37,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "tags": [],
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_percentage_used{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Write percentage used",
+      "title": "Request Bytes",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 6,
-        "y": 37,
+        "y": 13,
         "w": 6,
         "h": 8
       },
@@ -1485,43 +765,44 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
             }
           },
-          "unit": "short"
+          "unit": "decbytes"
         },
         "overrides": []
       },
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "sum"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1532,12 +813,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_nvme_capacity_bytes{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum(increase(traefik_entrypoint_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval])) by (entrypoint)",
+          "legendFormat": "{{ entrypoint }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1550,11 +830,11 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "NVMe capacity bytes",
+      "title": "Response Bytes",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
-        "y": 37,
+        "y": 13,
         "w": 6,
         "h": 8
       },
@@ -1570,43 +850,44 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
             }
           },
-          "unit": "bytes"
+          "unit": "decbytes"
         },
         "overrides": []
       },
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "sum"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1617,12 +898,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_num_err_log_entries{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "label_replace(sum(rate(traefik_entrypoint_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__rate_interval])) by (entrypoint) / sum(rate(traefik_entrypoint_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__rate_interval])) by (entrypoint), \"service\", \"$1\", \"service\", \"([^-]+-[^@]+)@.*\")",
+          "legendFormat": "{{ entrypoint }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1635,12 +915,11 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "Number of error log entries",
-      "description": "Contains the number of Error Information log entries over the life of the controller",
+      "title": "Avg request duration",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 18,
-        "y": 37,
+        "y": 13,
         "w": 6,
         "h": 8
       },
@@ -1680,19 +959,21 @@
               "mode": "off"
             }
           },
-          "unit": "short"
+          "unit": "s"
         },
         "overrides": []
       },
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1701,14 +982,25 @@
       }
     },
     {
+      "type": "row",
+      "title": "Service Metrics",
+      "panels": [],
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 21,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_media_errors{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum(traefik_service_open_connections{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval]) by (service)",
+          "legendFormat": "{{ service }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1721,12 +1013,11 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "Number of media errors",
-      "description": "Contains the number of occurrences where the controller detected an unrecovered data integrity error. Errors such as uncorrectable ECC, CRC checksum failure, or LBA tag mismatch are included in this field",
+      "title": "Open connections by service",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
-        "y": 45,
+        "y": 22,
         "w": 8,
         "h": 8
       },
@@ -1773,12 +1064,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1789,12 +1082,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_error_log_count{instance=~\"$instance\", job=\"$job\",error_log_type=\"summary\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum(traefik_service_open_connections{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval]) by (protocol)",
+          "legendFormat": "{{ protocol }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1807,11 +1099,11 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "SMART error log count",
+      "title": "Open connections by protocol",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 8,
-        "y": 45,
+        "y": 22,
         "w": 8,
         "h": 8
       },
@@ -1858,12 +1150,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1874,12 +1168,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_critical_warning{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum(traefik_service_open_connections{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval]) by (method)",
+          "legendFormat": "{{ method }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1892,11 +1185,11 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "Critical warnings for state of controller",
+      "title": "Open connections by method",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 16,
-        "y": 45,
+        "y": 22,
         "w": 8,
         "h": 8
       },
@@ -1943,12 +1236,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1959,12 +1254,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\",speed_type=\"current\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (service)",
+          "legendFormat": "{{ service }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1977,181 +1271,11 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "Interface speed (current)",
+      "title": "Request Count by service",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
-        "y": 53,
-        "w": 12,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "bps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "tags": [],
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\",speed_type=\"max\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Interface speed (max)",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 53,
-        "w": 12,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "bps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "tags": [],
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_capacity_bytes{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Capacity Bytes",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 61,
+        "y": 30,
         "w": 6,
         "h": 8
       },
@@ -2167,110 +1291,25 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "tags": [],
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_capacity_blocks{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Capacity Blocks",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 61,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -2283,12 +1322,13 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "sum"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2299,12 +1339,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_bytes_written{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (service)",
+          "legendFormat": "{{ service }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2317,266 +1356,11 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "Bytes written",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 61,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "tags": [],
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_bytes_read{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Bytes read",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 18,
-        "y": 61,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "tags": [],
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_block_size{instance=~\"$instance\", job=\"$job\",blocks_type=\"logical\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Block size (logical)",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 69,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "tags": [],
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_block_size{instance=~\"$instance\", job=\"$job\",blocks_type=\"physical\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Block size (physical)",
+      "title": "Request Bytes by service",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 6,
-        "y": 69,
+        "y": 30,
         "w": 6,
         "h": 8
       },
@@ -2592,43 +1376,44 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
             }
           },
-          "unit": "bytes"
+          "unit": "decbytes"
         },
         "overrides": []
       },
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "sum"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2639,12 +1424,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_available_spare_threshold{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (service)",
+          "legendFormat": "{{ service }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2657,12 +1441,11 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "Available spare threshold",
-      "description": "When the Available Spare falls below the threshold indicated in this field, an asynchronous event completion may occur. The value is indicated as a normalized percentage (0 to 100%)",
+      "title": "Response Bytes by service",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
-        "y": 69,
+        "y": 30,
         "w": 6,
         "h": 8
       },
@@ -2678,43 +1461,44 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
             }
           },
-          "unit": "percent"
+          "unit": "decbytes"
         },
         "overrides": []
       },
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "sum"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2725,12 +1509,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_available_spare{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "label_replace(sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (service) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (service), \"service\", \"$1\", \"service\", \"([^-]+-[^@]+)@.*\")",
+          "legendFormat": "{{ service }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2743,12 +1526,11 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "type": "timeseries",
-      "title": "Available spare",
-      "description": "Normalized percentage (0 to 100%) of the remaining spare capacity available",
+      "title": "Avg request duration by service",
       "maxDataPoints": 100,
       "gridPos": {
         "x": 18,
-        "y": 69,
+        "y": 30,
         "w": 6,
         "h": 8
       },
@@ -2788,19 +1570,1227 @@
               "mode": "off"
             }
           },
-          "unit": "percent"
+          "unit": "s"
         },
         "overrides": []
       },
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (protocol)",
+          "legendFormat": "{{ protocol }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Request Count by protocol",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 0,
+        "y": 38,
+        "w": 6,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (protocol)",
+          "legendFormat": "{{ protocol }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Request Bytes by protocol",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 6,
+        "y": 38,
+        "w": 6,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (protocol)",
+          "legendFormat": "{{ protocol }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Response Bytes by protocol",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 12,
+        "y": 38,
+        "w": 6,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "label_replace(sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (protocol) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (protocol), \"service\", \"$1\", \"service\", \"([^-]+-[^@]+)@.*\")",
+          "legendFormat": "{{ protocol }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Avg request duration by protocol",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 18,
+        "y": 38,
+        "w": 6,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (method)",
+          "legendFormat": "{{ method }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Request Count by method",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 0,
+        "y": 46,
+        "w": 6,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (method)",
+          "legendFormat": "{{ method }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Request Bytes by method",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 6,
+        "y": 46,
+        "w": 6,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (method)",
+          "legendFormat": "{{ method }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Response Bytes by method",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 12,
+        "y": 46,
+        "w": 6,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "label_replace(sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (method) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (method), \"service\", \"$1\", \"service\", \"([^-]+-[^@]+)@.*\")",
+          "legendFormat": "{{ method }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Avg request duration by method",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 18,
+        "y": 46,
+        "w": 6,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (code)",
+          "legendFormat": "{{ code }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Request Count by code",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 0,
+        "y": 54,
+        "w": 6,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (code)",
+          "legendFormat": "{{ code }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Request Bytes by code",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 6,
+        "y": 54,
+        "w": 6,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (code)",
+          "legendFormat": "{{ code }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Response Bytes by code",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 12,
+        "y": 54,
+        "w": 6,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "label_replace(sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (code) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (code), \"service\", \"$1\", \"service\", \"([^-]+-[^@]+)@.*\")",
+          "legendFormat": "{{ code }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "Avg request duration by code",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 18,
+        "y": 54,
+        "w": 6,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "type": "row",
+      "title": "TLS Metrics",
+      "panels": [],
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 62,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(traefik_service_requests_tls_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__interval])) by (service, tls_cipher, version)",
+          "legendFormat": "{{ service }} - {{ tls_cipher }} (version: \"{{ version }}\")",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "TLS requests",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 0,
+        "y": 63,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "max(traefik_tls_certs_not_after{namespace=~\"$namespace\", instance=~\"$instance\"}) by (cn, sans, serial) * 1000",
+          "legendFormat": "{{ cn }} - {{ sans }} - {{ serial }}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "timeseries",
+      "title": "TLS certs expiration timestamp",
+      "maxDataPoints": 100,
+      "gridPos": {
+        "x": 12,
+        "y": 63,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "dateTimeFromNow"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2815,7 +2805,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 77,
+        "y": 71,
         "w": 24,
         "h": 1
       }
@@ -2823,12 +2813,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (process_open_fds{instance=~\"$instance\", job=\"$job\"})",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (process_open_fds{namespace=~\"$namespace\", instance=~\"$instance\"})",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2845,7 +2834,7 @@
       "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
-        "y": 78,
+        "y": 72,
         "w": 4,
         "h": 8
       },
@@ -2892,12 +2881,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2908,12 +2899,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (rate(process_cpu_seconds_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval]))",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (rate(process_cpu_seconds_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval]))",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2930,7 +2920,7 @@
       "maxDataPoints": 100,
       "gridPos": {
         "x": 4,
-        "y": 78,
+        "y": 72,
         "w": 4,
         "h": 8
       },
@@ -2977,12 +2967,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2993,12 +2985,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (process_resident_memory_bytes{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (process_resident_memory_bytes{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3015,7 +3006,7 @@
       "maxDataPoints": 100,
       "gridPos": {
         "x": 8,
-        "y": 78,
+        "y": 72,
         "w": 4,
         "h": 8
       },
@@ -3062,12 +3053,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3078,11 +3071,10 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_stack_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "avg(go_memstats_stack_sys_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "sys",
           "range": true,
           "instant": false,
@@ -3091,7 +3083,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_stack_inuse_bytes{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "avg(go_memstats_stack_inuse_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "inuse",
           "range": true,
           "instant": false,
@@ -3109,7 +3101,7 @@
       "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
-        "y": 78,
+        "y": 72,
         "w": 4,
         "h": 8
       },
@@ -3156,12 +3148,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3172,11 +3166,10 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_heap_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "avg(go_memstats_heap_sys_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "sys",
           "range": true,
           "instant": false,
@@ -3185,7 +3178,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_heap_idle_bytes{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "avg(go_memstats_heap_idle_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "idle",
           "range": true,
           "instant": false,
@@ -3194,7 +3187,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_heap_released_bytes{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "avg(go_memstats_heap_released_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "released",
           "range": true,
           "instant": false,
@@ -3203,7 +3196,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_next_gc_bytes{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "avg(go_memstats_next_gc_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "next_gc",
           "range": true,
           "instant": false,
@@ -3212,7 +3205,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_heap_inuse_bytes{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "avg(go_memstats_heap_inuse_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "inuse",
           "range": true,
           "instant": false,
@@ -3221,7 +3214,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "avg(go_memstats_heap_alloc_bytes{instance=~\"$instance\", job=\"$job\"})",
+          "expr": "avg(go_memstats_heap_alloc_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "alloc",
           "range": true,
           "instant": false,
@@ -3239,7 +3232,7 @@
       "maxDataPoints": 100,
       "gridPos": {
         "x": 16,
-        "y": 78,
+        "y": 72,
         "w": 4,
         "h": 8
       },
@@ -3286,12 +3279,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3302,12 +3297,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "avg by (pod) (go_memstats_heap_objects{instance=~\"$instance\", job=\"$job\"})",
-          "legendFormat": "{{ pod }}",
+          "expr": "avg by (pod, instance) (go_memstats_heap_objects{namespace=~\"$namespace\", instance=~\"$instance\"})",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3324,7 +3318,7 @@
       "maxDataPoints": 100,
       "gridPos": {
         "x": 20,
-        "y": 78,
+        "y": 72,
         "w": 4,
         "h": 8
       },
@@ -3371,12 +3365,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3387,12 +3383,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (go_threads{instance=~\"$instance\", job=\"$job\"})",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (go_threads{namespace=~\"$namespace\", instance=~\"$instance\"})",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3409,7 +3404,7 @@
       "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
-        "y": 86,
+        "y": 80,
         "w": 4,
         "h": 8
       },
@@ -3456,12 +3451,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3472,12 +3469,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (go_goroutines{instance=~\"$instance\", job=\"$job\"})",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (go_goroutines{namespace=~\"$namespace\", instance=~\"$instance\"})",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3494,7 +3490,7 @@
       "maxDataPoints": 100,
       "gridPos": {
         "x": 4,
-        "y": 86,
+        "y": 80,
         "w": 4,
         "h": 8
       },
@@ -3541,12 +3537,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3557,12 +3555,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (rate(go_memstats_alloc_bytes_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval]))",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (rate(go_memstats_alloc_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval]))",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3579,7 +3576,7 @@
       "maxDataPoints": 100,
       "gridPos": {
         "x": 8,
-        "y": 86,
+        "y": 80,
         "w": 4,
         "h": 8
       },
@@ -3626,12 +3623,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3642,12 +3641,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (go_memstats_alloc_bytes{instance=~\"$instance\", job=\"$job\"})",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (go_memstats_alloc_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3664,7 +3662,7 @@
       "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
-        "y": 86,
+        "y": 80,
         "w": 4,
         "h": 8
       },
@@ -3711,12 +3709,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3727,12 +3727,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (rate(go_gc_duration_seconds_count{instance=~\"$instance\", job=\"$job\"}[$__rate_interval]))",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (rate(go_gc_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval]))",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3749,7 +3748,7 @@
       "maxDataPoints": 100,
       "gridPos": {
         "x": 16,
-        "y": 86,
+        "y": 80,
         "w": 4,
         "h": 8
       },
@@ -3796,12 +3795,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3812,12 +3813,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (rate(go_gc_duration_seconds_sum{instance=~\"$instance\", job=\"$job\"}[$__rate_interval]))",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (rate(go_gc_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval]))",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3834,7 +3834,7 @@
       "maxDataPoints": 100,
       "gridPos": {
         "x": 20,
-        "y": 86,
+        "y": 80,
         "w": 4,
         "h": 8
       },
@@ -3881,12 +3881,14 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3897,20 +3899,21 @@
   ],
   "schemaVersion": 36,
   "tags": [
-    "smartctl"
+    "traefik"
   ],
   "timezone": "browser",
-  "description": "Dashboard for smartctl",
+  "description": "Dashboard for traefik",
   "time": {
     "from": "now-6h",
     "to": "now"
   },
-  "title": "Smartctl",
-  "uid": "smartctl",
+  "title": "Traefik",
+  "uid": "traefik",
   "version": 1,
   "templating": {
     "list": [
       {
+        "includeAll": false,
         "multi": false,
         "options": [],
         "skipUrlSync": false,
@@ -3922,6 +3925,8 @@
         "query": "prometheus"
       },
       {
+        "includeAll": true,
+        "multi": true,
         "options": [],
         "skipUrlSync": false,
         "datasource": {
@@ -3929,13 +3934,14 @@
         },
         "hide": 0,
         "type": "query",
-        "label": "Job",
-        "name": "job",
-        "query": "label_values(smartctl_version, job)",
+        "label": "Namespace",
+        "name": "namespace",
+        "query": "label_values(traefik_config_last_reload_success, namespace)",
         "sort": 1,
         "refresh": 2
       },
       {
+        "includeAll": true,
         "multi": true,
         "options": [],
         "skipUrlSync": false,
@@ -3946,8 +3952,39 @@
         "type": "query",
         "label": "Instance",
         "name": "instance",
-        "query": "label_values(smartctl_version{job=\"$job\"}, instance)",
+        "query": "label_values(traefik_config_last_reload_success{namespace=~\"$namespace\"}, instance)",
+        "sort": 1,
+        "refresh": 2
+      },
+      {
         "includeAll": true,
+        "multi": true,
+        "options": [],
+        "skipUrlSync": false,
+        "datasource": {
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "hide": 0,
+        "type": "query",
+        "label": "Entrypoint",
+        "name": "entrypoint",
+        "query": "label_values(traefik_entrypoint_open_connections{namespace=~\"$namespace\"}, entrypoint)",
+        "sort": 1,
+        "refresh": 2
+      },
+      {
+        "includeAll": true,
+        "multi": true,
+        "options": [],
+        "skipUrlSync": false,
+        "datasource": {
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "hide": 0,
+        "type": "query",
+        "label": "Service",
+        "name": "service",
+        "query": "label_values(traefik_service_open_connections{namespace=~\"$namespace\"}, service)",
         "sort": 1,
         "refresh": 2
       }

@@ -1,5 +1,7 @@
 {
     "compileOptions": {
+        "module": "ESNext",
+        "target": "es2022",
         "types": [
             "node"
         ]

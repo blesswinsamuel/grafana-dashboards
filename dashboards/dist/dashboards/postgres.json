@@ -19,7 +19,6 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -80,7 +79,6 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -99,6 +97,7 @@
       },
       "type": "timeseries",
       "title": "Database Size",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 6,
         "y": 1,
@@ -148,29 +147,29 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(pg_locks_count{job=~\"$job\", namespace=~\"$namespace\"}) by (datname, mode)",
-          "legendFormat": "{{ datname }}",
+          "expr": "sum(pg_locks_count{job=~\"$job\", namespace=~\"$namespace\"}) by (datname, mode) > 0",
+          "legendFormat": "{{ datname }} - {{ mode }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -184,6 +183,7 @@
       },
       "type": "timeseries",
       "title": "Locks Count",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 1,
@@ -233,24 +233,24 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -269,6 +269,7 @@
       },
       "type": "timeseries",
       "title": "Number of backends connected",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 18,
         "y": 1,
@@ -318,19 +319,20 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "type": "row",
@@ -347,7 +349,6 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -366,6 +367,7 @@
       },
       "type": "timeseries",
       "title": "Active",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 10,
@@ -415,24 +417,24 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -451,6 +453,7 @@
       },
       "type": "timeseries",
       "title": "Disabled",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 6,
         "y": 10,
@@ -500,24 +503,24 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -536,6 +539,7 @@
       },
       "type": "timeseries",
       "title": "Fastpath function call",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 10,
@@ -585,24 +589,24 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -621,6 +625,7 @@
       },
       "type": "timeseries",
       "title": "Idle",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 18,
         "y": 10,
@@ -670,24 +675,24 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -706,6 +711,7 @@
       },
       "type": "timeseries",
       "title": "Idle in transaction",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 18,
@@ -755,24 +761,24 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -791,6 +797,7 @@
       },
       "type": "timeseries",
       "title": "Idle in transaction (aborted)",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 18,
@@ -840,19 +847,20 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "type": "row",
@@ -869,12 +877,11 @@
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (process_open_fds{job=~\"$job\", namespace=~\"$namespace\"})",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (process_open_fds{job=~\"$job\", namespace=~\"$namespace\"})",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -888,6 +895,7 @@
       },
       "type": "timeseries",
       "title": "File Descriptors",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 27,
@@ -937,29 +945,29 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (rate(process_cpu_seconds_total{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval]))",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (rate(process_cpu_seconds_total{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval]))",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -973,6 +981,7 @@
       },
       "type": "timeseries",
       "title": "CPU Usage",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 4,
         "y": 27,
@@ -1022,29 +1031,29 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (process_resident_memory_bytes{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval])",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (process_resident_memory_bytes{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval])",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1058,6 +1067,7 @@
       },
       "type": "timeseries",
       "title": "Memory Usage",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 8,
         "y": 27,
@@ -1107,24 +1117,24 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -1152,6 +1162,7 @@
       },
       "type": "timeseries",
       "title": "Stack Memory Usage",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 27,
@@ -1201,24 +1212,24 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
@@ -1282,6 +1293,7 @@
       },
       "type": "timeseries",
       "title": "Heap Memory Usage",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 16,
         "y": 27,
@@ -1331,29 +1343,29 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "avg by (pod) (go_memstats_heap_objects{job=~\"$job\", namespace=~\"$namespace\"})",
-          "legendFormat": "{{ pod }}",
+          "expr": "avg by (pod, instance) (go_memstats_heap_objects{job=~\"$job\", namespace=~\"$namespace\"})",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1367,6 +1379,7 @@
       },
       "type": "timeseries",
       "title": "Heap Objects",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 20,
         "y": 27,
@@ -1416,29 +1429,29 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (go_threads{job=~\"$job\", namespace=~\"$namespace\"})",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (go_threads{job=~\"$job\", namespace=~\"$namespace\"})",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1452,6 +1465,7 @@
       },
       "type": "timeseries",
       "title": "Threads",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 0,
         "y": 35,
@@ -1501,29 +1515,29 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (go_goroutines{job=~\"$job\", namespace=~\"$namespace\"})",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (go_goroutines{job=~\"$job\", namespace=~\"$namespace\"})",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1537,6 +1551,7 @@
       },
       "type": "timeseries",
       "title": "Goroutines",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 4,
         "y": 35,
@@ -1586,29 +1601,29 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (rate(go_memstats_alloc_bytes_total{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval]))",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (rate(go_memstats_alloc_bytes_total{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval]))",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1622,6 +1637,7 @@
       },
       "type": "timeseries",
       "title": "Go Alloc Rate",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 8,
         "y": 35,
@@ -1671,29 +1687,29 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (go_memstats_alloc_bytes{job=~\"$job\", namespace=~\"$namespace\"})",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (go_memstats_alloc_bytes{job=~\"$job\", namespace=~\"$namespace\"})",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1707,6 +1723,7 @@
       },
       "type": "timeseries",
       "title": "Go Alloc Bytes",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 12,
         "y": 35,
@@ -1756,29 +1773,29 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (rate(go_gc_duration_seconds_count{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval]))",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (rate(go_gc_duration_seconds_count{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval]))",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1792,6 +1809,7 @@
       },
       "type": "timeseries",
       "title": "Go GC Per Second",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 16,
         "y": 35,
@@ -1841,29 +1859,29 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     },
     {
       "links": [],
       "repeatDirection": "h",
-      "tags": [],
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (pod) (rate(go_gc_duration_seconds_sum{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval]))",
-          "legendFormat": "{{ pod }}",
+          "expr": "sum by (pod, instance) (rate(go_gc_duration_seconds_sum{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval]))",
+          "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1877,6 +1895,7 @@
       },
       "type": "timeseries",
       "title": "Go GC Duration Seconds",
+      "maxDataPoints": 100,
       "gridPos": {
         "x": 20,
         "y": 35,
@@ -1926,23 +1945,23 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean",
-            "max"
+            "max",
+            "mean"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "multi",
           "sort": "desc"
         }
-      },
-      "maxDataPoints": 100
+      }
     }
   ],
   "schemaVersion": 36,
-  "style": "dark",
   "tags": [
     "postgres"
   ],
@@ -1958,12 +1977,12 @@
   "templating": {
     "list": [
       {
+        "includeAll": false,
         "multi": false,
         "options": [],
         "skipUrlSync": false,
-        "description": null,
-        "hide": 0,
         "datasource": null,
+        "hide": 0,
         "type": "datasource",
         "label": "Prometheus",
         "name": "DS_PROMETHEUS",
@@ -1972,11 +1991,10 @@
       {
         "options": [],
         "skipUrlSync": false,
-        "description": null,
-        "hide": 0,
         "datasource": {
           "uid": "${DS_PROMETHEUS}"
         },
+        "hide": 0,
         "type": "query",
         "label": "Namespace",
         "name": "namespace",
@@ -1985,19 +2003,18 @@
         "refresh": 2
       },
       {
+        "includeAll": true,
         "multi": true,
         "options": [],
         "skipUrlSync": false,
-        "description": null,
-        "hide": 0,
         "datasource": {
           "uid": "${DS_PROMETHEUS}"
         },
+        "hide": 0,
         "type": "query",
         "label": "Job",
         "name": "job",
         "query": "label_values(postgres_exporter_build_info{namespace=~\"$namespace\"}, job)",
-        "includeAll": true,
         "sort": 1,
         "refresh": 2
       }

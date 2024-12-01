@@ -82,11 +82,10 @@ function cleanupServiceLabel(query: string): string {
   return `label_replace(${query}, "service", "$1", "service", "([^-]+-[^@]+)@.*")`
 }
 
-const dashboard: Dashboard = {
+export const dashboard: Dashboard = {
   ...defaultDashboard,
   description: 'Dashboard for traefik',
   graphTooltip: DashboardCursorSync.Crosshair,
-  style: 'dark',
   tags: ['traefik'],
   time: {
     from: 'now-6h',
@@ -106,9 +105,3 @@ const dashboard: Dashboard = {
     ],
   },
 }
-
-writeDashboardAndPostToGrafana({
-  grafanaURL: process.env.GRAFANA_URL,
-  dashboard,
-  filename: path.join(__dirname, 'dist', 'traefik.json'),
-})

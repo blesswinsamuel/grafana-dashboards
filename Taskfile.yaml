@@ -1,17 +1,10 @@
 version: 3
 
 tasks:
-  generate-all:
-    cmds:
-      - bun run dashboards/postgres.ts
-      - bun run dashboards/traefik.ts
-      - bun run dashboards/cert-manager.ts
-
   generate:
     cmds:
-      # - go run . {{ .CLI_ARGS }}
-      - bun run dashboards/{{ .CLI_ARGS }}.ts
+      - bun run dashboards/dashboards.ts
 
   dev:
     cmds:
-      - bun run --watch dashboards/{{ .CLI_ARGS }}.ts
+      - bun run --watch dashboards/dashboards.ts

@@ -122,7 +122,7 @@ const panels: PanelRowAndGroups = [
   ]),
 ]
 
-const dashboard: Dashboard = {
+export const dashboard: Dashboard = {
   ...defaultDashboard,
   description: 'Dashboard for omada-controller',
   graphTooltip: DashboardCursorSync.Crosshair,
@@ -145,7 +145,7 @@ const dashboard: Dashboard = {
   },
 }
 
-const rules: RuleGroup[] = [
+export const rules: RuleGroup[] = [
   {
     name: 'omada-controller',
     rules: [
@@ -182,11 +182,3 @@ const rules: RuleGroup[] = [
     ],
   },
 ]
-
-writeDashboardAndPostToGrafana({
-  grafanaURL: process.env.GRAFANA_URL,
-  dashboard,
-  filename: path.join(__dirname, 'dist', 'dashboards', 'omada-controller.json'),
-})
-
-writePrometheusRules({ ruleFile: { groups: rules }, filename: path.join(__dirname, 'dist', 'alerts', 'omada-controller.yaml') })

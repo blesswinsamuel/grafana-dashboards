@@ -204,7 +204,7 @@ const panels: PanelRowAndGroups = [
   NewGoRuntimeMetrics({ datasource, selector: '{instance=~"$instance", job="$job"}' }),
 ]
 
-const dashboard: Dashboard = {
+export const dashboard: Dashboard = {
   ...defaultDashboard,
   description: 'Dashboard for smartctl',
   graphTooltip: DashboardCursorSync.Crosshair,
@@ -226,9 +226,3 @@ const dashboard: Dashboard = {
     ],
   },
 }
-
-writeDashboardAndPostToGrafana({
-  grafanaURL: process.env.GRAFANA_URL,
-  dashboard,
-  filename: path.join(__dirname, 'dist', 'smartctl.json'),
-})

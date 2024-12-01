@@ -69,7 +69,7 @@ const panels: PanelRowAndGroups = [
   NewGoRuntimeMetrics({ datasource, title: 'Resource Usage (postgres-exporter)', selector: '{job=~"$job", namespace=~"$namespace"}' }),
 ]
 
-const dashboard: Dashboard = {
+export const dashboard: Dashboard = {
   ...defaultDashboard,
   description: 'Dashboard for postgres',
   graphTooltip: DashboardCursorSync.Crosshair,
@@ -86,9 +86,3 @@ const dashboard: Dashboard = {
     list: [NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }), NewQueryVariable({ datasource, name: 'namespace', label: 'Namespace', query: 'label_values(postgres_exporter_build_info, namespace)' }), NewQueryVariable({ datasource, name: 'job', label: 'Job', query: 'label_values(postgres_exporter_build_info{namespace=~"$namespace"}, job)', includeAll: true, multi: true })],
   },
 }
-
-writeDashboardAndPostToGrafana({
-  grafanaURL: process.env.GRAFANA_URL,
-  dashboard,
-  filename: path.join(__dirname, 'dist', 'postgres.json'),
-})

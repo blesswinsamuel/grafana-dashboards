@@ -60,7 +60,7 @@ const panels: PanelRowAndGroups = [
   ]),
 ]
 
-const dashboard: Dashboard = {
+export const dashboard: Dashboard = {
   ...defaultDashboard,
   description: 'Dashboard for cert-manager',
   graphTooltip: DashboardCursorSync.Crosshair,
@@ -77,9 +77,3 @@ const dashboard: Dashboard = {
     list: [NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' })],
   },
 }
-
-writeDashboardAndPostToGrafana({
-  grafanaURL: process.env.GRAFANA_URL,
-  dashboard,
-  filename: path.join(__dirname, 'dist', 'cert-manager.json'),
-})

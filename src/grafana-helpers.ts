@@ -13,7 +13,7 @@ export { averageDurationQuery, overridesMatchByName, tableExcludeByName, tableIn
 export type DataSourceVariableOpts = {
   name: string
   label: string
-  regex: string
+  regex?: string
 }
 
 export type PanelRow = {
@@ -203,6 +203,7 @@ export async function writeDashboardAndPostToGrafana(opts: { grafanaURL?: string
   }
   await fs.writeFile(opts.filename, JSON.stringify(dashboard, null, 2))
   if (grafanaURL) {
+    console.info(`${new Date().toISOString()}: Writing dashboard ${opts.filename} to Grafana at ${grafanaURL}`)
     dashboard['uid'] = `${addDebugNamePrefix ? 'debug-' : ''}${dashboard['uid']}`
     dashboard['title'] = `${addDebugNamePrefix ? '[Debug] ' : ''}${dashboard['title']}`
     const headers = {
