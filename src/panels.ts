@@ -17,9 +17,11 @@ import {
   GraphGradientMode,
   GraphThresholdsStyleMode,
   LegendDisplayMode,
+  LegendPlacement,
   LineInterpolation,
   MappingType,
   Panel,
+  ReduceDataOptions,
   ScaleDistribution,
   SortOrder,
   StackingMode,
@@ -122,9 +124,11 @@ export type TimeSeriesPanelOpts = CommonPanelOpts & {
   type?: 'bar' | 'line'
   maxDataPoints?: number
   options?: RecursivePartial<TimeSeriesPanelOptions>
+  legendPlacement?: LegendPlacement
 }
 export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
   opts.type = opts.type ?? 'line'
+  const legendCalcs = opts.legendCalcs ?? { bar: ['sum'], line: ['max', 'mean'] }[opts.type]
   const panel: Panel<Record<string, unknown>, GraphFieldConfig> = {
     ...defaultPanel,
     datasource: opts.datasource,
@@ -182,10 +186,19 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
     options: deepMerge<TimeSeriesPanelOptions>(
       {
         legend: {
-          calcs: opts.legendCalcs ?? { bar: ['sum'], line: ['mean', 'max'] }[opts.type],
+          calcs: legendCalcs,
           displayMode: LegendDisplayMode.Table,
-          placement: 'bottom',
+          placement: opts.legendPlacement ?? 'bottom',
           showLegend: true,
+          sortBy: {
+            mean: 'Mean',
+            min: 'Min',
+            max: 'Max',
+            last: 'Last',
+            lastNotNull: 'Last *',
+            sum: 'Total',
+          }[legendCalcs[legendCalcs.length - 1]],
+          sortDesc: true,
         },
         tooltip: {
           mode: TooltipDisplayMode.Multi,
@@ -221,6 +234,7 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
 export type StatPanelOpts = CommonPanelOpts & {
   reduceCalc?: 'lastNotNull' | 'last' | 'first' | 'mean' | 'min' | 'max' | 'sum' | 'count' | 'median' | 'diff' | 'range'
   graphMode?: BigValueGraphMode
+  reduceOptions?: Partial<ReduceDataOptions>
 }
 
 export function NewStatPanel(opts: StatPanelOpts): Panel {
@@ -245,8 +259,9 @@ export function NewStatPanel(opts: StatPanelOpts): Panel {
     options: {
       reduceOptions: {
         values: false,
-        calcs: [opts.reduceCalc ?? 'lastNotNull'],
         fields: '',
+        calcs: [opts.reduceCalc ?? 'lastNotNull'],
+        ...opts.reduceOptions,
       },
       orientation: VizOrientation.Auto,
       textMode: BigValueTextMode.Auto,

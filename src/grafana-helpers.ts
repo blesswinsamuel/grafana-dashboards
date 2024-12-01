@@ -1,6 +1,7 @@
 // https://github.com/grafana/grafana/tree/main/packages/grafana-schema
 import { Dashboard, DataSourceRef, Panel, RowPanel, VariableModel, VariableRefresh, defaultVariableModel } from '@grafana/schema'
 import * as fs from 'fs/promises'
+import * as fsSync from 'fs'
 import * as yaml from 'yaml'
 import { RuleFile } from './alerts'
 export { NewGoRuntimeMetrics } from './go-runtime'
@@ -12,6 +13,7 @@ export { averageDurationQuery, overridesMatchByName, tableExcludeByName, tableIn
 export type DataSourceVariableOpts = {
   name: string
   label: string
+  regex: string
 }
 
 export type PanelRow = {
@@ -70,6 +72,7 @@ export function NewPrometheusDatasource(opts: DataSourceVariableOpts): VariableM
     type: 'datasource',
     label: opts.label,
     name: opts.name,
+    regex: opts.regex,
     query: 'prometheus',
   }
 }
@@ -78,10 +81,11 @@ export type VariableOpts = {
   label: string
   name: string
   datasource: DataSourceRef
-  query?: string
+  query?: string | any
   refresh?: VariableRefresh
   multi?: boolean
   includeAll?: boolean
+  regex?: string
   hide?: boolean
 }
 
@@ -102,6 +106,7 @@ export function NewQueryVariable(opts: VariableOpts): VariableModel {
     sort: 1, // SORT_ALPHA_DESC
     refresh: opts.refresh || VariableRefresh.onTimeRangeChanged,
     options: [],
+    regex: opts.regex,
   }
 }
 
@@ -179,27 +184,47 @@ export function autoLayout(panelRows: PanelRowAndGroups): Array<Panel | RowPanel
   return autoLayoutInner(panelRows)[0]
 }
 
-export async function writeDashboardAndPostToGrafana(opts: { grafanaURL?: string; grafanaUsername?: string; grafanaPassword?: string; dashboard: Dashboard; filename: string }) {
-  const { grafanaURL = process.env.GRAFANA_URL, dashboard } = opts
+export async function writeDashboardAndPostToGrafana(opts: { grafanaURL?: string; grafanaUsername?: string; grafanaPassword?: string; grafanaSession?: string; dashboard: Dashboard; folderUid?: string; addDebugNamePrefix?: boolean; filename: string }) {
+  const { grafanaURL = process.env.GRAFANA_URL, grafanaSession = process.env.GRAFANA_SESSION, dashboard, addDebugNamePrefix = true } = opts
+  // create parent folder if it doesn't exist
+  if (opts.filename.includes('/')) {
+    const folder = opts.filename.split('/').slice(0, -1).join('/')
+    if (folder !== '' && !fsSync.existsSync(folder)) {
+      console.log('Creating parent folder', folder)
+      await fs.mkdir(folder, { recursive: true })
+    }
+  }
+  if (fsSync.existsSync(opts.filename)) {
+    const existingDashboard = JSON.parse(await fs.readFile(opts.filename, 'utf-8'))
+    if (JSON.stringify(existingDashboard) === JSON.stringify(dashboard)) {
+      console.info(`Dashboard ${opts.filename} is already up to date`)
+      return
+    }
+  }
   await fs.writeFile(opts.filename, JSON.stringify(dashboard, null, 2))
   if (grafanaURL) {
-    dashboard['uid'] = `${dashboard['uid']}-debug`
-    dashboard['title'] = `[Debug] ${dashboard['title']}`
+    dashboard['uid'] = `${addDebugNamePrefix ? 'debug-' : ''}${dashboard['uid']}`
+    dashboard['title'] = `${addDebugNamePrefix ? '[Debug] ' : ''}${dashboard['title']}`
     const headers = {
       'Content-Type': 'application/json',
     }
     if (opts.grafanaUsername && opts.grafanaPassword) {
       headers['Authorization'] = 'Basic ' + btoa(opts.grafanaUsername + ':' + opts.grafanaPassword)
     }
-    const response = await fetch(`${grafanaURL}/api/dashboards/db`, {
+    if (grafanaSession) {
+      headers['Cookie'] = `grafana_session=${grafanaSession}`
+    }
+    const fetchOpts: RequestInit = {
       method: 'POST',
       body: JSON.stringify({
         dashboard: dashboard,
+        folderUid: opts.folderUid,
         overwrite: true,
         message: 'Updated by script',
       }),
       headers,
-    })
+    }
+    const response = await fetch(`${grafanaURL}/api/dashboards/db`, fetchOpts)
 
     console.log(response.status, response.statusText)
     const body = await response.json()
