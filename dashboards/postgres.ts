@@ -50,7 +50,7 @@ const panels: PanelRowAndGroups = [
     NewPanelRow({ datasource, height: 8 }, [
       NewPieChartPanel({ title: 'Database Size', targets: [{ expr: 'sum(pg_database_size_bytes{job=~"$job", namespace=~"$namespace"}) by (datname)', legendFormat: '{{ datname }}' }], defaultUnit: Unit.BYTES_SI }),
       NewTimeSeriesPanel({ title: 'Database Size', targets: [{ expr: 'sum(pg_database_size_bytes{job=~"$job", namespace=~"$namespace"}) by (datname)', legendFormat: '{{ datname }}' }], defaultUnit: Unit.BYTES_SI }),
-      NewTimeSeriesPanel({ title: 'Locks Count', targets: [{ expr: 'sum(pg_locks_count{job=~"$job", namespace=~"$namespace"}) by (datname, mode)', legendFormat: '{{ datname }}' }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'Locks Count', targets: [{ expr: 'sum(pg_locks_count{job=~"$job", namespace=~"$namespace"}) by (datname, mode) > 0', legendFormat: '{{ datname }} - {{ mode }}' }], defaultUnit: Unit.SHORT }),
       NewTimeSeriesPanel({ title: 'Number of backends connected', targets: [{ expr: 'sum(pg_stat_database_numbackends{job=~"$job", namespace=~"$namespace", datname!=""}) by (datname)', legendFormat: '{{ datname }}' }], defaultUnit: Unit.SHORT }),
     ]),
   ]),
