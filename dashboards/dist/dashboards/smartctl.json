@@ -1014,8 +1014,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_temperature{instance=~\"$instance\", job=\"$job\",temperature_type=\"current\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_temperature{instance=~\"$instance\", job=\"$job\",temperature_type=\"current\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1100,8 +1100,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_smartctl_exit_status{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_smartctl_exit_status{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1186,8 +1186,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_smart_status{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_smart_status{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1272,8 +1272,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (increase(smartctl_device_power_on_seconds{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"}))",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (increase(smartctl_device_power_on_seconds{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"}))",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1358,8 +1358,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_power_cycle_count{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_power_cycle_count{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1444,8 +1444,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_percentage_used{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_percentage_used{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1530,8 +1530,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_nvme_capacity_bytes{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_nvme_capacity_bytes{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1616,8 +1616,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_num_err_log_entries{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_num_err_log_entries{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1703,8 +1703,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_media_errors{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_media_errors{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1790,8 +1790,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_error_log_count{instance=~\"$instance\", job=\"$job\",error_log_type=\"summary\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_error_log_count{instance=~\"$instance\", job=\"$job\",error_log_type=\"summary\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1876,8 +1876,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_critical_warning{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_critical_warning{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1962,8 +1962,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\",speed_type=\"current\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\",speed_type=\"current\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2048,8 +2048,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\",speed_type=\"max\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\",speed_type=\"max\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2134,8 +2134,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_capacity_bytes{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_capacity_bytes{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2220,8 +2220,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_capacity_blocks{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_capacity_blocks{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2306,8 +2306,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_bytes_written{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_bytes_written{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2392,8 +2392,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_bytes_read{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_bytes_read{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2478,8 +2478,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_block_size{instance=~\"$instance\", job=\"$job\",blocks_type=\"logical\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_block_size{instance=~\"$instance\", job=\"$job\",blocks_type=\"logical\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2564,8 +2564,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_block_size{instance=~\"$instance\", job=\"$job\",blocks_type=\"physical\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_block_size{instance=~\"$instance\", job=\"$job\",blocks_type=\"physical\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2650,8 +2650,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_available_spare_threshold{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_available_spare_threshold{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2737,8 +2737,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum by (model_name) (smartctl_device_available_spare{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
-          "legendFormat": "{{ model_name }}",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_available_spare{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\"})",
+          "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
           "range": true,
           "instant": false,
           "format": "time_series",

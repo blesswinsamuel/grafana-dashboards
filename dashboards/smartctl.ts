@@ -22,8 +22,10 @@ function queryWithModelName(query: string, extraSelectors: string = '', func: st
   if (func) {
     r = `${func}(${r})`
   }
-  return `sum by (model_name) (${r})`
+  return `sum by (model_name, device, instance) (${r})`
 }
+
+const queryWithModelNameLegendFormat = '{{ model_name }} ({{ instance }}/{{ device }})'
 
 const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Overview' }, [
@@ -167,38 +169,38 @@ const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Metrics' }, [
     // available labels: entrypoint, code, method, protocol
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Temperature', targets: [{ expr: queryWithModelName('smartctl_device_temperature', 'temperature_type="current"'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.CELSIUS }),
-      NewTimeSeriesPanel({ title: 'Smartctl exit status', targets: [{ expr: queryWithModelName('smartctl_device_smartctl_exit_status'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.SHORT }),
-      NewTimeSeriesPanel({ title: 'SMART passed', targets: [{ expr: queryWithModelName('smartctl_device_smart_status'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.SHORT }),
-      NewTimeSeriesPanel({ title: 'Power on duration', targets: [{ expr: queryWithModelName('smartctl_device_power_on_seconds', '', 'increase'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.SECONDS, type: 'bar', interval: '1h' }),
+      NewTimeSeriesPanel({ title: 'Temperature', targets: [{ expr: queryWithModelName('smartctl_device_temperature', 'temperature_type="current"'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.CELSIUS }),
+      NewTimeSeriesPanel({ title: 'Smartctl exit status', targets: [{ expr: queryWithModelName('smartctl_device_smartctl_exit_status'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'SMART passed', targets: [{ expr: queryWithModelName('smartctl_device_smart_status'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'Power on duration', targets: [{ expr: queryWithModelName('smartctl_device_power_on_seconds', '', 'increase'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.SECONDS, type: 'bar', interval: '1h' }),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Power cycle count', targets: [{ expr: queryWithModelName('smartctl_device_power_cycle_count'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.SHORT }),
-      NewTimeSeriesPanel({ title: 'Write percentage used', targets: [{ expr: queryWithModelName('smartctl_device_percentage_used'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.SHORT }),
-      NewTimeSeriesPanel({ title: 'NVMe capacity bytes', targets: [{ expr: queryWithModelName('smartctl_device_nvme_capacity_bytes'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.BYTES_IEC }),
-      NewTimeSeriesPanel({ title: 'Number of error log entries', description: 'Contains the number of Error Information log entries over the life of the controller', targets: [{ expr: queryWithModelName('smartctl_device_num_err_log_entries'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'Power cycle count', targets: [{ expr: queryWithModelName('smartctl_device_power_cycle_count'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'Write percentage used', targets: [{ expr: queryWithModelName('smartctl_device_percentage_used'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'NVMe capacity bytes', targets: [{ expr: queryWithModelName('smartctl_device_nvme_capacity_bytes'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.BYTES_IEC }),
+      NewTimeSeriesPanel({ title: 'Number of error log entries', description: 'Contains the number of Error Information log entries over the life of the controller', targets: [{ expr: queryWithModelName('smartctl_device_num_err_log_entries'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.SHORT }),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Number of media errors', description: 'Contains the number of occurrences where the controller detected an unrecovered data integrity error. Errors such as uncorrectable ECC, CRC checksum failure, or LBA tag mismatch are included in this field', targets: [{ expr: queryWithModelName('smartctl_device_media_errors'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.SHORT }),
-      NewTimeSeriesPanel({ title: 'SMART error log count', targets: [{ expr: queryWithModelName('smartctl_device_error_log_count', 'error_log_type="summary"'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.SHORT }),
-      NewTimeSeriesPanel({ title: 'Critical warnings for state of controller', targets: [{ expr: queryWithModelName('smartctl_device_critical_warning'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'Number of media errors', description: 'Contains the number of occurrences where the controller detected an unrecovered data integrity error. Errors such as uncorrectable ECC, CRC checksum failure, or LBA tag mismatch are included in this field', targets: [{ expr: queryWithModelName('smartctl_device_media_errors'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'SMART error log count', targets: [{ expr: queryWithModelName('smartctl_device_error_log_count', 'error_log_type="summary"'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'Critical warnings for state of controller', targets: [{ expr: queryWithModelName('smartctl_device_critical_warning'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.SHORT }),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'Interface speed (current)', targets: [{ expr: queryWithModelName('smartctl_device_interface_speed', 'speed_type="current"'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.BITS_PER_SEC_SI }),
-      NewTimeSeriesPanel({ title: 'Interface speed (max)', targets: [{ expr: queryWithModelName('smartctl_device_interface_speed', 'speed_type="max"'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.BITS_PER_SEC_SI }),
+      NewTimeSeriesPanel({ title: 'Interface speed (current)', targets: [{ expr: queryWithModelName('smartctl_device_interface_speed', 'speed_type="current"'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.BITS_PER_SEC_SI }),
+      NewTimeSeriesPanel({ title: 'Interface speed (max)', targets: [{ expr: queryWithModelName('smartctl_device_interface_speed', 'speed_type="max"'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.BITS_PER_SEC_SI }),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Capacity Bytes', targets: [{ expr: queryWithModelName('smartctl_device_capacity_bytes'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.BYTES_IEC }),
-      NewTimeSeriesPanel({ title: 'Capacity Blocks', targets: [{ expr: queryWithModelName('smartctl_device_capacity_blocks'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.SHORT }),
-      NewTimeSeriesPanel({ title: 'Bytes written', targets: [{ expr: queryWithModelName('smartctl_device_bytes_written'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.BYTES_IEC }),
-      NewTimeSeriesPanel({ title: 'Bytes read', targets: [{ expr: queryWithModelName('smartctl_device_bytes_read'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.BYTES_IEC }),
+      NewTimeSeriesPanel({ title: 'Capacity Bytes', targets: [{ expr: queryWithModelName('smartctl_device_capacity_bytes'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.BYTES_IEC }),
+      NewTimeSeriesPanel({ title: 'Capacity Blocks', targets: [{ expr: queryWithModelName('smartctl_device_capacity_blocks'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.SHORT }),
+      NewTimeSeriesPanel({ title: 'Bytes written', targets: [{ expr: queryWithModelName('smartctl_device_bytes_written'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.BYTES_IEC }),
+      NewTimeSeriesPanel({ title: 'Bytes read', targets: [{ expr: queryWithModelName('smartctl_device_bytes_read'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.BYTES_IEC }),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Block size (logical)', targets: [{ expr: queryWithModelName('smartctl_device_block_size', 'blocks_type="logical"'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.BYTES_IEC }),
-      NewTimeSeriesPanel({ title: 'Block size (physical)', targets: [{ expr: queryWithModelName('smartctl_device_block_size', 'blocks_type="physical"'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.BYTES_IEC }),
-      NewTimeSeriesPanel({ title: 'Available spare threshold', description: 'When the Available Spare falls below the threshold indicated in this field, an asynchronous event completion may occur. The value is indicated as a normalized percentage (0 to 100%)', targets: [{ expr: queryWithModelName('smartctl_device_available_spare_threshold'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.PERCENT }),
-      NewTimeSeriesPanel({ title: 'Available spare', description: 'Normalized percentage (0 to 100%) of the remaining spare capacity available', targets: [{ expr: queryWithModelName('smartctl_device_available_spare'), legendFormat: '{{ model_name }}' }], defaultUnit: Unit.PERCENT }),
+      NewTimeSeriesPanel({ title: 'Block size (logical)', targets: [{ expr: queryWithModelName('smartctl_device_block_size', 'blocks_type="logical"'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.BYTES_IEC }),
+      NewTimeSeriesPanel({ title: 'Block size (physical)', targets: [{ expr: queryWithModelName('smartctl_device_block_size', 'blocks_type="physical"'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.BYTES_IEC }),
+      NewTimeSeriesPanel({ title: 'Available spare threshold', description: 'When the Available Spare falls below the threshold indicated in this field, an asynchronous event completion may occur. The value is indicated as a normalized percentage (0 to 100%)', targets: [{ expr: queryWithModelName('smartctl_device_available_spare_threshold'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.PERCENT }),
+      NewTimeSeriesPanel({ title: 'Available spare', description: 'Normalized percentage (0 to 100%) of the remaining spare capacity available', targets: [{ expr: queryWithModelName('smartctl_device_available_spare'), legendFormat: queryWithModelNameLegendFormat }], defaultUnit: Unit.PERCENT }),
     ]),
   ]),
   NewGoRuntimeMetrics({ datasource, selector: '{instance=~"$instance", job="$job"}' }),
