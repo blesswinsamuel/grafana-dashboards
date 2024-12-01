@@ -204,7 +204,18 @@ const timeSeriesGroup = NewPanelGroup({ title: 'Metrics' }, [
   ]),
 ])
 
-const panels: PanelRowAndGroups = [NewPanelGroup({ title: 'Overview' }, [overviewStats, deviceInfoTablePanel, smartOverviewTablePanel, smartAttributesTablePanel]), timeSeriesGroup, NewGoRuntimeMetrics({ datasource, selector: '{instance=~"$instance", job="$job"}' })]
+const panels: PanelRowAndGroups = [
+  //
+  NewPanelGroup({ title: 'Overview' }, [
+    //
+    overviewStats,
+    deviceInfoTablePanel,
+    smartOverviewTablePanel,
+    smartAttributesTablePanel,
+  ]),
+  timeSeriesGroup,
+  NewGoRuntimeMetrics({ datasource, selector: '{instance=~"$instance", job="$job"}', collapsed: true }),
+]
 
 export const dashboard: Dashboard = {
   ...defaultDashboard,
