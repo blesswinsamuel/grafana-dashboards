@@ -2,7 +2,8 @@
   "name": "grafana-dashboard-helpers",
   "main": "src/grafana-helpers.ts",
   "scripts": {
-    "start": "bun dashboards/dashboards.ts"
+    "generate": "bun dashboards/dashboards.ts",
+    "dev": "bun --watch dashboards/dashboards.ts"
   },
   "files": [
     "src/**/*"
