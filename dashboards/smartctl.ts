@@ -224,8 +224,9 @@ export const dashboard: Dashboard = {
       NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }),
       NewQueryVariable({ datasource, name: 'job', label: 'Job', query: 'label_values(smartctl_version, job)' }),
       NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(smartctl_version{job="$job"}, instance)', includeAll: true, multi: true }),
-      NewQueryVariable({ datasource, name: 'model_name', label: 'Model Name', query: 'label_values(smartctl_device{job="$job", instance=~"$instance"}, model_name)', includeAll: true, multi: true }),
-      NewQueryVariable({ datasource, name: 'serial_number', label: 'Serial Number', query: 'label_values(smartctl_device{job="$job", instance=~"$instance", model_name=~"$model_name"}, serial_number)', includeAll: true, multi: true }),
+      NewQueryVariable({ datasource, name: 'interface', label: 'Device Interface', query: 'label_values(smartctl_device{job="$job", instance=~"$instance"}, interface)', includeAll: true, multi: true }),
+      NewQueryVariable({ datasource, name: 'model_name', label: 'Model Name', query: 'label_values(smartctl_device{job="$job", instance=~"$instance", interface=~"$interface"}, model_name)', includeAll: true, multi: true }),
+      NewQueryVariable({ datasource, name: 'serial_number', label: 'Serial Number', query: 'label_values(smartctl_device{job="$job", instance=~"$instance", interface=~"$interface", model_name=~"$model_name"}, serial_number)', includeAll: true, multi: true }),
     ],
   },
 }

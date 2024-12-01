@@ -3984,9 +3984,25 @@
         },
         "hide": 0,
         "type": "query",
+        "label": "Device Interface",
+        "name": "interface",
+        "query": "label_values(smartctl_device{job=\"$job\", instance=~\"$instance\"}, interface)",
+        "sort": 1,
+        "refresh": 2
+      },
+      {
+        "includeAll": true,
+        "multi": true,
+        "options": [],
+        "skipUrlSync": false,
+        "datasource": {
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "hide": 0,
+        "type": "query",
         "label": "Model Name",
         "name": "model_name",
-        "query": "label_values(smartctl_device{job=\"$job\", instance=~\"$instance\"}, model_name)",
+        "query": "label_values(smartctl_device{job=\"$job\", instance=~\"$instance\", interface=~\"$interface\"}, model_name)",
         "sort": 1,
         "refresh": 2
       },
@@ -4002,7 +4018,7 @@
         "type": "query",
         "label": "Serial Number",
         "name": "serial_number",
-        "query": "label_values(smartctl_device{job=\"$job\", instance=~\"$instance\", model_name=~\"$model_name\"}, serial_number)",
+        "query": "label_values(smartctl_device{job=\"$job\", instance=~\"$instance\", interface=~\"$interface\", model_name=~\"$model_name\"}, serial_number)",
         "sort": 1,
         "refresh": 2
       }
