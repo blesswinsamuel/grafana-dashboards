@@ -47,14 +47,21 @@ type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends object | undefined ? RecursivePartial<T[P]> : T[P]
 }
 
-export type Target = {
-  expr: string
-  // interval?: string
-  legendFormat?: string
-  refId?: string
-  type?: 'range' | 'instant' | 'both'
-  format?: PromQueryFormat
-}
+export type Target = { datasource?: DataSourceRef } & (
+  | {
+      expr: string
+      // interval?: string
+      legendFormat?: string
+      refId?: string
+      type?: 'range' | 'instant' | 'both'
+      format?: PromQueryFormat
+    }
+  | {
+      rawSql: string
+      refId?: string
+      format?: PromQueryFormat
+    }
+)
 
 const deepMerge = <T = { [key: string]: any }>(obj1: T, obj2?: Partial<T>): T => {
   const clone1 = structuredClone(obj1)
@@ -80,10 +87,29 @@ const deepMerge = <T = { [key: string]: any }>(obj1: T, obj2?: Partial<T>): T =>
 
 function fromTargets(targets: Target[], datasource: DataSourceRef): (PrometheusDataQuery & Record<string, unknown>)[] {
   return targets.map((target, i) => {
+    if ('rawSql' in target) {
+      return {
+        datasource: target.datasource ?? datasource,
+        editorMode: QueryEditorMode.Code,
+        rawQuery: true,
+        rawSql: target.rawSql,
+        format: 'table',
+        // format: 1,
+        refId: target.refId ?? String.fromCharCode('A'.charCodeAt(0) + i),
+        queryType: 'table',
+        // editorType: 'sql',
+        // meta: {},
+        // sql: {
+        //   columns: [{ parameters: [], type: 'function' }],
+        //   groupBy: [{ property: { type: 'string' }, type: 'groupBy' }],
+        //   limit: 50,
+        // },
+      } as any
+    }
     target.type = target.type ?? 'range'
 
     return {
-      datasource,
+      datasource: target.datasource ?? datasource,
       editorMode: QueryEditorMode.Code,
       expr: target.expr,
       // //@ts-ignore
@@ -106,10 +132,12 @@ export type CommonPanelOpts = {
   defaultUnit?: Unit
   min?: number
   max?: number
+  decimals?: number
 
   mappings?: ValueMapping[]
   thresholds?: ThresholdsConfig
   overrides?: FieldConfigSource['overrides']
+  fieldConfigDefaults?: FieldConfigSource['defaults']
   transformations?: Panel['transformations']
 
   legendCalcs?: string[]
@@ -118,6 +146,7 @@ export type CommonPanelOpts = {
   height?: number
   maxDataPoints?: number
   interval?: string
+  timeFrom?: string
 }
 
 export type TimeSeriesPanelOpts = CommonPanelOpts & {
@@ -125,6 +154,8 @@ export type TimeSeriesPanelOpts = CommonPanelOpts & {
   maxDataPoints?: number
   options?: RecursivePartial<TimeSeriesPanelOptions>
   legendPlacement?: LegendPlacement
+  stackingMode?: StackingMode
+  thresholdsStyleMode?: GraphThresholdsStyleMode
 }
 export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
   opts.type = opts.type ?? 'line'
@@ -172,7 +203,7 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
             mode: StackingMode.None,
           },
           thresholdsStyle: {
-            mode: GraphThresholdsStyleMode.Off,
+            mode: opts.thresholdsStyleMode ?? GraphThresholdsStyleMode.Off,
           },
         },
         mappings: opts.mappings,
@@ -224,7 +255,7 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
       panel.fieldConfig.defaults.custom!.fillOpacity = 0
       panel.fieldConfig.defaults.custom!.lineInterpolation = LineInterpolation.Linear
       panel.fieldConfig.defaults.custom!.showPoints = VisibilityMode.Auto
-      panel.fieldConfig.defaults.custom!.stacking!.mode = StackingMode.None
+      panel.fieldConfig.defaults.custom!.stacking!.mode = opts.stackingMode ?? StackingMode.None
       panel.maxDataPoints = opts.maxDataPoints ?? 100
       break
   }
@@ -234,7 +265,7 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
 export type StatPanelOpts = CommonPanelOpts & {
   reduceCalc?: 'lastNotNull' | 'last' | 'first' | 'mean' | 'min' | 'max' | 'sum' | 'count' | 'median' | 'diff' | 'range'
   graphMode?: BigValueGraphMode
-  reduceOptions?: Partial<ReduceDataOptions>
+  options?: RecursivePartial<SingleStatPanelOptions>
 }
 
 export function NewStatPanel(opts: StatPanelOpts): Panel {
@@ -253,25 +284,29 @@ export function NewStatPanel(opts: StatPanelOpts): Panel {
         mappings: opts.mappings ?? (opts.defaultUnit === Unit.DATE_TIME_FROM_NOW ? [{ type: MappingType.ValueToText, options: { '0': { text: '-', index: 0 } } }] : []),
         thresholds: opts.thresholds ?? { mode: ThresholdsMode.Absolute, steps: [{ color: 'green', value: null }] },
         unit: opts.defaultUnit,
+        decimals: opts.decimals,
+        ...opts.fieldConfigDefaults,
       },
       overrides: opts.overrides ?? [],
     },
-    options: {
-      reduceOptions: {
-        values: false,
-        fields: '',
-        calcs: [opts.reduceCalc ?? 'lastNotNull'],
-        ...opts.reduceOptions,
+    options: deepMerge<SingleStatPanelOptions>(
+      {
+        reduceOptions: {
+          values: false,
+          fields: '',
+          calcs: [opts.reduceCalc ?? 'lastNotNull'],
+        },
+        orientation: VizOrientation.Auto,
+        textMode: BigValueTextMode.Auto,
+        colorMode: BigValueColorMode.Background,
+        graphMode: opts.graphMode ?? BigValueGraphMode.Area,
+        justifyMode: BigValueJustifyMode.Auto,
+        showPercentChange: false,
+        wideLayout: true,
+        text: {},
       },
-      orientation: VizOrientation.Auto,
-      textMode: BigValueTextMode.Auto,
-      colorMode: BigValueColorMode.Background,
-      graphMode: opts.graphMode ?? BigValueGraphMode.Area,
-      justifyMode: BigValueJustifyMode.Auto,
-      showPercentChange: false,
-      wideLayout: true,
-      text: {},
-    } satisfies SingleStatPanelOptions,
+      opts.options as Partial<SingleStatPanelOptions>
+    ) as unknown as Record<string, unknown>,
     transformations: opts.transformations ?? [],
     transparent: false,
   }
@@ -356,6 +391,7 @@ export function NewTablePanel(opts: TablePanelOpts): Panel {
     } satisfies TablePanelOptions,
     transformations: opts.transformations ?? [],
     transparent: false,
+    timeFrom: opts.timeFrom ?? defaultPanel.timeFrom,
   }
   return panel as Panel
 }
