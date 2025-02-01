@@ -444,5 +444,5 @@ export class SummaryMetric {
 
 function getTargetOpts(opts: CommonQueryOpts): Partial<Target> {
   const { legendFormat, groupBy, type, refId } = opts
-  return { refId, type, format: type === 'instant' ? 'table' : 'time_series', legendFormat: formatLegendFormat(legendFormat, groupBy) }
+  return { refId, type, format: type === 'instant' ? 'table' : undefined, legendFormat: formatLegendFormat(legendFormat, groupBy) }
 }

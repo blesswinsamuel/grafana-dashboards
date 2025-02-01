@@ -21,7 +21,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(pg_database_size_bytes{job=~\"$job\", namespace=~\"$namespace\"}) by (datname)",
           "legendFormat": "{{ datname }}",
           "range": true,
@@ -81,7 +80,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(pg_database_size_bytes{job=~\"$job\", namespace=~\"$namespace\"}) by (datname)",
           "legendFormat": "{{ datname }}",
           "range": true,
@@ -169,7 +167,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(pg_locks_count{job=~\"$job\", namespace=~\"$namespace\"}) by (datname, mode) > 0",
           "legendFormat": "{{ datname }} - {{ mode }}",
           "range": true,
@@ -257,7 +254,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(pg_stat_database_numbackends{job=~\"$job\", namespace=~\"$namespace\", datname!=\"\"}) by (datname)",
           "legendFormat": "{{ datname }}",
           "range": true,
@@ -357,7 +353,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(pg_stat_activity_count{job=~\"$job\", namespace=~\"$namespace\", state=\"active\"}) by (datname)",
           "legendFormat": "{{ datname }}",
           "range": true,
@@ -445,7 +440,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(pg_stat_activity_count{job=~\"$job\", namespace=~\"$namespace\", state=\"disabled\"}) by (datname)",
           "legendFormat": "{{ datname }}",
           "range": true,
@@ -533,7 +527,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(pg_stat_activity_count{job=~\"$job\", namespace=~\"$namespace\", state=\"fastpath function call\"}) by (datname)",
           "legendFormat": "{{ datname }}",
           "range": true,
@@ -621,7 +614,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(pg_stat_activity_count{job=~\"$job\", namespace=~\"$namespace\", state=\"idle\"}) by (datname)",
           "legendFormat": "{{ datname }}",
           "range": true,
@@ -709,7 +701,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(pg_stat_activity_count{job=~\"$job\", namespace=~\"$namespace\", state=\"idle in transaction\"}) by (datname)",
           "legendFormat": "{{ datname }}",
           "range": true,
@@ -797,7 +788,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(pg_stat_activity_count{job=~\"$job\", namespace=~\"$namespace\", state=\"idle in transaction (aborted)\"}) by (datname)",
           "legendFormat": "{{ datname }}",
           "range": true,
@@ -897,7 +887,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (process_open_fds{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -985,7 +974,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (rate(process_cpu_seconds_total{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1073,7 +1061,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (process_resident_memory_bytes{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval])",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1161,7 +1148,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_stack_sys_bytes{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "sys",
           "range": true,
@@ -1170,7 +1156,6 @@
           "refId": "A"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_stack_inuse_bytes{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "inuse",
           "range": true,
@@ -1258,7 +1243,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_sys_bytes{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "sys",
           "range": true,
@@ -1267,7 +1251,6 @@
           "refId": "A"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_idle_bytes{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "idle",
           "range": true,
@@ -1276,7 +1259,6 @@
           "refId": "B"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_released_bytes{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "released",
           "range": true,
@@ -1285,7 +1267,6 @@
           "refId": "C"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_next_gc_bytes{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "next_gc",
           "range": true,
@@ -1294,7 +1275,6 @@
           "refId": "D"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_inuse_bytes{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "inuse",
           "range": true,
@@ -1303,7 +1283,6 @@
           "refId": "E"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_alloc_bytes{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "alloc",
           "range": true,
@@ -1391,7 +1370,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "avg by (pod, instance) (go_memstats_heap_objects{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1479,7 +1457,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (go_threads{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1567,7 +1544,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (go_goroutines{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1655,7 +1631,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (rate(go_memstats_alloc_bytes_total{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1743,7 +1718,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (go_memstats_alloc_bytes{job=~\"$job\", namespace=~\"$namespace\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1831,7 +1805,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (rate(go_gc_duration_seconds_count{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1919,7 +1892,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (rate(go_gc_duration_seconds_sum{job=~\"$job\", namespace=~\"$namespace\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -2003,7 +1975,7 @@
       }
     }
   ],
-  "schemaVersion": 36,
+  "schemaVersion": 39,
   "tags": [
     "postgres"
   ],
@@ -2019,6 +1991,7 @@
   "templating": {
     "list": [
       {
+        "allowCustomValue": true,
         "includeAll": false,
         "multi": false,
         "options": [],
@@ -2031,6 +2004,7 @@
         "query": "prometheus"
       },
       {
+        "allowCustomValue": true,
         "options": [],
         "skipUrlSync": false,
         "datasource": {
@@ -2045,6 +2019,7 @@
         "refresh": 2
       },
       {
+        "allowCustomValue": true,
         "includeAll": true,
         "multi": true,
         "options": [],

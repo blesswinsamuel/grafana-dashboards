@@ -21,6 +21,7 @@ import {
   LineInterpolation,
   MappingType,
   Panel,
+  PercentChangeColorMode,
   ReduceDataOptions,
   ScaleDistribution,
   SortOrder,
@@ -33,35 +34,38 @@ import {
   VisibilityMode,
   VizOrientation,
   defaultPanel,
+  defaultVizLegendOptions,
 } from '@grafana/schema'
+import { PanelQuerySpec } from '@grafana/schema/dist/esm/schema/dashboard/v2alpha0/dashboard.gen'
 import { Options as BarGaugePanelOptions } from '@grafana/schema/dist/esm/raw/composable/bargauge/panelcfg/x/BarGaugePanelCfg_types.gen'
 import { PieChartLegendValues, Options as PieChartPanelOptions, PieChartType } from '@grafana/schema/dist/esm/raw/composable/piechart/panelcfg/x/PieChartPanelCfg_types.gen'
-import { PromQueryFormat, PrometheusDataQuery, QueryEditorMode } from '@grafana/schema/dist/esm/raw/composable/prometheus/dataquery/x/PrometheusDataQuery_types.gen'
 import { Options as SingleStatPanelOptions } from '@grafana/schema/dist/esm/raw/composable/stat/panelcfg/x/StatPanelCfg_types.gen'
 import { Options as TablePanelOptions } from '@grafana/schema/dist/esm/raw/composable/table/panelcfg/x/TablePanelCfg_types.gen'
 import { Options as TimeSeriesPanelOptions } from '@grafana/schema/dist/esm/raw/composable/timeseries/panelcfg/x/TimeSeriesPanelCfg_types.gen'
 import { Unit } from './units'
+import { overridesMatchByName, tableExcludeByName, tableIndexByName } from './utils'
 
 // https://stackoverflow.com/a/51365037/1421222
 type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends object | undefined ? RecursivePartial<T[P]> : T[P]
 }
 
-export type Target = { datasource?: DataSourceRef } & (
-  | {
-      expr: string
-      // interval?: string
-      legendFormat?: string
-      refId?: string
-      type?: 'range' | 'instant' | 'both'
-      format?: PromQueryFormat
-    }
-  | {
-      rawSql: string
-      refId?: string
-      format?: PromQueryFormat
-    }
-)
+export type PrometheusTarget = { datasource?: DataSourceRef } & {
+  expr: string
+  // interval?: string
+  legendFormat?: string
+  refId?: string
+  type?: 'range' | 'instant' | 'both'
+  format?: 'table' | 'time_series' | 'heatmap'
+}
+
+export type SQLTarget = { datasource?: DataSourceRef } & {
+  rawSql: string
+  refId?: string
+  format?: 'table' | 'time_series' | 'heatmap'
+}
+
+export type Target = { datasource?: DataSourceRef } & (PrometheusTarget | SQLTarget)
 
 const deepMerge = <T = { [key: string]: any }>(obj1: T, obj2?: Partial<T>): T => {
   const clone1 = structuredClone(obj1)
@@ -85,12 +89,12 @@ const deepMerge = <T = { [key: string]: any }>(obj1: T, obj2?: Partial<T>): T =>
   return clone1
 }
 
-function fromTargets(targets: Target[], datasource: DataSourceRef): (PrometheusDataQuery & Record<string, unknown>)[] {
+function fromTargets(targets: Target[], datasource: DataSourceRef): (PanelQuerySpec & Record<string, unknown>)[] {
   return targets.map((target, i) => {
     if ('rawSql' in target) {
       return {
         datasource: target.datasource ?? datasource,
-        editorMode: QueryEditorMode.Code,
+        // editorMode: QueryEditorMode.Code,
         rawQuery: true,
         rawSql: target.rawSql,
         format: 'table',
@@ -110,7 +114,7 @@ function fromTargets(targets: Target[], datasource: DataSourceRef): (PrometheusD
 
     return {
       datasource: target.datasource ?? datasource,
-      editorMode: QueryEditorMode.Code,
+      // editorMode: QueryEditorMode.Code,
       expr: target.expr,
       // //@ts-ignore
       // interval: target.interval,
@@ -119,7 +123,7 @@ function fromTargets(targets: Target[], datasource: DataSourceRef): (PrometheusD
       instant: target.type === 'instant' || target.type === 'both',
       format: target.format ?? 'time_series',
       refId: target.refId ?? String.fromCharCode('A'.charCodeAt(0) + i),
-    } satisfies PrometheusDataQuery
+    } as any
   })
 }
 
@@ -341,6 +345,7 @@ export function NewStatPanel(opts: StatPanelOpts, ...targets: Target[]): Panel {
         justifyMode: BigValueJustifyMode.Auto,
         showPercentChange: false,
         wideLayout: true,
+        percentChangeColorMode: PercentChangeColorMode.Standard,
         text: {},
       },
       opts.options as Partial<SingleStatPanelOptions>
@@ -390,6 +395,13 @@ export function NewBarGaugePanel(opts: BarGaugePanelOpts): Panel {
       minVizHeight: 15,
       maxVizHeight: 300,
       text: {},
+      legend: {
+        ...defaultVizLegendOptions,
+        calcs: [],
+        displayMode: LegendDisplayMode.Table,
+        placement: 'right',
+        showLegend: false,
+      },
       ...opts.options,
     } satisfies BarGaugePanelOptions,
     transformations: opts.transformations ?? [],
@@ -400,9 +412,63 @@ export function NewBarGaugePanel(opts: BarGaugePanelOpts): Panel {
 
 export type TablePanelOpts = CommonPanelOpts & {
   options?: Partial<TablePanelOptions>
+  tableConfig?: {
+    queries: Record<
+      string,
+      {
+        target?: Target
+        name?: string
+        unit?: Unit
+        overrides?: Record<string, unknown>
+      }
+    >
+    excludeColumns?: string[]
+    extraTransformations?: Panel['transformations']
+  }
 }
 
 export function NewTablePanel(opts: TablePanelOpts): Panel {
+  const tableOverrides = {}
+  const tableIndexOrder = []
+  const transformations = opts.transformations ?? []
+  const colRenames = {}
+  const targets = opts.targets ?? []
+  if (opts.tableConfig) {
+    const { queries, excludeColumns, extraTransformations } = opts.tableConfig
+    for (const [refId, { target, unit, overrides, name }] of Object.entries(queries)) {
+      const curOverrides = { ...overrides }
+      if (unit) {
+        curOverrides['unit'] = unit
+      }
+      if (target) {
+        if (name) {
+          colRenames[`Value #${refId}`] = name
+        }
+        tableIndexOrder.push(`Value #${refId}`)
+        tableOverrides[`Value #${refId}`] = curOverrides
+        targets.push({ ...target, refId: refId, type: (target as any).type || 'instant', format: target.format || 'table' })
+      } else {
+        if (name) {
+          colRenames[refId] = name
+        }
+        tableIndexOrder.push(refId)
+        tableOverrides[refId] = curOverrides
+      }
+    }
+    transformations.push({ id: 'merge', options: {} })
+    transformations.push({
+      id: 'organize',
+      options: {
+        indexByName: tableIndexByName(tableIndexOrder),
+        excludeByName: tableExcludeByName(excludeColumns ?? []),
+        renameByName: colRenames,
+      },
+    })
+    if (extraTransformations) {
+      transformations.push(...extraTransformations)
+    }
+  }
+
   const panel: Panel<Record<string, unknown>, GraphFieldConfig> = {
     ...defaultPanel,
     datasource: opts.datasource,
@@ -412,14 +478,14 @@ export function NewTablePanel(opts: TablePanelOpts): Panel {
     interval: opts.interval,
     maxDataPoints: opts.maxDataPoints,
     gridPos: { x: 0, y: 0, w: opts.width ?? 0, h: opts.height ?? 0 },
-    targets: fromTargets(opts.targets, opts.datasource),
+    targets: fromTargets(targets, opts.datasource),
     fieldConfig: {
       defaults: {
         mappings: opts.mappings,
         thresholds: opts.thresholds,
         unit: opts.defaultUnit,
       },
-      overrides: opts.overrides ?? [],
+      overrides: opts.overrides ?? overridesMatchByName(tableOverrides),
     },
     options: {
       cellHeight: TableCellHeight.Md,
@@ -427,7 +493,7 @@ export function NewTablePanel(opts: TablePanelOpts): Panel {
       showHeader: true,
       ...opts.options,
     } satisfies TablePanelOptions,
-    transformations: opts.transformations ?? [],
+    transformations: transformations,
     transparent: false,
     timeFrom: opts.timeFrom ?? defaultPanel.timeFrom,
   }

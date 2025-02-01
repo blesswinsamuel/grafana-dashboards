@@ -21,7 +21,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(certmanager_certificate_ready_status{}) by (issuer_group, issuer_kind, issuer_name, name, namespace, condition) > 0",
           "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}} - {{condition}}",
           "range": false,
@@ -30,7 +29,6 @@
           "refId": "discard"
         },
         {
-          "editorMode": "code",
           "expr": "max(certmanager_certificate_expiration_timestamp_seconds{}) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
           "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
           "range": false,
@@ -39,7 +37,6 @@
           "refId": "expiration_time"
         },
         {
-          "editorMode": "code",
           "expr": "max(certmanager_certificate_renewal_timestamp_seconds{}) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
           "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
           "range": false,
@@ -161,7 +158,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(certmanager_controller_sync_call_count{}[$__interval])) by (controller)",
           "legendFormat": "{{controller}}",
           "range": true,
@@ -246,7 +242,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(certmanager_http_acme_client_request_count{}[$__interval])) by (host, method, path, scheme, status) > 0",
           "legendFormat": "{{host}} - {{method}} - {{path}} - {{scheme}} - {{status}}",
           "range": true,
@@ -331,7 +326,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "max(certmanager_certificate_expiration_timestamp_seconds{}) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
           "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
           "range": true,
@@ -419,7 +413,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "max(certmanager_certificate_renewal_timestamp_seconds{}) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
           "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
           "range": true,
@@ -507,7 +500,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(rate(certmanager_http_acme_client_request_duration_seconds_sum{}[$__rate_interval])) by (host, method, path, scheme, status) / sum(rate(certmanager_http_acme_client_request_duration_seconds_count{}[$__rate_interval])) by (host, method, path, scheme, status)",
           "legendFormat": "{{host}} - {{method}} - {{path}} - {{scheme}} - {{status}}",
           "range": true,
@@ -591,7 +583,7 @@
       }
     }
   ],
-  "schemaVersion": 36,
+  "schemaVersion": 39,
   "tags": [
     "cert-manager"
   ],
@@ -607,6 +599,7 @@
   "templating": {
     "list": [
       {
+        "allowCustomValue": true,
         "includeAll": false,
         "multi": false,
         "options": [],

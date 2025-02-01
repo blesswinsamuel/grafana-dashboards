@@ -112,42 +112,33 @@ const panels: PanelRowAndGroups = [
       NewTablePanel({
         //
         title: 'Port Link Status',
-        targets: [
-          portLinkStatus.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], refId: 'STATUS', type: 'instant' }),
-          portLinkRx.increase({ selectors, groupBy: ['switch_port'], refId: 'RX', type: 'instant' }),
-          portLinkTx.increase({ selectors, groupBy: ['switch_port'], refId: 'TX', type: 'instant' }),
-          portLinkSpeedMbps.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], refId: 'SPEED', type: 'instant' }),
-          portPowerWatts.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], refId: 'POWER', type: 'instant' }),
-        ],
-        overrides: overridesMatchByName({
-          'Value #STATUS': {
-            mappings: [{ options: { '1': { color: 'green', index: 1, text: 'ON' }, '0': { color: 'red', index: 0, text: 'OFF' } }, type: 'value' }],
-            'custom.cellOptions': { type: 'color-background', mode: 'gradient', applyToRow: false, wrapText: false },
-          },
-          'Value #SPEED': { unit: Unit.MIBITS },
-          'Value #RX': { unit: Unit.BYTES_SI },
-          'Value #TX': { unit: Unit.BYTES_SI },
-          'Value #POWER': { unit: Unit.WATT },
-        }),
-        transformations: [
-          { id: 'merge', options: {} },
-          {
-            id: 'organize',
-            options: {
-              indexByName: tableIndexByName(['switch_port', 'name', 'client', 'vlan_id', 'profile', 'device', 'status']),
-              excludeByName: { Time: true, site: true },
-              renameByName: {
-                'Value #STATUS': 'status',
-                'Value #SPEED': 'speed',
-                'Value #RX': 'rx',
-                'Value #TX': 'tx',
-                'Value #POWER': 'power',
+        tableConfig: {
+          queries: {
+            switch_port: { name: 'Switch Port' },
+            name: { name: 'Name' },
+            client: { name: 'Client' },
+            vlan_id: { name: 'Vlan ID' },
+            profile: { name: 'Profile' },
+            device: { name: 'Device' },
+            STATUS: {
+              target: portLinkStatus.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], type: 'instant' }),
+              name: 'Status',
+              overrides: {
+                mappings: [{ options: { '1': { color: 'green', index: 1, text: 'ON' }, '0': { color: 'red', index: 0, text: 'OFF' } }, type: 'value' }],
+                'custom.cellOptions': { type: 'color-background', mode: 'gradient', applyToRow: false, wrapText: false },
               },
             },
+            SPEED: { name: 'Speed', target: portLinkSpeedMbps.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], type: 'instant' }), unit: Unit.MIBITS },
+            RX: { name: 'Rx', target: portLinkRx.increase({ selectors, groupBy: ['switch_port'], type: 'instant' }), unit: Unit.BYTES_SI },
+            TX: { name: 'Tx', target: portLinkTx.increase({ selectors, groupBy: ['switch_port'], type: 'instant' }), unit: Unit.BYTES_SI },
+            POWER: { name: 'Power', target: portPowerWatts.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], type: 'instant' }), unit: Unit.WATT },
           },
-          { id: 'convertFieldType', options: { conversions: [{ targetField: 'switch_port', destinationType: 'number' }] } },
-          { id: 'sortBy', options: { sort: [{ field: 'switch_port' }] } },
-        ],
+          excludeColumns: ['Time', 'site'],
+          extraTransformations: [
+            { id: 'convertFieldType', options: { conversions: [{ targetField: 'Switch Port', destinationType: 'number' }] } },
+            { id: 'sortBy', options: { sort: [{ field: 'Switch Port' }] } },
+          ],
+        },
       }),
     ]),
   ]),

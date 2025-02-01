@@ -21,7 +21,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__range]))",
           "range": true,
           "instant": false,
@@ -73,6 +72,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -81,7 +81,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__range]))",
           "range": true,
           "instant": false,
@@ -133,6 +132,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -141,7 +141,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__range]))",
           "range": true,
           "instant": false,
@@ -193,6 +192,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -201,7 +201,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_config_reloads_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__range]))",
           "range": true,
           "instant": false,
@@ -253,6 +252,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -261,7 +261,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_config_reloads_failure_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__range]))",
           "range": true,
           "instant": false,
@@ -313,6 +312,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -321,7 +321,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "max(traefik_config_last_reload_success{namespace=~\"$namespace\", instance=~\"$instance\"}[$__range]) * 1000",
           "range": true,
           "instant": false,
@@ -383,6 +382,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -391,7 +391,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "max(traefik_config_last_reload_failure{namespace=~\"$namespace\", instance=~\"$instance\"}[$__range]) * 1000",
           "range": true,
           "instant": false,
@@ -453,6 +452,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -473,7 +473,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(traefik_entrypoint_open_connections{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval]) by (entrypoint, protocol)",
           "legendFormat": "{{ entrypoint }} - {{ protocol }}",
           "range": true,
@@ -558,7 +557,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(traefik_entrypoint_open_connections{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval]) by (entrypoint, method)",
           "legendFormat": "{{ entrypoint }} - {{ method }}",
           "range": true,
@@ -643,7 +641,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_entrypoint_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval])) by (entrypoint)",
           "legendFormat": "{{ entrypoint }}",
           "range": true,
@@ -728,7 +725,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_entrypoint_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval])) by (entrypoint)",
           "legendFormat": "{{ entrypoint }}",
           "range": true,
@@ -813,7 +809,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_entrypoint_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval])) by (entrypoint)",
           "legendFormat": "{{ entrypoint }}",
           "range": true,
@@ -898,7 +893,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "label_replace(sum(rate(traefik_entrypoint_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__rate_interval])) by (entrypoint) / sum(rate(traefik_entrypoint_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__rate_interval])) by (entrypoint), \"service\", \"$1\", \"service\", \"([^-]+-[^@]+)@.*\")",
           "legendFormat": "{{ entrypoint }}",
           "range": true,
@@ -998,7 +992,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(traefik_service_open_connections{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval]) by (service)",
           "legendFormat": "{{ service }}",
           "range": true,
@@ -1083,7 +1076,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(traefik_service_open_connections{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval]) by (protocol)",
           "legendFormat": "{{ protocol }}",
           "range": true,
@@ -1168,7 +1160,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(traefik_service_open_connections{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval]) by (method)",
           "legendFormat": "{{ method }}",
           "range": true,
@@ -1253,7 +1244,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (service)",
           "legendFormat": "{{ service }}",
           "range": true,
@@ -1338,7 +1328,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (service)",
           "legendFormat": "{{ service }}",
           "range": true,
@@ -1423,7 +1412,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (service)",
           "legendFormat": "{{ service }}",
           "range": true,
@@ -1508,7 +1496,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "label_replace(sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (service) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (service), \"service\", \"$1\", \"service\", \"([^-]+-[^@]+)@.*\")",
           "legendFormat": "{{ service }}",
           "range": true,
@@ -1596,7 +1583,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (protocol)",
           "legendFormat": "{{ protocol }}",
           "range": true,
@@ -1681,7 +1667,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (protocol)",
           "legendFormat": "{{ protocol }}",
           "range": true,
@@ -1766,7 +1751,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (protocol)",
           "legendFormat": "{{ protocol }}",
           "range": true,
@@ -1851,7 +1835,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "label_replace(sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (protocol) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (protocol), \"service\", \"$1\", \"service\", \"([^-]+-[^@]+)@.*\")",
           "legendFormat": "{{ protocol }}",
           "range": true,
@@ -1939,7 +1922,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (method)",
           "legendFormat": "{{ method }}",
           "range": true,
@@ -2024,7 +2006,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (method)",
           "legendFormat": "{{ method }}",
           "range": true,
@@ -2109,7 +2090,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (method)",
           "legendFormat": "{{ method }}",
           "range": true,
@@ -2194,7 +2174,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "label_replace(sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (method) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (method), \"service\", \"$1\", \"service\", \"([^-]+-[^@]+)@.*\")",
           "legendFormat": "{{ method }}",
           "range": true,
@@ -2282,7 +2261,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (code)",
           "legendFormat": "{{ code }}",
           "range": true,
@@ -2367,7 +2345,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (code)",
           "legendFormat": "{{ code }}",
           "range": true,
@@ -2452,7 +2429,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (code)",
           "legendFormat": "{{ code }}",
           "range": true,
@@ -2537,7 +2513,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "label_replace(sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (code) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (code), \"service\", \"$1\", \"service\", \"([^-]+-[^@]+)@.*\")",
           "legendFormat": "{{ code }}",
           "range": true,
@@ -2637,7 +2612,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(increase(traefik_service_requests_tls_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__interval])) by (service, tls_cipher, version)",
           "legendFormat": "{{ service }} - {{ tls_cipher }} (version: \"{{ version }}\")",
           "range": true,
@@ -2722,7 +2696,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "max(traefik_tls_certs_not_after{namespace=~\"$namespace\", instance=~\"$instance\"}) by (cn, sans, serial) * 1000",
           "legendFormat": "{{ cn }} - {{ sans }} - {{ serial }}",
           "range": true,
@@ -2822,7 +2795,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (process_open_fds{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -2910,7 +2882,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (rate(process_cpu_seconds_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -2998,7 +2969,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (process_resident_memory_bytes{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -3086,7 +3056,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_stack_sys_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "sys",
           "range": true,
@@ -3095,7 +3064,6 @@
           "refId": "A"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_stack_inuse_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "inuse",
           "range": true,
@@ -3183,7 +3151,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_sys_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "sys",
           "range": true,
@@ -3192,7 +3159,6 @@
           "refId": "A"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_idle_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "idle",
           "range": true,
@@ -3201,7 +3167,6 @@
           "refId": "B"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_released_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "released",
           "range": true,
@@ -3210,7 +3175,6 @@
           "refId": "C"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_next_gc_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "next_gc",
           "range": true,
@@ -3219,7 +3183,6 @@
           "refId": "D"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_inuse_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "inuse",
           "range": true,
@@ -3228,7 +3191,6 @@
           "refId": "E"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_alloc_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "alloc",
           "range": true,
@@ -3316,7 +3278,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "avg by (pod, instance) (go_memstats_heap_objects{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -3404,7 +3365,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (go_threads{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -3492,7 +3452,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (go_goroutines{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -3580,7 +3539,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (rate(go_memstats_alloc_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -3668,7 +3626,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (go_memstats_alloc_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -3756,7 +3713,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (rate(go_gc_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -3844,7 +3800,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (rate(go_gc_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -3928,7 +3883,7 @@
       }
     }
   ],
-  "schemaVersion": 36,
+  "schemaVersion": 39,
   "tags": [
     "traefik"
   ],
@@ -3944,6 +3899,7 @@
   "templating": {
     "list": [
       {
+        "allowCustomValue": true,
         "includeAll": false,
         "multi": false,
         "options": [],
@@ -3956,6 +3912,7 @@
         "query": "prometheus"
       },
       {
+        "allowCustomValue": true,
         "includeAll": true,
         "multi": true,
         "options": [],
@@ -3972,6 +3929,7 @@
         "refresh": 2
       },
       {
+        "allowCustomValue": true,
         "includeAll": true,
         "multi": true,
         "options": [],
@@ -3988,6 +3946,7 @@
         "refresh": 2
       },
       {
+        "allowCustomValue": true,
         "includeAll": true,
         "multi": true,
         "options": [],
@@ -4004,6 +3963,7 @@
         "refresh": 2
       },
       {
+        "allowCustomValue": true,
         "includeAll": true,
         "multi": true,
         "options": [],

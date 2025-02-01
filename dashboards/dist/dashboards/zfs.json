@@ -21,7 +21,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "count(zfs_pool_allocated_bytes{instance=~\"$instance\"})",
           "range": true,
           "instant": false,
@@ -73,6 +72,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -81,7 +81,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "count(zfs_dataset_logical_used_bytes{instance=~\"$instance\"})",
           "range": true,
           "instant": false,
@@ -133,6 +132,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -141,7 +141,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(zfs_pool_allocated_bytes{instance=~\"$instance\"}) by (pool)",
           "range": false,
           "instant": true,
@@ -149,7 +148,6 @@
           "refId": "ALLOCATED"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_pool_deduplication_ratio{instance=~\"$instance\"}) by (pool)",
           "range": false,
           "instant": true,
@@ -157,7 +155,6 @@
           "refId": "DUPLICATION_RATIO"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_pool_fragmentation_ratio{instance=~\"$instance\"}) by (pool)",
           "range": false,
           "instant": true,
@@ -165,7 +162,6 @@
           "refId": "FRAGMENTATION_RATIO"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_pool_free_bytes{instance=~\"$instance\"}) by (pool)",
           "range": false,
           "instant": true,
@@ -173,7 +169,6 @@
           "refId": "FREE"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_pool_freeing_bytes{instance=~\"$instance\"}) by (pool)",
           "range": false,
           "instant": true,
@@ -181,7 +176,6 @@
           "refId": "FREEING"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_pool_health{instance=~\"$instance\"}) by (pool)",
           "range": false,
           "instant": true,
@@ -189,7 +183,6 @@
           "refId": "HEALTH"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_pool_leaked_bytes{instance=~\"$instance\"}) by (pool)",
           "range": false,
           "instant": true,
@@ -197,7 +190,6 @@
           "refId": "LEAKED"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_pool_readonly{instance=~\"$instance\"}) by (pool)",
           "range": false,
           "instant": true,
@@ -205,7 +197,6 @@
           "refId": "READONLY"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_pool_size_bytes{instance=~\"$instance\"}) by (pool)",
           "range": false,
           "instant": true,
@@ -384,7 +375,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(zfs_dataset_available_bytes{instance=~\"$instance\"}) by (name, pool, type)",
           "range": false,
           "instant": true,
@@ -392,7 +382,6 @@
           "refId": "AVAILABLE"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_dataset_logical_used_bytes{instance=~\"$instance\"}) by (name, pool, type)",
           "range": false,
           "instant": true,
@@ -400,7 +389,6 @@
           "refId": "LOGICAL_USED"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_dataset_quota_bytes{instance=~\"$instance\"}) by (name, pool, type)",
           "range": false,
           "instant": true,
@@ -408,7 +396,6 @@
           "refId": "QUOTA"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_dataset_referenced_bytes{instance=~\"$instance\"}) by (name, pool, type)",
           "range": false,
           "instant": true,
@@ -416,7 +403,6 @@
           "refId": "REFERENCED"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_dataset_used_by_dataset_bytes{instance=~\"$instance\"}) by (name, pool, type)",
           "range": false,
           "instant": true,
@@ -424,7 +410,6 @@
           "refId": "USED_BY"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_dataset_used_bytes{instance=~\"$instance\"}) by (name, pool, type)",
           "range": false,
           "instant": true,
@@ -432,7 +417,6 @@
           "refId": "USED"
         },
         {
-          "editorMode": "code",
           "expr": "sum(zfs_dataset_written_bytes{instance=~\"$instance\"}) by (name, pool, type)",
           "range": false,
           "instant": true,
@@ -599,7 +583,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (process_open_fds{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -687,7 +670,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (rate(process_cpu_seconds_total{instance=~\"$instance\",job=\"zfs\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -775,7 +757,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (process_resident_memory_bytes{instance=~\"$instance\",job=\"zfs\"}[$__rate_interval])",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -863,7 +844,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_stack_sys_bytes{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "sys",
           "range": true,
@@ -872,7 +852,6 @@
           "refId": "A"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_stack_inuse_bytes{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "inuse",
           "range": true,
@@ -960,7 +939,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_sys_bytes{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "sys",
           "range": true,
@@ -969,7 +947,6 @@
           "refId": "A"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_idle_bytes{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "idle",
           "range": true,
@@ -978,7 +955,6 @@
           "refId": "B"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_released_bytes{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "released",
           "range": true,
@@ -987,7 +963,6 @@
           "refId": "C"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_next_gc_bytes{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "next_gc",
           "range": true,
@@ -996,7 +971,6 @@
           "refId": "D"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_inuse_bytes{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "inuse",
           "range": true,
@@ -1005,7 +979,6 @@
           "refId": "E"
         },
         {
-          "editorMode": "code",
           "expr": "avg(go_memstats_heap_alloc_bytes{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "alloc",
           "range": true,
@@ -1093,7 +1066,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "avg by (pod, instance) (go_memstats_heap_objects{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1181,7 +1153,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (go_threads{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1269,7 +1240,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (go_goroutines{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1357,7 +1327,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (rate(go_memstats_alloc_bytes_total{instance=~\"$instance\",job=\"zfs\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1445,7 +1414,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (go_memstats_alloc_bytes{instance=~\"$instance\",job=\"zfs\"})",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1533,7 +1501,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (rate(go_gc_duration_seconds_count{instance=~\"$instance\",job=\"zfs\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1621,7 +1588,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum by (pod, instance) (rate(go_gc_duration_seconds_sum{instance=~\"$instance\",job=\"zfs\"}[$__rate_interval]))",
           "legendFormat": "{{ pod }} - {{ instance }}",
           "range": true,
@@ -1705,7 +1671,7 @@
       }
     }
   ],
-  "schemaVersion": 36,
+  "schemaVersion": 39,
   "tags": [
     "zfs"
   ],
@@ -1721,6 +1687,7 @@
   "templating": {
     "list": [
       {
+        "allowCustomValue": true,
         "includeAll": false,
         "multi": false,
         "options": [],
@@ -1733,6 +1700,7 @@
         "query": "prometheus"
       },
       {
+        "allowCustomValue": true,
         "includeAll": true,
         "multi": true,
         "options": [],

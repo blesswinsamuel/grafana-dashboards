@@ -21,7 +21,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_port_power_watts{site=~\"$site\"})",
           "range": true,
           "instant": false,
@@ -73,6 +72,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -81,7 +81,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "max(omada_controller_uptime_seconds{site=~\"$site\"})",
           "range": false,
           "instant": true,
@@ -133,6 +132,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -141,7 +141,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_port_link_status{site=~\"$site\"})",
           "range": true,
           "instant": false,
@@ -192,6 +191,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -200,7 +200,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_client_connected_total{site=~\"$site\"})",
           "range": true,
           "instant": false,
@@ -251,6 +250,7 @@
         "justifyMode": "auto",
         "showPercentChange": false,
         "wideLayout": true,
+        "percentChangeColorMode": "standard",
         "text": {}
       }
     },
@@ -271,7 +271,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_device_cpu_percentage{site=~\"$site\"}) by (device, device_type, ip)",
           "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
           "range": true,
@@ -360,7 +359,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_device_mem_percentage{site=~\"$site\"}) by (device, device_type, ip)",
           "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
           "range": true,
@@ -449,7 +447,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_device_rx_rate{site=~\"$site\"}) by (device, device_type, ip)",
           "legendFormat": "Rx - {{ device }} {{ device_type }} {{ ip }}",
           "range": true,
@@ -458,7 +455,6 @@
           "refId": "RX"
         },
         {
-          "editorMode": "code",
           "expr": "-sum(omada_device_tx_rate{site=~\"$site\"}) by (device, device_type, ip)",
           "legendFormat": "Tx - {{ device }} {{ device_type }} {{ ip }}",
           "range": true,
@@ -544,7 +540,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "max(omada_device_uptime_seconds{site=~\"$site\"}) by (device, device_type, ip)",
           "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
           "range": true,
@@ -632,7 +627,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "max(omada_device_poe_remain_watts{site=~\"$site\"}) by (device, device_type, ip)",
           "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
           "range": true,
@@ -732,7 +726,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_client_connected_total{site=~\"$site\"}) by (connection_mode, wifi_mode)",
           "legendFormat": "{{connection_mode}} - {{wifi_mode}}",
           "range": true,
@@ -820,7 +813,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_client_signal_pct{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
@@ -909,7 +901,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_client_rssi_dbm{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
@@ -996,7 +987,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_client_snr_dbm{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
@@ -1083,7 +1073,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(rate(omada_client_traffic_up_bytes{site=~\"$site\", ip!=\"\"}[$__rate_interval])) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
@@ -1171,7 +1160,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(rate(omada_client_traffic_down_bytes{site=~\"$site\", ip!=\"\"}[$__rate_interval])) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
@@ -1259,7 +1247,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_client_rx_rate{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
@@ -1347,7 +1334,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_client_tx_rate{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
@@ -1447,7 +1433,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "editorMode": "code",
           "expr": "sum(omada_port_link_status{site=~\"$site\"}) by (client, device, name, profile, site, switch_port, vlan_id)",
           "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
           "range": false,
@@ -1456,25 +1441,6 @@
           "refId": "STATUS"
         },
         {
-          "editorMode": "code",
-          "expr": "sum(increase(omada_port_link_rx{site=~\"$site\"}[$__range])) by (switch_port)",
-          "legendFormat": "{{switch_port}}",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "RX"
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(increase(omada_port_link_tx{site=~\"$site\"}[$__range])) by (switch_port)",
-          "legendFormat": "{{switch_port}}",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "TX"
-        },
-        {
-          "editorMode": "code",
           "expr": "sum(omada_port_link_speed_mbps{site=~\"$site\"}) by (client, device, name, profile, site, switch_port, vlan_id)",
           "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
           "range": false,
@@ -1483,7 +1449,22 @@
           "refId": "SPEED"
         },
         {
-          "editorMode": "code",
+          "expr": "sum(increase(omada_port_link_rx{site=~\"$site\"}[$__range])) by (switch_port)",
+          "legendFormat": "{{switch_port}}",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "RX"
+        },
+        {
+          "expr": "sum(increase(omada_port_link_tx{site=~\"$site\"}[$__range])) by (switch_port)",
+          "legendFormat": "{{switch_port}}",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "TX"
+        },
+        {
           "expr": "sum(omada_port_power_watts{site=~\"$site\"}) by (client, device, name, profile, site, switch_port, vlan_id)",
           "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
           "range": false,
@@ -1507,18 +1488,28 @@
               "vlan_id": 3,
               "profile": 4,
               "device": 5,
-              "status": 6
+              "Value #STATUS": 6,
+              "Value #SPEED": 7,
+              "Value #RX": 8,
+              "Value #TX": 9,
+              "Value #POWER": 10
             },
             "excludeByName": {
               "Time": true,
               "site": true
             },
             "renameByName": {
-              "Value #STATUS": "status",
-              "Value #SPEED": "speed",
-              "Value #RX": "rx",
-              "Value #TX": "tx",
-              "Value #POWER": "power"
+              "switch_port": "Switch Port",
+              "name": "Name",
+              "client": "Client",
+              "vlan_id": "Vlan ID",
+              "profile": "Profile",
+              "device": "Device",
+              "Value #STATUS": "Status",
+              "Value #SPEED": "Speed",
+              "Value #RX": "Rx",
+              "Value #TX": "Tx",
+              "Value #POWER": "Power"
             }
           }
         },
@@ -1527,7 +1518,7 @@
           "options": {
             "conversions": [
               {
-                "targetField": "switch_port",
+                "targetField": "Switch Port",
                 "destinationType": "number"
               }
             ]
@@ -1538,7 +1529,7 @@
           "options": {
             "sort": [
               {
-                "field": "switch_port"
+                "field": "Switch Port"
               }
             ]
           }
@@ -1559,6 +1550,48 @@
       "fieldConfig": {
         "defaults": {},
         "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "switch_port"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "name"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "client"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vlan_id"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "profile"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "device"
+            },
+            "properties": []
+          },
           {
             "matcher": {
               "id": "byName",
@@ -1653,7 +1686,7 @@
       }
     }
   ],
-  "schemaVersion": 36,
+  "schemaVersion": 39,
   "tags": [
     "omada-controller"
   ],
@@ -1669,6 +1702,7 @@
   "templating": {
     "list": [
       {
+        "allowCustomValue": true,
         "includeAll": false,
         "multi": false,
         "options": [],
@@ -1681,6 +1715,7 @@
         "query": "prometheus"
       },
       {
+        "allowCustomValue": true,
         "includeAll": true,
         "multi": true,
         "options": [],
@@ -1697,6 +1732,7 @@
         "refresh": 2
       },
       {
+        "allowCustomValue": true,
         "includeAll": true,
         "multi": true,
         "options": [],
