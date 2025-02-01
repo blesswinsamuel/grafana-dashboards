@@ -1,5 +1,5 @@
 import { Dashboard, DashboardCursorSync, DataSourceRef, ThresholdsConfig, ThresholdsMode, defaultDashboard } from '@grafana/schema'
-import { NewGoRuntimeMetrics, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, tableExcludeByName, tableIndexByName, writeDashboardAndPostToGrafana } from '../src/grafana-helpers'
+import { goRuntimeMetricsPanels, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, tableExcludeByName, tableIndexByName, writeDashboardAndPostToGrafana } from '../src/grafana-helpers'
 
 // https://github.com/matusnovak/prometheus-smartctl
 // https://grafana.com/grafana/dashboards/10664-smart-disk-data/
@@ -214,7 +214,7 @@ const panels: PanelRowAndGroups = [
     smartAttributesTablePanel,
   ]),
   timeSeriesGroup,
-  NewGoRuntimeMetrics({ datasource, selector: '{instance=~"$instance", job="$job"}', collapsed: true }),
+  goRuntimeMetricsPanels({ datasource, selector: '{instance=~"$instance", job="$job"}', collapsed: true }),
 ]
 
 export const dashboard: Dashboard = {

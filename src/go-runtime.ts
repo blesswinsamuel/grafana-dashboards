@@ -1,7 +1,7 @@
 import { DataSourceRef } from '@grafana/schema'
 import { NewPanelGroup, NewPanelRow, NewTimeSeriesPanel, PanelGroup, Unit } from './grafana-helpers'
 
-export function NewGoRuntimeMetrics({ datasource, title, selector = '', podLabel = 'pod', collapsed }: { datasource?: DataSourceRef; title?: string; selector?: string; podLabel?: string; collapsed?: boolean }): PanelGroup {
+export function goRuntimeMetricsPanels({ datasource, title, selector = '', podLabel = 'pod', collapsed }: { datasource?: DataSourceRef; title?: string; selector?: string; podLabel?: string; collapsed?: boolean }): PanelGroup {
   return NewPanelGroup({ title: title ?? 'Go Runtime Metrics', collapsed }, [
     NewPanelRow({ datasource, height: 8 }, [
       // NewTimeSeriesPanel({

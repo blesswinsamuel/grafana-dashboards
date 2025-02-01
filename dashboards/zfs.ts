@@ -1,6 +1,6 @@
 import { Dashboard, DashboardCursorSync, DataSourceRef, ThresholdsConfig, ThresholdsMode, defaultDashboard } from '@grafana/schema'
 import * as path from 'path'
-import { NewGoRuntimeMetrics, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, PanelRowAndGroups, Unit, autoLayout, tableExcludeByName, writeDashboardAndPostToGrafana } from '../src/grafana-helpers'
+import { goRuntimeMetricsPanels, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, PanelRowAndGroups, Unit, autoLayout, tableExcludeByName, writeDashboardAndPostToGrafana } from '../src/grafana-helpers'
 
 // https://github.com/matusnovak/prometheus-zfs
 // https://grafana.com/grafana/dashboards/10664-smart-disk-data/
@@ -136,7 +136,7 @@ const panels: PanelRowAndGroups = [
       }),
     ]),
   ]),
-  NewGoRuntimeMetrics({ datasource, selector: '{instance=~"$instance",job="zfs"}' }),
+  goRuntimeMetricsPanels({ datasource, selector: '{instance=~"$instance",job="zfs"}' }),
 ]
 
 function cleanupServiceLabel(query: string): string {

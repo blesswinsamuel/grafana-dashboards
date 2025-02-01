@@ -1,6 +1,6 @@
 import { Dashboard, DashboardCursorSync, DataSourceRef, defaultDashboard } from '@grafana/schema'
 import * as path from 'path'
-import { NewGoRuntimeMetrics, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, averageDurationQuery, writeDashboardAndPostToGrafana } from '../src/grafana-helpers'
+import { goRuntimeMetricsPanels, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, averageDurationQuery, writeDashboardAndPostToGrafana } from '../src/grafana-helpers'
 
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -75,7 +75,7 @@ const panels: PanelRowAndGroups = [
       NewTimeSeriesPanel({ title: 'TLS certs expiration timestamp', targets: [{ expr: 'max(traefik_tls_certs_not_after{namespace=~"$namespace", instance=~"$instance"}) by (cn, sans, serial) * 1000', legendFormat: '{{ cn }} - {{ sans }} - {{ serial }}' }], defaultUnit: Unit.DATE_TIME_FROM_NOW }),
     ]),
   ]),
-  NewGoRuntimeMetrics({ datasource, selector: '{namespace=~"$namespace", instance=~"$instance"}' }),
+  goRuntimeMetricsPanels({ datasource, selector: '{namespace=~"$namespace", instance=~"$instance"}' }),
 ]
 
 function cleanupServiceLabel(query: string): string {

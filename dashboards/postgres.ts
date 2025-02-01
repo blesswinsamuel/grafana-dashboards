@@ -39,7 +39,7 @@
 
 import { Dashboard, DashboardCursorSync, DataSourceRef, defaultDashboard } from '@grafana/schema'
 import * as path from 'path'
-import { NewGoRuntimeMetrics, NewPanelGroup, NewPanelRow, NewPieChartPanel, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, writeDashboardAndPostToGrafana } from '../src/grafana-helpers'
+import { goRuntimeMetricsPanels, NewPanelGroup, NewPanelRow, NewPieChartPanel, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, writeDashboardAndPostToGrafana } from '../src/grafana-helpers'
 
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -66,7 +66,7 @@ const panels: PanelRowAndGroups = [
       NewTimeSeriesPanel({ title: 'Idle in transaction (aborted)', targets: [{ expr: 'sum(pg_stat_activity_count{job=~"$job", namespace=~"$namespace", state="idle in transaction (aborted)"}) by (datname)', legendFormat: '{{ datname }}' }], defaultUnit: Unit.SHORT }),
     ]),
   ]),
-  NewGoRuntimeMetrics({ datasource, title: 'Resource Usage (postgres-exporter)', selector: '{job=~"$job", namespace=~"$namespace"}' }),
+  goRuntimeMetricsPanels({ datasource, title: 'Resource Usage (postgres-exporter)', selector: '{job=~"$job", namespace=~"$namespace"}' }),
 ]
 
 export const dashboard: Dashboard = {
