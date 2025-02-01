@@ -1,79 +1,110 @@
 import { BigValueGraphMode, Dashboard, DashboardCursorSync, DataSourceRef, defaultDashboard } from '@grafana/schema'
 import * as path from 'path'
-import { NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, averageDurationQuery, overridesMatchByName, tableIndexByName, writePrometheusRules, writeDashboardAndPostToGrafana, NewQueryVariable, NewStatPanel } from '../src/grafana-helpers'
+import { NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, averageDurationQuery, overridesMatchByName, tableIndexByName, writePrometheusRules, writeDashboardAndPostToGrafana, NewQueryVariable, NewStatPanel, CounterMetric, GaugeMetric } from '../src/grafana-helpers'
 import { RuleGroup } from '../src/alerts'
 
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
 }
 
+// https://github.com/charlie-haley/omada_exporter/#-metrics
+// The current download activity for the client in bytes.
+const clientDownloadActivityBytes = new CounterMetric('omada_client_download_activity_bytes') // client vendor ip mac host_name site site_id connection_mode wifi_mode ap_name ssid vlan_id switch_port
+// The signal quality for the wireless client in percent.
+const clientSignalPct = new GaugeMetric('omada_client_signal_pct') // client vendor ip mac host_name site site_id connection_mode wifi_mode ap_name ssid vlan_id
+// The signal to noise ratio for the wireless client in dBm.
+const clientSnrDbm = new GaugeMetric('omada_client_snr_dbm') // client vendor ip mac host_name site site_id connection_mode wifi_mode ap_name ssid vlan_id
+// The RSSI for the wireless client in dBm.
+const clientRssiDbm = new GaugeMetric('omada_client_rssi_dbm') // client vendor ip mac host_name site site_id connection_mode wifi_mode ap_name ssid vlan_id
+// Total bytes received by wireless client.
+const clientTrafficDownBytes = new CounterMetric('omada_client_traffic_down_bytes') // client vendor ip mac host_name site site_id connection_mode wifi_mode ap_name ssid vlan_id
+// Total bytes sent by wireless client.
+const clientTrafficUpBytes = new CounterMetric('omada_client_traffic_up_bytes') // client vendor ip mac host_name site site_id connection_mode wifi_mode ap_name ssid vlan_id
+// TX rate of wireless client.
+const clientTxRate = new GaugeMetric('omada_client_tx_rate') // client vendor ip mac host_name site site_id connection_mode wifi_mode ap_name ssid vlan_id
+// RX rate of wireless client.
+const clientRxRate = new GaugeMetric('omada_client_rx_rate') // client vendor ip mac host_name site site_id connection_mode wifi_mode ap_name ssid vlan_id
+// Total number of connected clients.
+const clientConnectedTotal = new GaugeMetric('omada_client_connected_total') // site site_id connection_mode wifi_mode
+// Uptime of the controller.
+const controllerUptimeSeconds = new GaugeMetric('omada_controller_uptime_seconds') // controller_name model controller_version firmware_version mac site site_id
+// Storage used on the controller.
+const controllerStorageUsedBytes = new GaugeMetric('omada_controller_storage_used_bytes') // storage_name controller_name model controller_version firmware_version mac site site_id
+// Total storage available for the controller.
+const controllerStorageAvailableBytes = new GaugeMetric('omada_controller_storage_available_bytes') // storage_name controller_name model controller_version firmware_version mac site site_id
+// Uptime of the device.
+const deviceUptimeSeconds = new GaugeMetric('omada_device_uptime_seconds') // device model version ip mac site site_id device_type
+// Percentage of device CPU used.
+const deviceCpuPercentage = new GaugeMetric('omada_device_cpu_percentage') // device model version ip mac site site_id device_type
+// Percentage of device Memory used.
+const deviceMemPercentage = new GaugeMetric('omada_device_mem_percentage') // device model version ip mac site site_id device_type
+// A boolean on whether the device needs an upgrade.
+const deviceNeedUpgrade = new GaugeMetric('omada_device_need_upgrade') // device model version ip mac site site_id device_type
+// The tx rate of the device.
+const deviceTxRate = new GaugeMetric('omada_device_tx_rate') // device model version ip mac site site_id device_type
+// The rx rate of the device.
+const deviceRxRate = new GaugeMetric('omada_device_rx_rate') // device model version ip mac site site_id device_type
+// The remaining amount of PoE power for the device in watts.
+const devicePoeRemainWatts = new GaugeMetric('omada_device_poe_remain_watts') // device model version ip mac site site_id device_type
+// Device download traffic.
+const deviceDownload = new CounterMetric('omada_device_download') // device model version ip mac site site_id device_type
+// Device upload traffic.
+const deviceUpload = new CounterMetric('omada_device_upload') // device model version ip mac site site_id device_type
+// The current PoE usage of the port in watts.
+const portPowerWatts = new GaugeMetric('omada_port_power_watts') // device device_mac client vendor switch_port name switch_mac switch_id vlan_id profile site site_id
+// A boolean representing the link status of the port.
+const portLinkStatus = new GaugeMetric('omada_port_link_status') // device device_mac client vendor switch_port name switch_mac switch_id vlan_id profile site site_id
+// Port link speed in mbps. This is the capability of the connection, not the active throughput.
+const portLinkSpeedMbps = new GaugeMetric('omada_port_link_speed_mbps') // device device_mac client vendor switch_port name switch_mac switch_id vlan_id profile site site_id
+// Bytes recieved on a port.
+const portLinkRx = new CounterMetric('omada_port_link_rx') // device device_mac client vendor switch_port name switch_mac switch_id vlan_id profile site site_id
+// Bytes transmitted on a port.
+const portLinkTx = new CounterMetric('omada_port_link_tx') // device device_mac client vendor switch_port name switch_mac switch_id vlan_id profile site site_id
+
+const selectors = `site=~"$site"`
+
 const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Omada Controller' }, [
     NewPanelRow({ datasource, height: 4 }, [
       //
-      NewStatPanel({ title: 'Total PoE Used', targets: [{ expr: 'sum(omada_port_power_watts{site=~"$site"})' }], defaultUnit: Unit.WATT, reduceCalc: 'lastNotNull' }),
-      NewStatPanel({ title: 'Controller Uptime', targets: [{ expr: 'omada_controller_uptime_seconds{site=~"$site"}', type: 'instant' }], defaultUnit: Unit.SECONDS }),
-      NewStatPanel({ title: 'Active Switch Ports', targets: [{ expr: 'sum(omada_port_link_status{site=~"$site"})' }], reduceCalc: 'lastNotNull' }),
-      NewStatPanel({ title: 'Connected Clients', targets: [{ expr: 'sum(omada_client_connected_total{site=~"$site"})' }], reduceCalc: 'lastNotNull' }),
+      NewStatPanel({ title: 'Total PoE Used', defaultUnit: Unit.WATT, reduceCalc: 'lastNotNull' }, portPowerWatts.calc('sum', { selectors })),
+      NewStatPanel({ title: 'Controller Uptime', defaultUnit: Unit.SECONDS }, controllerUptimeSeconds.calc('max', { selectors, type: 'instant' })),
+      NewStatPanel({ title: 'Active Switch Ports', reduceCalc: 'lastNotNull' }, portLinkStatus.calc('sum', { selectors })),
+      NewStatPanel({ title: 'Connected Clients', reduceCalc: 'lastNotNull' }, clientConnectedTotal.calc('sum', { selectors })),
     ]),
   ]),
   NewPanelGroup({ title: 'Omada Devices' }, [
-    NewPanelRow({ datasource, height: 10 }, [
-      NewTimeSeriesPanel({ title: 'CPU Usage %', targets: [{ expr: 'sum(omada_device_cpu_percentage{site=~"$site"}) by (ip, device, device_type, mac, model, site)', legendFormat: '{{ device }} {{ device_type }} {{ ip }}' }], defaultUnit: Unit.PERCENT, max: 100 }),
-      NewTimeSeriesPanel({ title: 'Memory Usage %', targets: [{ expr: 'sum(omada_device_mem_percentage{site=~"$site"}) by (ip, device, device_type, mac, model, site)', legendFormat: '{{ device }} {{ device_type }} {{ ip }}' }], defaultUnit: Unit.PERCENT, max: 100 }),
-      // NewTimeSeriesPanel({ title: 'The number of requests made by the ACME client', targets: [{ expr: 'sum(increase(certmanager_http_acme_client_request_count[$__interval])) by (host, method, path, scheme, status) > 0', legendFormat: '{{ host }} {{ method }} {{ path }} {{ scheme }} {{ status }}' }], defaultUnit: Unit.SHORT, type: 'bar' }),
-      // TimeSeriesPanel("The clock time", [QueryExpr("max(certmanager_clock_time_seconds_gauge[$__interval]) * 1000", "")], unit=UNITS.DATE_TIME_FROM_NOW),
-    ]),
+    NewPanelRow({ datasource, height: 10 }, [NewTimeSeriesPanel({ title: 'CPU Usage %', defaultUnit: Unit.PERCENT, max: 100 }, deviceCpuPercentage.calc('sum', { selectors, groupBy: ['device', 'device_type', 'ip'] })), NewTimeSeriesPanel({ title: 'Memory Usage %', defaultUnit: Unit.PERCENT, max: 100 }, deviceMemPercentage.calc('sum', { selectors, groupBy: ['device', 'device_type', 'ip'] }))]),
     NewPanelRow({ datasource, height: 10 }, [
       NewTimeSeriesPanel({
         title: 'Rx/Tx Rate',
         targets: [
-          { expr: 'sum(omada_device_rx_rate{site=~"$site"}) by (ip, device, device_type, mac, model, site)', refId: 'RX', legendFormat: 'Rx - {{ device }} {{ device_type }} {{ ip }}' },
-          { expr: '-sum(omada_device_tx_rate{site=~"$site"}) by (ip, device, device_type, mac, model, site)', refId: 'TX', legendFormat: 'Tx - {{ device }} {{ device_type }} {{ ip }}' },
+          //
+          deviceRxRate.calc('sum', { selectors, groupBy: ['device', 'device_type', 'ip'], refId: 'RX', legendFormat: 'Rx - {{ device }} {{ device_type }} {{ ip }}' }),
+          deviceTxRate.calc('sum', { selectors, prepend: '-', groupBy: ['device', 'device_type', 'ip'], refId: 'TX', legendFormat: 'Tx - {{ device }} {{ device_type }} {{ ip }}' }),
         ],
         defaultUnit: Unit.BYTES_PER_SEC_SI,
         legendCalcs: ['mean', 'last'],
       }),
-      NewTimeSeriesPanel({ title: 'Uptime', targets: [{ expr: 'sum(omada_device_uptime_seconds{site=~"$site"}) by (ip, device, device_type, mac, model, site)', legendFormat: '{{ device }} {{ device_type }} {{ ip }}' }], defaultUnit: Unit.SECONDS }),
-      NewTimeSeriesPanel({ title: 'PoE remaining', targets: [{ expr: 'sum(omada_device_poe_remain_watts{site=~"$site"}) by (ip, device, device_type, mac, model, site)', legendFormat: '{{ device }} {{ device_type }} {{ ip }}' }], defaultUnit: Unit.WATT }),
-      //   NewTimeSeriesPanel({ title: 'Expiration time', targets: [{ expr: 'max(certmanager_certificate_expiration_timestamp_seconds[$__interval]) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000', legendFormat: '{{ issuer_group }} {{ issuer_kind }} {{ issuer_name }} {{ name }} {{ namespace }}' }], defaultUnit: Unit.DATE_TIME_FROM_NOW }),
-      //   NewTimeSeriesPanel({ title: 'Renewal time', targets: [{ expr: 'max(certmanager_certificate_renewal_timestamp_seconds[$__interval]) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000', legendFormat: '{{ issuer_group }} {{ issuer_kind }} {{ issuer_name }} {{ name }} {{ namespace }}' }], defaultUnit: Unit.DATE_TIME_FROM_NOW }),
-      //   NewTimeSeriesPanel({ title: 'Avg HTTP request latencies for the ACME client', targets: [{ expr: averageDurationQuery('certmanager_http_acme_client_request_duration_seconds', '{}', 'host, method, path, scheme, status'), legendFormat: '{{ host }} {{ method }} {{ path }} {{ scheme }} {{ status }}' }], defaultUnit: Unit.SECONDS }),
+      NewTimeSeriesPanel({ title: 'Uptime', defaultUnit: Unit.SECONDS }, deviceUptimeSeconds.calc('max', { selectors, groupBy: ['device', 'device_type', 'ip'] })),
+      NewTimeSeriesPanel({ title: 'PoE remaining', defaultUnit: Unit.WATT }, devicePoeRemainWatts.calc('max', { selectors, groupBy: ['device', 'device_type', 'ip'] })),
     ]),
   ]),
   NewPanelGroup({ title: 'Omada Clients' }, [
     NewPanelRow({ datasource, height: 10 }, [
-      NewTimeSeriesPanel({ title: 'Clients Connected', targets: [{ expr: 'sum(omada_client_connected_total{site=~"$site"}) by (connection_mode, wifi_mode)', legendFormat: '{{ connection_mode }} {{ wifi_mode }}' }], defaultUnit: Unit.SHORT }),
-      NewTimeSeriesPanel({ title: 'Signal Percentage', targets: [{ expr: 'sum(omada_client_signal_pct{site=~"$site", ip!=""}) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)', legendFormat: '{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}' }], defaultUnit: Unit.PERCENT, max: 100 }),
+      //
+      NewTimeSeriesPanel({ title: 'Clients Connected', defaultUnit: Unit.SHORT }, clientConnectedTotal.calc('sum', { selectors, groupBy: ['connection_mode', 'wifi_mode'] })),
+      NewTimeSeriesPanel({ title: 'Signal Percentage', defaultUnit: Unit.PERCENT, max: 100 }, clientSignalPct.calc('sum', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] })),
     ]),
     NewPanelRow({ datasource, height: 10 }, [
-      NewTimeSeriesPanel({ title: 'RSSI dBm', targets: [{ expr: 'sum(omada_client_rssi_dbm{site=~"$site", ip!=""}) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)', legendFormat: '{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}' }], defaultUnit: Unit.DBM, legendCalcs: ['mean', 'min', 'last'] }),
-      NewTimeSeriesPanel({ title: 'SNR dBm', targets: [{ expr: 'sum(omada_client_snr_dbm{site=~"$site", ip!=""}) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)', legendFormat: '{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}' }], defaultUnit: Unit.DBM, legendCalcs: ['mean', 'min', 'last'] }),
+      NewTimeSeriesPanel({ title: 'RSSI dBm', defaultUnit: Unit.DBM, legendCalcs: ['mean', 'min', 'last'] }, clientRssiDbm.calc('sum', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] })),
+      NewTimeSeriesPanel({ title: 'SNR dBm', defaultUnit: Unit.DBM, legendCalcs: ['mean', 'min', 'last'] }, clientSnrDbm.calc('sum', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] })),
     ]),
     NewPanelRow({ datasource, height: 10 }, [
-      NewTimeSeriesPanel({
-        title: 'Upload Rate',
-        targets: [{ expr: 'sum(rate(omada_client_traffic_up_bytes{site=~"$site", ip!=""}[$__rate_interval])) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)', legendFormat: '{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}' }],
-        defaultUnit: Unit.BYTES_PER_SEC_SI,
-      }),
-      NewTimeSeriesPanel({
-        title: 'Download Rate',
-        targets: [{ expr: 'sum(rate(omada_client_traffic_down_bytes{site=~"$site", ip!=""}[$__rate_interval])) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)', legendFormat: '{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}' }],
-        defaultUnit: Unit.BYTES_PER_SEC_SI,
-      }),
+      NewTimeSeriesPanel({ title: 'Upload Rate', defaultUnit: Unit.BYTES_PER_SEC_SI }, clientTrafficUpBytes.rate({ selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] })),
+      NewTimeSeriesPanel({ title: 'Download Rate', defaultUnit: Unit.BYTES_PER_SEC_SI }, clientTrafficDownBytes.rate({ selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] })),
     ]),
-    NewPanelRow({ datasource, height: 10 }, [
-      NewTimeSeriesPanel({
-        title: 'Rx Rate',
-        targets: [{ expr: 'sum(omada_client_rx_rate{site=~"$site", ip!=""}) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)', legendFormat: '{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}' }],
-        defaultUnit: Unit.BYTES_PER_SEC_SI,
-      }),
-      NewTimeSeriesPanel({
-        title: 'Tx Rate',
-        targets: [{ expr: 'sum(omada_client_tx_rate{site=~"$site", ip!=""}) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)', legendFormat: '{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}' }],
-        defaultUnit: Unit.BYTES_PER_SEC_SI,
-      }),
-    ]),
+    NewPanelRow({ datasource, height: 10 }, [NewTimeSeriesPanel({ title: 'Rx Rate', defaultUnit: Unit.BYTES_PER_SEC_SI }, clientRxRate.calc('sum', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] })), NewTimeSeriesPanel({ title: 'Tx Rate', defaultUnit: Unit.BYTES_PER_SEC_SI }, clientTxRate.calc('sum', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }))]),
   ]),
   NewPanelGroup({ title: 'Omada Ports' }, [
     NewPanelRow({ datasource, height: 24 }, [
@@ -82,21 +113,21 @@ const panels: PanelRowAndGroups = [
         //
         title: 'Port Link Status',
         targets: [
-          { expr: 'sum(omada_port_link_status{site=~"$site"}) by (client, device, name, profile, site, switch_port, vlan_id)', type: 'instant', format: 'table', refId: 'STATUS' },
-          { expr: 'sum(increase(omada_port_link_rx{site=~"$site"}[$__range])) by (switch_port)', type: 'instant', format: 'table', refId: 'RX' },
-          { expr: 'sum(increase(omada_port_link_tx{site=~"$site"}[$__range])) by (switch_port)', type: 'instant', format: 'table', refId: 'TX' },
-          { expr: 'sum(omada_port_link_speed_mbps{site=~"$site"}) by (client, device, name, profile, site, switch_port, vlan_id)', type: 'instant', format: 'table', refId: 'SPEED' },
-          { expr: 'sum(omada_port_power_watts{site=~"$site"}) by (client, device, name, profile, site, switch_port, vlan_id)', type: 'instant', format: 'table', refId: 'POWER' },
+          portLinkStatus.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], refId: 'STATUS', type: 'instant' }),
+          portLinkRx.increase({ selectors, groupBy: ['switch_port'], refId: 'RX', type: 'instant' }),
+          portLinkTx.increase({ selectors, groupBy: ['switch_port'], refId: 'TX', type: 'instant' }),
+          portLinkSpeedMbps.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], refId: 'SPEED', type: 'instant' }),
+          portPowerWatts.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], refId: 'POWER', type: 'instant' }),
         ],
         overrides: overridesMatchByName({
-          status: {
+          'Value #STATUS': {
             mappings: [{ options: { '1': { color: 'green', index: 1, text: 'ON' }, '0': { color: 'red', index: 0, text: 'OFF' } }, type: 'value' }],
             'custom.cellOptions': { type: 'color-background', mode: 'gradient', applyToRow: false, wrapText: false },
           },
-          speed: { unit: Unit.MIBITS },
-          rx: { unit: Unit.BYTES_SI },
-          tx: { unit: Unit.BYTES_SI },
-          power: { unit: Unit.WATT },
+          'Value #SPEED': { unit: Unit.MIBITS },
+          'Value #RX': { unit: Unit.BYTES_SI },
+          'Value #TX': { unit: Unit.BYTES_SI },
+          'Value #POWER': { unit: Unit.WATT },
         }),
         transformations: [
           { id: 'merge', options: {} },

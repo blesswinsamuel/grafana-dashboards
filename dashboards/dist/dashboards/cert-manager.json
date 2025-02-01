@@ -22,7 +22,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(certmanager_certificate_ready_status == 1) by (issuer_group, issuer_kind, issuer_name, name, namespace, condition)",
+          "expr": "sum(certmanager_certificate_ready_status{}) by (issuer_group, issuer_kind, issuer_name, name, namespace, condition) > 0",
+          "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}} - {{condition}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -30,7 +31,8 @@
         },
         {
           "editorMode": "code",
-          "expr": "max(certmanager_certificate_expiration_timestamp_seconds[$__interval]) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
+          "expr": "max(certmanager_certificate_expiration_timestamp_seconds{}) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
+          "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -38,7 +40,8 @@
         },
         {
           "editorMode": "code",
-          "expr": "max(certmanager_certificate_renewal_timestamp_seconds[$__interval]) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
+          "expr": "max(certmanager_certificate_renewal_timestamp_seconds{}) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
+          "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -112,13 +115,19 @@
                     "type": "value"
                   }
                 ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background"
+                }
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Expiration time"
+              "options": "Value #expiration_time"
             },
             "properties": [
               {
@@ -130,7 +139,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Renewal time"
+              "options": "Value #renewal_time"
             },
             "properties": [
               {
@@ -153,8 +162,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(increase(certmanager_controller_sync_call_count[$__interval])) by (controller)",
-          "legendFormat": "{{ controller }}",
+          "expr": "sum(increase(certmanager_controller_sync_call_count{}[$__interval])) by (controller)",
+          "legendFormat": "{{controller}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -238,8 +247,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(increase(certmanager_http_acme_client_request_count[$__interval])) by (host, method, path, scheme, status) > 0",
-          "legendFormat": "{{ host }} {{ method }} {{ path }} {{ scheme }} {{ status }}",
+          "expr": "sum(increase(certmanager_http_acme_client_request_count{}[$__interval])) by (host, method, path, scheme, status) > 0",
+          "legendFormat": "{{host}} - {{method}} - {{path}} - {{scheme}} - {{status}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -323,8 +332,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "max(certmanager_certificate_expiration_timestamp_seconds[$__interval]) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
-          "legendFormat": "{{ issuer_group }} {{ issuer_kind }} {{ issuer_name }} {{ name }} {{ namespace }}",
+          "expr": "max(certmanager_certificate_expiration_timestamp_seconds{}) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
+          "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -388,13 +397,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -409,8 +420,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "max(certmanager_certificate_renewal_timestamp_seconds[$__interval]) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
-          "legendFormat": "{{ issuer_group }} {{ issuer_kind }} {{ issuer_name }} {{ name }} {{ namespace }}",
+          "expr": "max(certmanager_certificate_renewal_timestamp_seconds{}) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
+          "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -474,13 +485,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -496,7 +509,7 @@
         {
           "editorMode": "code",
           "expr": "sum(rate(certmanager_http_acme_client_request_duration_seconds_sum{}[$__rate_interval])) by (host, method, path, scheme, status) / sum(rate(certmanager_http_acme_client_request_duration_seconds_count{}[$__rate_interval])) by (host, method, path, scheme, status)",
-          "legendFormat": "{{ host }} {{ method }} {{ path }} {{ scheme }} {{ status }}",
+          "legendFormat": "{{host}} - {{method}} - {{path}} - {{scheme}} - {{status}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -560,13 +573,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {

@@ -82,10 +82,10 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "omada_controller_uptime_seconds{site=~\"$site\"}",
+          "expr": "max(omada_controller_uptime_seconds{site=~\"$site\"})",
           "range": false,
           "instant": true,
-          "format": "time_series",
+          "format": "table",
           "refId": "A"
         }
       ],
@@ -272,8 +272,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(omada_device_cpu_percentage{site=~\"$site\"}) by (ip, device, device_type, mac, model, site)",
-          "legendFormat": "{{ device }} {{ device_type }} {{ ip }}",
+          "expr": "sum(omada_device_cpu_percentage{site=~\"$site\"}) by (device, device_type, ip)",
+          "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -338,13 +338,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -359,8 +361,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(omada_device_mem_percentage{site=~\"$site\"}) by (ip, device, device_type, mac, model, site)",
-          "legendFormat": "{{ device }} {{ device_type }} {{ ip }}",
+          "expr": "sum(omada_device_mem_percentage{site=~\"$site\"}) by (device, device_type, ip)",
+          "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -425,13 +427,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -446,7 +450,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(omada_device_rx_rate{site=~\"$site\"}) by (ip, device, device_type, mac, model, site)",
+          "expr": "sum(omada_device_rx_rate{site=~\"$site\"}) by (device, device_type, ip)",
           "legendFormat": "Rx - {{ device }} {{ device_type }} {{ ip }}",
           "range": true,
           "instant": false,
@@ -455,7 +459,7 @@
         },
         {
           "editorMode": "code",
-          "expr": "-sum(omada_device_tx_rate{site=~\"$site\"}) by (ip, device, device_type, mac, model, site)",
+          "expr": "-sum(omada_device_tx_rate{site=~\"$site\"}) by (device, device_type, ip)",
           "legendFormat": "Tx - {{ device }} {{ device_type }} {{ ip }}",
           "range": true,
           "instant": false,
@@ -541,8 +545,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(omada_device_uptime_seconds{site=~\"$site\"}) by (ip, device, device_type, mac, model, site)",
-          "legendFormat": "{{ device }} {{ device_type }} {{ ip }}",
+          "expr": "max(omada_device_uptime_seconds{site=~\"$site\"}) by (device, device_type, ip)",
+          "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -606,13 +610,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -627,8 +633,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(omada_device_poe_remain_watts{site=~\"$site\"}) by (ip, device, device_type, mac, model, site)",
-          "legendFormat": "{{ device }} {{ device_type }} {{ ip }}",
+          "expr": "max(omada_device_poe_remain_watts{site=~\"$site\"}) by (device, device_type, ip)",
+          "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -692,13 +698,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -726,7 +734,7 @@
         {
           "editorMode": "code",
           "expr": "sum(omada_client_connected_total{site=~\"$site\"}) by (connection_mode, wifi_mode)",
-          "legendFormat": "{{ connection_mode }} {{ wifi_mode }}",
+          "legendFormat": "{{connection_mode}} - {{wifi_mode}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -790,13 +798,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -811,8 +821,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(omada_client_signal_pct{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)",
-          "legendFormat": "{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}",
+          "expr": "sum(omada_client_signal_pct{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -877,13 +887,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -898,8 +910,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(omada_client_rssi_dbm{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)",
-          "legendFormat": "{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}",
+          "expr": "sum(omada_client_rssi_dbm{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -985,8 +997,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(omada_client_snr_dbm{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)",
-          "legendFormat": "{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}",
+          "expr": "sum(omada_client_snr_dbm{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1072,8 +1084,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(omada_client_traffic_up_bytes{site=~\"$site\", ip!=\"\"}[$__rate_interval])) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)",
-          "legendFormat": "{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}",
+          "expr": "sum(rate(omada_client_traffic_up_bytes{site=~\"$site\", ip!=\"\"}[$__rate_interval])) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1137,13 +1149,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -1158,8 +1172,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(omada_client_traffic_down_bytes{site=~\"$site\", ip!=\"\"}[$__rate_interval])) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)",
-          "legendFormat": "{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}",
+          "expr": "sum(rate(omada_client_traffic_down_bytes{site=~\"$site\", ip!=\"\"}[$__rate_interval])) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1223,13 +1237,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -1244,8 +1260,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(omada_client_rx_rate{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)",
-          "legendFormat": "{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}",
+          "expr": "sum(omada_client_rx_rate{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1309,13 +1325,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -1330,8 +1348,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(omada_client_tx_rate{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ip, ssid, vlan_id, wifi_mode)",
-          "legendFormat": "{{ client }} {{ ap_name }} {{ connection_mode }} {{ ssid }} {{ vlan_id }} {{ wifi_mode }}",
+          "expr": "sum(omada_client_tx_rate{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -1395,13 +1413,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "max",
-            "mean"
+            "mean",
+            "lastNotNull"
           ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Mean",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -1429,6 +1449,7 @@
         {
           "editorMode": "code",
           "expr": "sum(omada_port_link_status{site=~\"$site\"}) by (client, device, name, profile, site, switch_port, vlan_id)",
+          "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -1437,6 +1458,7 @@
         {
           "editorMode": "code",
           "expr": "sum(increase(omada_port_link_rx{site=~\"$site\"}[$__range])) by (switch_port)",
+          "legendFormat": "{{switch_port}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -1445,6 +1467,7 @@
         {
           "editorMode": "code",
           "expr": "sum(increase(omada_port_link_tx{site=~\"$site\"}[$__range])) by (switch_port)",
+          "legendFormat": "{{switch_port}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -1453,6 +1476,7 @@
         {
           "editorMode": "code",
           "expr": "sum(omada_port_link_speed_mbps{site=~\"$site\"}) by (client, device, name, profile, site, switch_port, vlan_id)",
+          "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -1461,6 +1485,7 @@
         {
           "editorMode": "code",
           "expr": "sum(omada_port_power_watts{site=~\"$site\"}) by (client, device, name, profile, site, switch_port, vlan_id)",
+          "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -1537,7 +1562,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "status"
+              "options": "Value #STATUS"
             },
             "properties": [
               {
@@ -1574,7 +1599,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "speed"
+              "options": "Value #SPEED"
             },
             "properties": [
               {
@@ -1586,7 +1611,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "rx"
+              "options": "Value #RX"
             },
             "properties": [
               {
@@ -1598,7 +1623,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "tx"
+              "options": "Value #TX"
             },
             "properties": [
               {
@@ -1610,7 +1635,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "power"
+              "options": "Value #POWER"
             },
             "properties": [
               {

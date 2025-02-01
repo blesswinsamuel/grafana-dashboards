@@ -281,7 +281,7 @@ export async function writePrometheusRules(opts: { checkRules?: boolean; ruleFil
 
 export function formatLegendFormat(legendFormat: string | undefined, groupBy: string[]) {
   if (!legendFormat) {
-    legendFormat = groupBy.map((k) => `{{${k}}}`).join(' - ')
+    legendFormat = groupBy ? groupBy.map((k) => `{{${k}}}`).join(' - ') : undefined
   }
   return legendFormat
 }
@@ -297,15 +297,26 @@ export type CommonMetricOpts = {
   selectors?: string | string[]
   wrap?: string
   append?: string
+  prepend?: string
+}
+
+export type CommonQueryOpts = CommonMetricOpts & {
+  refId?: string
+  groupBy?: string[]
+  legendFormat?: string
+  type?: 'range' | 'instant' | 'both'
 }
 
 function formatMetric(expr: string, opts: Omit<CommonMetricOpts, 'selectors'>) {
-  const { wrap, append } = opts
+  const { wrap, append, prepend } = opts
   if (wrap) {
     expr = wrap.replace('$__expr', expr)
   }
   if (append) {
     expr = `${expr}${append}`
+  }
+  if (prepend) {
+    expr = `${prepend}${expr}`
   }
   return expr
 }
@@ -315,32 +326,56 @@ export class CounterMetric {
     public metric: string,
     private opts: CommonMetricOpts = {}
   ) {}
-  public sumByQuery(opts: CommonMetricOpts & { groupBy?: string[]; legendFormat?: string; func: 'rate' | 'increase' }): Target {
+  public calc(func1: string, func2: string, opts: CommonQueryOpts & { interval?: string }): Target {
     const metric = this.metric
-    const { groupBy = [], legendFormat, func = 'increase' } = opts
+    const { groupBy = [] } = opts
     const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
-    const interval = func === 'rate' ? '$__rate_interval' : '$__interval'
+    const interval = opts.interval ?? (opts.type === 'instant' ? '$__range' : func2 === 'rate' ? '$__rate_interval' : '$__interval')
     return {
-      expr: formatMetric(`sum(${func}(${metric}{${selectors}}[${interval}])) by (${groupBy.join(', ')})`, { ...this.opts, ...opts }),
-      legendFormat: formatLegendFormat(legendFormat, groupBy),
+      expr: formatMetric(`${func1}(${func2}(${metric}{${selectors}}[${interval}])) by (${groupBy.join(', ')})`, { ...this.opts, ...opts }),
+      ...getTargetOpts(opts),
     }
   }
-  public rate(opts: CommonMetricOpts & { groupBy?: string[]; legendFormat?: string } = {}): Target {
-    return this.sumByQuery({ ...opts, func: 'rate' })
+  public rate(opts: CommonQueryOpts): Target {
+    return this.calc('sum', 'rate', opts)
   }
-  public increase(opts: CommonMetricOpts & { groupBy?: string[]; legendFormat?: string } = {}): Target {
-    return this.sumByQuery({ ...opts, func: 'increase' })
+  public increase(opts: CommonQueryOpts): Target {
+    return this.calc('sum', 'increase', opts)
   }
-  public percentage(opts: CommonMetricOpts & { numeratorSelectors?: string | string[]; denominatorSelectors?: string | string[]; groupBy?: string[]; legendFormat?: string; func?: 'rate' | 'increase' }): Target {
+  public percentage(opts: CommonQueryOpts & { numeratorSelectors?: string | string[]; denominatorSelectors?: string | string[]; func?: 'rate' | 'increase' }): Target {
     const metric = this.metric
-    const { groupBy = [], legendFormat, func = 'rate' } = opts
+    const { groupBy = [], func = 'rate' } = opts
     const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
     const numeratorSelectors = mergeSelectors(selectors, opts.numeratorSelectors || '')
     const denominatorSelectors = mergeSelectors(selectors, opts.denominatorSelectors || '')
     const interval = func === 'rate' ? '$__rate_interval' : '$__interval'
     return {
       expr: formatMetric(`sum(${func}(${metric}{${numeratorSelectors}}[${interval}])) by (${groupBy.join(', ')}) / sum(${func}(${metric}{${denominatorSelectors}}[${interval}])) by (${groupBy.join(', ')})`, { ...this.opts, ...opts }),
-      legendFormat: formatLegendFormat(legendFormat, groupBy),
+      ...getTargetOpts(opts),
+    }
+  }
+}
+
+export class GaugeMetric {
+  constructor(
+    public metric: string,
+    public opts: CommonMetricOpts = {}
+  ) {}
+  public calc(func: string, opts: CommonQueryOpts): Target {
+    const metric = this.metric
+    const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
+    const groupByStr = opts.groupBy ? ` by (${opts.groupBy.join(', ')})` : ''
+    return {
+      expr: formatMetric(`${func}(${metric}{${selectors}})${groupByStr}`, { ...this.opts, ...opts }),
+      ...getTargetOpts(opts),
+    }
+  }
+  public raw(opts: CommonQueryOpts): Target {
+    const metric = this.metric
+    const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
+    return {
+      expr: formatMetric(`${metric}{${selectors}}`, { ...this.opts, ...opts }),
+      ...getTargetOpts(opts),
     }
   }
 }
@@ -356,46 +391,30 @@ export class HistogramMetric {
   public sum() {
     return new CounterMetric(this.metric + '_sum', this.opts)
   }
-  public latencyQuery(opts: CommonMetricOpts & { groupBy?: string[]; func: 'histogram_quantile' | 'histogram_share'; value: string; legendFormat?: string }): Target {
+  public histogramQuery(func: 'histogram_quantile' | 'histogram_share', value: string, opts: CommonQueryOpts): Target {
     const metric = this.metric + '_bucket'
     const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
-    const { groupBy = [], func, value, legendFormat } = opts
+    const { groupBy = [] } = opts
+    const groupByStr = opts.groupBy ? ` by (le, ${opts.groupBy.join(', ')})` : ' by (le)'
     return {
-      expr: formatMetric(`${func}(${value}, sum(rate(${metric}{${selectors}}[$__rate_interval])) by (le, ${groupBy.join(', ')}))`, { ...this.opts, ...opts }),
-      legendFormat: formatLegendFormat(legendFormat, groupBy),
+      expr: formatMetric(`${func}(${value}, sum(rate(${metric}{${selectors}}[$__rate_interval]))${groupByStr})`, { ...this.opts, ...opts }),
+      ...getTargetOpts(opts),
     }
   }
-  public histogramQuantile(opts: CommonMetricOpts & { groupBy?: string[]; value: string; legendFormat?: string }): Target {
-    return this.latencyQuery({ ...opts, func: 'histogram_quantile' })
+  public histogramQuantile(value: string, opts: CommonQueryOpts): Target {
+    return this.histogramQuery('histogram_quantile', value, opts)
   }
-  public histogramShare(opts: CommonMetricOpts & { groupBy?: string[]; value: string; legendFormat?: string }): Target {
-    return this.latencyQuery({ ...opts, func: 'histogram_share' })
+  public histogramShare(value: string, opts: CommonQueryOpts): Target {
+    return this.histogramQuery('histogram_share', value, opts)
   }
-  public histAvg(opts: CommonMetricOpts & { groupBy?: string[]; legendFormat?: string; func?: 'rate' | 'increase' }): Target {
+  public histAvg(opts: CommonQueryOpts & { func?: 'rate' | 'increase' }): Target {
     const metric = this.metric
-    const { func = 'rate', groupBy = [], legendFormat } = opts
+    const { func = 'rate' } = opts
+    const groupByStr = opts.groupBy ? ` by (${opts.groupBy.join(', ')})` : ''
     const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
     return {
-      expr: formatMetric(`sum(${func}(${metric}_sum{${selectors}}[$__rate_interval])) by (${groupBy.join(', ')}) / sum(${func}(${metric}_count{${selectors}}[$__rate_interval])) by (${groupBy.join(', ')})`, { ...this.opts, ...opts }),
-      legendFormat: formatLegendFormat(legendFormat, groupBy),
-    }
-  }
-}
-
-export class GaugeMetric {
-  constructor(
-    public metric: string,
-    public opts: CommonMetricOpts = {}
-  ) {}
-  public func(opts: CommonMetricOpts & { groupBy?: string[]; legendFormat?: string; func?: string; type?: 'range' | 'instant' | 'both' }): Target {
-    const metric = this.metric
-    const { func = 'sum', groupBy = [], legendFormat, type = 'range' } = opts
-    const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
-    return {
-      expr: formatMetric(`${func}(${metric}{${selectors}}) by (${groupBy.join(', ')})`, { ...this.opts, ...opts }),
-      legendFormat: formatLegendFormat(legendFormat, groupBy),
-      type: type,
-      format: type === 'instant' ? 'table' : 'time_series', // ('time_series' | 'table' | 'heatmap')
+      expr: formatMetric(`sum(${func}(${metric}_sum{${selectors}}[$__rate_interval]))${groupByStr} / sum(${func}(${metric}_count{${selectors}}[$__rate_interval]))${groupByStr}`, { ...this.opts, ...opts }),
+      ...getTargetOpts(opts),
     }
   }
 }
@@ -405,13 +424,25 @@ export class SummaryMetric {
     public metric: string,
     public opts: CommonMetricOpts = {}
   ) {}
-  public func(opts: CommonMetricOpts & { groupBy?: string[]; legendFormat?: string; func?: 'sum' }): Target {
+  public count() {
+    return new CounterMetric(this.metric + '_count', this.opts)
+  }
+  public sum() {
+    return new CounterMetric(this.metric + '_sum', this.opts)
+  }
+  public avg(opts: CommonQueryOpts & { func?: 'rate' | 'increase' }): Target {
     const metric = this.metric
-    const { func = 'rate', groupBy = [], legendFormat } = opts
+    const { func = 'rate', groupBy } = opts
     const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
+    const groupByStr = groupBy ? ` by (${groupBy.join(', ')})` : ''
     return {
-      expr: formatMetric(`${func}(${metric}{${selectors}}) by (${groupBy.join(', ')})`, { ...this.opts, ...opts }),
-      legendFormat: formatLegendFormat(legendFormat, groupBy),
+      expr: formatMetric(`sum(${func}(${metric}_sum{${selectors}}[$__rate_interval]))${groupByStr} / sum(${func}(${metric}_count{${selectors}}[$__rate_interval]))${groupByStr}`, { ...this.opts, ...opts }),
+      ...getTargetOpts(opts),
     }
   }
+}
+
+function getTargetOpts(opts: CommonQueryOpts): Partial<Target> {
+  const { legendFormat, groupBy, type, refId } = opts
+  return { refId, type, format: type === 'instant' ? 'table' : 'time_series', legendFormat: formatLegendFormat(legendFormat, groupBy) }
 }
