@@ -127,7 +127,7 @@ export type CommonPanelOpts = {
   datasource?: DataSourceRef
   title: string
   description?: string
-  targets: Target[]
+  targets?: Target[]
   // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts (use id field)
   defaultUnit?: Unit
   min?: number
@@ -149,6 +149,40 @@ export type CommonPanelOpts = {
   timeFrom?: string
 }
 
+function inferUnit(targets: Target[], type?: 'line' | 'bar', defaultUnit?: Unit): [Unit | undefined, 'line' | 'bar'] {
+  const expr = targets.length > 0 ? (targets[0] as any).expr : ''
+  if (!type) {
+    if (expr.includes('$__interval')) {
+      type = 'bar'
+      if (!defaultUnit) {
+        if (expr.includes('increase')) {
+          defaultUnit = Unit.SHORT
+        }
+      }
+    }
+    if (expr.includes('$__rate_interval')) {
+      if (!defaultUnit) {
+        if (expr.includes('histogram_quantile')) {
+          if (expr.includes('_seconds_bucket')) {
+            defaultUnit = Unit.SECONDS
+          }
+          if (expr.includes('_milliseconds_bucket') || expr.includes('_ms_bucket')) {
+            defaultUnit = Unit.MILLISECONDS
+          }
+        } else if (expr.includes('histogram_share')) {
+          defaultUnit = Unit.PERCENTUNIT
+        } else if (expr.includes('_request_') || expr.includes('_response_')) {
+          defaultUnit = Unit.RPS
+        }
+      }
+    }
+    if (expr.includes('_seconds_sum') && expr.includes('_seconds_count') && expr.includes('rate') && expr.includes('/')) {
+      defaultUnit = Unit.SECONDS
+    }
+  }
+  return [defaultUnit, type ?? 'line']
+}
+
 export type TimeSeriesPanelOpts = CommonPanelOpts & {
   type?: 'bar' | 'line'
   maxDataPoints?: number
@@ -157,9 +191,12 @@ export type TimeSeriesPanelOpts = CommonPanelOpts & {
   stackingMode?: StackingMode
   thresholdsStyleMode?: GraphThresholdsStyleMode
 }
-export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
-  opts.type = opts.type ?? 'line'
-  const legendCalcs = opts.legendCalcs ?? { bar: ['sum'], line: ['max', 'mean'] }[opts.type]
+export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: Target[]): Panel {
+  targets = [...(opts.targets || []), ...(targets || [])]
+  const [defaultUnit, type] = inferUnit(targets, opts.type, opts.defaultUnit)
+  opts.defaultUnit = defaultUnit
+  opts.type = type
+  const legendCalcs = opts.legendCalcs ?? { bar: ['sum'], line: ['min', 'max', 'mean', 'lastNotNull'] }[opts.type]
   const panel: Panel<Record<string, unknown>, GraphFieldConfig> = {
     ...defaultPanel,
     datasource: opts.datasource,
@@ -169,7 +206,7 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts): Panel {
     interval: opts.interval,
     maxDataPoints: opts.maxDataPoints,
     gridPos: { x: 0, y: 0, w: opts.width ?? 0, h: opts.height ?? 0 },
-    targets: fromTargets(opts.targets, opts.datasource),
+    targets: fromTargets(targets, opts.datasource),
     fieldConfig: {
       defaults: {
         color: {
@@ -268,7 +305,8 @@ export type StatPanelOpts = CommonPanelOpts & {
   options?: RecursivePartial<SingleStatPanelOptions>
 }
 
-export function NewStatPanel(opts: StatPanelOpts): Panel {
+export function NewStatPanel(opts: StatPanelOpts, ...targets: Target[]): Panel {
+  targets = [...(opts.targets || []), ...(targets || [])]
   const panel: Panel<Record<string, unknown>, GraphFieldConfig> = {
     ...defaultPanel,
     datasource: opts.datasource,
@@ -278,7 +316,7 @@ export function NewStatPanel(opts: StatPanelOpts): Panel {
     interval: opts.interval,
     maxDataPoints: opts.maxDataPoints,
     gridPos: { x: 0, y: 0, w: opts.width ?? 0, h: opts.height ?? 0 },
-    targets: fromTargets(opts.targets, opts.datasource),
+    targets: fromTargets(targets, opts.datasource),
     fieldConfig: {
       defaults: {
         mappings: opts.mappings ?? (opts.defaultUnit === Unit.DATE_TIME_FROM_NOW ? [{ type: MappingType.ValueToText, options: { '0': { text: '-', index: 0 } } }] : []),

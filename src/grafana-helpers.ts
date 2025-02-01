@@ -37,8 +37,9 @@ type PanelArrayOpts = {
   width?: number
 }
 
-export function NewPanelRow(opts: PanelArrayOpts, panels: Array<Panel>): PanelRow {
-  for (const panel of panels) {
+export function NewPanelRow(opts: PanelArrayOpts, panels: Array<Panel | undefined | boolean>): PanelRow {
+  const panelsFiltered = filterNonUndefined(panels)
+  for (const panel of panelsFiltered) {
     if (opts.datasource && !panel.datasource) {
       panel.datasource = opts.datasource
     }
@@ -52,15 +53,19 @@ export function NewPanelRow(opts: PanelArrayOpts, panels: Array<Panel>): PanelRo
 
   return {
     type: 'panel-row',
-    panels: panels,
+    panels: panelsFiltered,
   }
 }
 
-export function NewPanelGroup(opts: { title: string; collapsed?: boolean }, panelRows: Array<PanelRow>): PanelGroup {
+function filterNonUndefined<T>(array: Array<T | undefined | boolean>): Array<T> {
+  return array.filter((item): item is T => item !== undefined)
+}
+
+export function NewPanelGroup(opts: { title: string; collapsed?: boolean }, panelRows: Array<PanelRow | undefined | boolean>): PanelGroup {
   return {
     type: 'panel-group',
     title: opts.title,
-    panelRows,
+    panelRows: filterNonUndefined(panelRows),
     collapsed: opts.collapsed || false,
   }
 }
