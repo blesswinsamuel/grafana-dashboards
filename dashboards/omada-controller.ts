@@ -1,7 +1,6 @@
-import { BigValueGraphMode, Dashboard, DashboardCursorSync, DataSourceRef, defaultDashboard } from '@grafana/schema'
-import * as path from 'path'
-import { NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, averageDurationQuery, overridesMatchByName, tableIndexByName, writePrometheusRules, writeDashboardAndPostToGrafana, NewQueryVariable, NewStatPanel, CounterMetric, GaugeMetric } from '../src/grafana-helpers'
+import { Dashboard, DashboardCursorSync, DataSourceRef, defaultDashboard } from '@grafana/schema'
 import { RuleGroup } from '../src/alerts'
+import { CounterMetric, GaugeMetric, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout } from '../src/grafana-helpers'
 
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',

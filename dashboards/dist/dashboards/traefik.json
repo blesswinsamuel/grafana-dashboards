@@ -2795,8 +2795,8 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (pod, instance) (process_open_fds{namespace=~\"$namespace\", instance=~\"$instance\"})",
-          "legendFormat": "{{ pod }} - {{ instance }}",
+          "expr": "sum(process_open_fds{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+          "legendFormat": "{{pod}} - {{instance}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2882,8 +2882,8 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (pod, instance) (rate(process_cpu_seconds_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval]))",
-          "legendFormat": "{{ pod }} - {{ instance }}",
+          "expr": "sum(rate(process_cpu_seconds_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])) by (pod, instance)",
+          "legendFormat": "{{pod}} - {{instance}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2969,8 +2969,8 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (pod, instance) (process_resident_memory_bytes{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])",
-          "legendFormat": "{{ pod }} - {{ instance }}",
+          "expr": "sum(process_resident_memory_bytes{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+          "legendFormat": "{{pod}} - {{instance}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3278,8 +3278,8 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "avg by (pod, instance) (go_memstats_heap_objects{namespace=~\"$namespace\", instance=~\"$instance\"})",
-          "legendFormat": "{{ pod }} - {{ instance }}",
+          "expr": "avg(go_memstats_heap_objects{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+          "legendFormat": "{{pod}} - {{instance}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3335,8 +3335,7 @@
             "thresholdsStyle": {
               "mode": "off"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
@@ -3365,8 +3364,8 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (pod, instance) (go_threads{namespace=~\"$namespace\", instance=~\"$instance\"})",
-          "legendFormat": "{{ pod }} - {{ instance }}",
+          "expr": "sum(go_threads{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+          "legendFormat": "{{pod}} - {{instance}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3422,8 +3421,7 @@
             "thresholdsStyle": {
               "mode": "off"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
@@ -3452,8 +3450,8 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (pod, instance) (go_goroutines{namespace=~\"$namespace\", instance=~\"$instance\"})",
-          "legendFormat": "{{ pod }} - {{ instance }}",
+          "expr": "sum(go_goroutines{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+          "legendFormat": "{{pod}} - {{instance}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3509,8 +3507,7 @@
             "thresholdsStyle": {
               "mode": "off"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
@@ -3539,8 +3536,8 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (pod, instance) (rate(go_memstats_alloc_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval]))",
-          "legendFormat": "{{ pod }} - {{ instance }}",
+          "expr": "sum(rate(go_memstats_alloc_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])) by (pod, instance)",
+          "legendFormat": "{{pod}} - {{instance}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3626,8 +3623,8 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (pod, instance) (go_memstats_alloc_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
-          "legendFormat": "{{ pod }} - {{ instance }}",
+          "expr": "sum(go_memstats_alloc_bytes{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+          "legendFormat": "{{pod}} - {{instance}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3713,8 +3710,8 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (pod, instance) (rate(go_gc_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval]))",
-          "legendFormat": "{{ pod }} - {{ instance }}",
+          "expr": "sum(rate(go_gc_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])) by (pod, instance)",
+          "legendFormat": "{{pod}} - {{instance}}",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3770,8 +3767,7 @@
             "thresholdsStyle": {
               "mode": "off"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
@@ -3800,8 +3796,8 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (pod, instance) (rate(go_gc_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval]))",
-          "legendFormat": "{{ pod }} - {{ instance }}",
+          "expr": "sum(rate(go_gc_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])) by (pod, instance)",
+          "legendFormat": "{{pod}} - {{instance}}",
           "range": true,
           "instant": false,
           "format": "time_series",

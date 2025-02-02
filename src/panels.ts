@@ -418,6 +418,7 @@ export type TablePanelOpts = CommonPanelOpts & {
       {
         target?: Target
         name?: string
+        width?: number
         unit?: Unit
         overrides?: Record<string, unknown>
       }
@@ -435,10 +436,13 @@ export function NewTablePanel(opts: TablePanelOpts): Panel {
   const targets = opts.targets ?? []
   if (opts.tableConfig) {
     const { queries, excludeColumns, extraTransformations } = opts.tableConfig
-    for (const [refId, { target, unit, overrides, name }] of Object.entries(queries)) {
+    for (const [refId, { target, unit, width, overrides, name }] of Object.entries(queries)) {
       const curOverrides = { ...overrides }
       if (unit) {
         curOverrides['unit'] = unit
+      }
+      if (width) {
+        curOverrides['custom.width'] = width
       }
       if (target) {
         if (name) {
