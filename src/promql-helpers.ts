@@ -15,13 +15,15 @@ export const mergeSelectors = (...selectors: (string | string[])[]) => {
 }
 
 export type CommonMetricOpts = {
+  description?: string
+  labels?: string[]
   selectors?: string | string[]
   wrap?: string
   append?: string
   prepend?: string
 }
 
-export type CommonQueryOpts = CommonMetricOpts & {
+export type CommonQueryOpts = Omit<CommonMetricOpts, 'description' | 'labels'> & {
   refId?: string
   groupBy?: string[]
   legendFormat?: string

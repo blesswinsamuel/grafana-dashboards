@@ -339,7 +339,7 @@ const panels: PanelRowAndGroups = [
       NewTimeSeriesPanel({ title: 'Idle in transaction (aborted)' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle in transaction (aborted)"`], groupBy: ['datname'], append: ' > 0' })),
     ]),
   ]),
-  goRuntimeMetricsPanels({ datasource, title: 'Resource Usage (postgres-exporter)', selectors, collapsed: true }),
+  goRuntimeMetricsPanels({ datasource, title: 'Resource Usage (postgres-exporter)', buildInfoMetric: 'postgres_exporter_build_info', selectors, collapsed: true }),
 ]
 
 export const dashboard: Dashboard = {

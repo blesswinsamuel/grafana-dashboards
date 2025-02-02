@@ -157,16 +157,21 @@ function inferUnit(targets: Target[], type?: 'line' | 'bar', defaultUnit?: Unit)
   const expr = targets.length > 0 ? (targets[0] as any).expr : ''
   if (!type) {
     if (expr.includes('$__interval')) {
+      // interval (bar chart)
       type = 'bar'
       if (!defaultUnit) {
-        if (expr.includes('increase')) {
+        if (expr.includes('_bytes_total')) {
+          defaultUnit = Unit.BYTES_SI
+        } else {
           defaultUnit = Unit.SHORT
         }
       }
-    }
-    if (expr.includes('$__rate_interval')) {
+    } else if (expr.includes('$__rate_interval')) {
+      // rate (line chart)
+      type = 'line'
       if (!defaultUnit) {
         if (expr.includes('histogram_quantile')) {
+          // histogram quantile
           if (expr.includes('_seconds_bucket')) {
             defaultUnit = Unit.SECONDS
           }
@@ -174,14 +179,34 @@ function inferUnit(targets: Target[], type?: 'line' | 'bar', defaultUnit?: Unit)
             defaultUnit = Unit.MILLISECONDS
           }
         } else if (expr.includes('histogram_share')) {
+          // histogram share
           defaultUnit = Unit.PERCENTUNIT
-        } else if (expr.includes('_request_') || expr.includes('_response_')) {
-          defaultUnit = Unit.RPS
+        } else {
+          if (expr.includes('_request_') || expr.includes('_response_')) {
+            defaultUnit = Unit.RPS
+          } else if (expr.includes('_bytes_total')) {
+            defaultUnit = Unit.BYTES_PER_SEC_SI
+          } else if (expr.includes('_packets_total')) {
+            defaultUnit = Unit.PPS
+          } else if (expr.includes('_seconds_sum') && expr.includes('_seconds_count') && expr.includes('rate') && expr.includes('/')) {
+            defaultUnit = Unit.SECONDS
+          }
         }
       }
-    }
-    if (expr.includes('_seconds_sum') && expr.includes('_seconds_count') && expr.includes('rate') && expr.includes('/')) {
-      defaultUnit = Unit.SECONDS
+    } else {
+      // gauge
+      type = 'line'
+      if (!defaultUnit) {
+        if (expr.includes('_seconds')) {
+          defaultUnit = Unit.SECONDS
+        } else if (expr.includes('_milliseconds') || expr.includes('_ms')) {
+          defaultUnit = Unit.MILLISECONDS
+        } else if (expr.includes('_bytes')) {
+          defaultUnit = Unit.BYTES_SI
+        } else if (expr.includes('_percent')) {
+          defaultUnit = Unit.PERCENTUNIT
+        }
+      }
     }
   }
   return [defaultUnit, type ?? 'line']
@@ -324,7 +349,8 @@ export function NewStatPanel(opts: StatPanelOpts, ...targets: Target[]): Panel {
     fieldConfig: {
       defaults: {
         mappings: opts.mappings ?? (opts.defaultUnit === Unit.DATE_TIME_FROM_NOW ? [{ type: MappingType.ValueToText, options: { '0': { text: '-', index: 0 } } }] : []),
-        thresholds: opts.thresholds ?? { mode: ThresholdsMode.Absolute, steps: [{ color: 'green', value: null }] },
+        // thresholds: opts.thresholds ?? { mode: ThresholdsMode.Absolute, steps: [{ color: 'green', value: null }] },
+        thresholds: opts.thresholds ?? { mode: ThresholdsMode.Absolute, steps: [{ color: 'transparent', value: null }] },
         unit: opts.defaultUnit,
         decimals: opts.decimals,
         ...opts.fieldConfigDefaults,

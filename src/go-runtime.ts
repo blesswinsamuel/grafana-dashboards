@@ -1,5 +1,5 @@
-import { DataSourceRef } from '@grafana/schema'
-import { NewPanelGroup, NewPanelRow, NewTimeSeriesPanel, PanelGroup, Unit } from './grafana-helpers'
+import { DataSourceRef, VizOrientation } from '@grafana/schema'
+import { NewPanelGroup, NewPanelRow, NewStatPanel, NewTimeSeriesPanel, PanelGroup, Unit } from './grafana-helpers'
 import { CounterMetric, GaugeMetric, SummaryMetric } from './promql-helpers'
 
 // https://github.com/mknyszek/client_golang/blob/master/prometheus/go_collector.go
@@ -80,33 +80,65 @@ const processResidentMemoryBytes = new GaugeMetric('process_resident_memory_byte
 // Start time of the process since unix epoch in seconds.
 const processStartTimeSeconds = new GaugeMetric('process_start_time_seconds')
 
-export function goRuntimeMetricsPanels({ datasource, title, selectors = [], groupBy = ['pod', 'instance'], collapsed }: { datasource?: DataSourceRef; title?: string; groupBy?: string[]; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
+export function goRuntimeMetricsPanels({ datasource, title, buildInfoMetric, selectors = [], groupBy = ['pod', 'instance'], collapsed }: { datasource?: DataSourceRef; title?: string; buildInfoMetric?: string; groupBy?: string[]; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
   return NewPanelGroup({ title: title ?? 'Go Runtime Metrics', collapsed }, [
-    NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'File Descriptors', defaultUnit: Unit.SHORT }, processOpenFds.calc('sum', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'CPU Usage', defaultUnit: Unit.SHORT }, processCpuSecondsTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Memory Usage', defaultUnit: Unit.BYTES_SI }, processResidentMemoryBytes.calc('sum', { selectors, groupBy })),
-      NewTimeSeriesPanel({
-        title: 'Stack Memory Usage',
-        targets: [goMemstatsStackSysBytes.calc('avg', { selectors, legendFormat: 'sys' }), goMemstatsStackInuseBytes.calc('avg', { selectors, legendFormat: 'inuse' })],
-        defaultUnit: Unit.BYTES_SI,
-      }),
-      NewTimeSeriesPanel({
-        title: 'Heap Memory Usage',
-        targets: [goMemstatsHeapSysBytes.calc('avg', { selectors, legendFormat: 'sys' }), goMemstatsHeapIdleBytes.calc('avg', { selectors, legendFormat: 'idle' }), goMemstatsHeapReleasedBytes.calc('avg', { selectors, legendFormat: 'released' }), goMemstatsNextGcBytes.calc('avg', { selectors, legendFormat: 'next_gc' }), goMemstatsHeapInuseBytes.calc('avg', { selectors, legendFormat: 'inuse' }), goMemstatsHeapAllocBytes.calc('avg', { selectors, legendFormat: 'alloc' })],
-        defaultUnit: Unit.BYTES_SI,
-      }),
-      NewTimeSeriesPanel({ title: 'Heap Objects' }, goMemstatsHeapObjects.calc('avg', { selectors, groupBy })),
+    NewPanelRow({ datasource, height: 3 }, [
+      //
+      NewStatPanel({ title: 'Go Version', options: { reduceOptions: { fields: '/^version$/' } } }, goInfo.calc('sum', { selectors, groupBy: ['version'], type: 'instant' })),
+      NewStatPanel({ title: 'Process Start Time', defaultUnit: Unit.DATE_TIME_FROM_NOW }, processStartTimeSeconds.calc('max', { selectors, type: 'instant', append: ' * 1000' })),
+      NewStatPanel({ title: 'Process Max File Descriptors', defaultUnit: Unit.SHORT }, processMaxFds.calc('min', { selectors, type: 'instant' })),
+      NewStatPanel({ title: 'Process Virtual Memory Max', defaultUnit: Unit.BYTES_SI }, processVirtualMemoryMaxBytes.calc('min', { selectors, type: 'instant' })),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
+      //
+      buildInfoMetric && NewStatPanel({ width: 6, title: 'Go Build Info', options: { text: { titleSize: 12 }, orientation: VizOrientation.Horizontal, reduceOptions: { fields: '/^(branch|goarch|goos|goversion|revision|tags|version)$/' } } }, new GaugeMetric(buildInfoMetric).calc('sum', { selectors, groupBy: ['branch', 'goarch', 'goos', 'goversion', 'revision', 'tags', 'version'], type: 'instant' })),
+      NewTimeSeriesPanel({ title: 'Process Open File Descriptors', defaultUnit: Unit.SHORT }, processOpenFds.calc('sum', { selectors, groupBy })),
       NewTimeSeriesPanel({ title: 'Threads' }, goThreads.calc('sum', { selectors, groupBy })),
       NewTimeSeriesPanel({ title: 'Goroutines' }, goGoroutines.calc('sum', { selectors, groupBy })),
+    ]),
+    NewPanelRow({ datasource, height: 8 }, [
+      NewTimeSeriesPanel({ title: 'CPU Usage', defaultUnit: Unit.SHORT }, processCpuSecondsTotal.calc('sum', 'rate', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'Memory Usage', defaultUnit: Unit.BYTES_SI }, processResidentMemoryBytes.calc('sum', { selectors, groupBy })),
       NewTimeSeriesPanel({ title: 'Go Alloc Rate', defaultUnit: Unit.BYTES_PER_SEC_SI }, goMemstatsAllocBytesTotal.calc('sum', 'rate', { selectors, groupBy })),
       NewTimeSeriesPanel({ title: 'Go Alloc Bytes', defaultUnit: Unit.BYTES_SI }, goMemstatsAllocBytes.calc('sum', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Go GC Per Second' }, goGcDurationSeconds.count().calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Go GC Duration Seconds', defaultUnit: Unit.SECONDS }, goGcDurationSeconds.sum().calc('sum', 'rate', { selectors, groupBy })),
     ]),
-    // # stat_panel_name("Go Info", f'go_info{selector}', "{{ version }}"),
-    // # stat_panel_value("Last GC time", f'go_memstats_last_gc_time_seconds{selector} * 1000', unit=UNITS.DATE_TIME_FROM_NOW),
+    NewPanelRow({ datasource, height: 8 }, [
+      NewTimeSeriesPanel({ title: 'Stack Memory Usage (avg)', defaultUnit: Unit.BYTES_SI }, goMemstatsStackSysBytes.calc('avg', { selectors, legendFormat: 'sys' }), goMemstatsStackInuseBytes.calc('avg', { selectors, legendFormat: 'inuse' })),
+      NewTimeSeriesPanel(
+        { title: 'Heap Memory Usage (avg)', defaultUnit: Unit.BYTES_SI },
+        //
+        goMemstatsHeapSysBytes.calc('avg', { selectors, legendFormat: 'sys' }),
+        goMemstatsHeapIdleBytes.calc('avg', { selectors, legendFormat: 'idle' }),
+        goMemstatsHeapReleasedBytes.calc('avg', { selectors, legendFormat: 'released' }),
+        goMemstatsHeapInuseBytes.calc('avg', { selectors, legendFormat: 'inuse' }),
+        goMemstatsHeapAllocBytes.calc('avg', { selectors, legendFormat: 'alloc' })
+      ),
+      NewTimeSeriesPanel({ title: 'Heap Objects', defaultUnit: Unit.SHORT }, goMemstatsHeapObjects.calc('avg', { selectors, groupBy })),
+      NewTimeSeriesPanel(
+        { title: 'Other Memory (avg)', defaultUnit: Unit.BYTES_SI },
+        goMemstatsMspanSysBytes.calc('avg', { selectors, legendFormat: 'mspan_sys' }),
+        goMemstatsMspanInuseBytes.calc('avg', { selectors, legendFormat: 'mspan_inuse' }),
+        goMemstatsMcacheSysBytes.calc('avg', { selectors, legendFormat: 'mcache_sys' }),
+        goMemstatsMcacheInuseBytes.calc('avg', { selectors, legendFormat: 'mcache_inuse' }),
+        goMemstatsBuckHashSysBytes.calc('avg', { selectors, legendFormat: 'buck_hash_sys' }),
+        goMemstatsOtherSysBytes.calc('avg', { selectors, legendFormat: 'other_sys' }),
+        goMemstatsGcSysBytes.calc('avg', { selectors, legendFormat: 'gc_sys' }),
+        goMemstatsNextGcBytes.calc('avg', { selectors, legendFormat: 'next_gc' }),
+        goMemstatsSysBytes.calc('avg', { selectors, legendFormat: 'sys' })
+      ),
+    ]),
+    NewPanelRow({ datasource, height: 8 }, [
+      NewTimeSeriesPanel({ title: 'Go GC count' }, goGcDurationSeconds.count().calc('sum', 'increase', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'Go GC Duration Seconds (rate)', defaultUnit: Unit.SECONDS }, goGcDurationSeconds.sum().calc('sum', 'rate', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'Go GC Duration Seconds (avg)', defaultUnit: Unit.SECONDS }, goGcDurationSeconds.avg({ selectors, groupBy })),
+      // NewTimeSeriesPanel({ title: 'Go GC CPU Fraction' }, goMemstatsGcCpuFraction.calc('sum', { selectors, groupBy })),
+    ]),
+    NewPanelRow({ datasource, height: 8 }, [
+      //
+      NewTimeSeriesPanel({ title: 'Lookups rate', defaultUnit: Unit.SHORT }, goMemstatsLookupsTotal.calc('sum', 'rate', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'Mallocs rate', defaultUnit: Unit.SHORT }, goMemstatsMallocsTotal.calc('sum', 'rate', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'Frees rate', defaultUnit: Unit.SHORT }, goMemstatsFreesTotal.calc('sum', 'rate', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'Process Virtual Memory', defaultUnit: Unit.BYTES_SI }, processVirtualMemoryBytes.calc('sum', { selectors, groupBy })),
+    ]),
   ])
 }

@@ -1,5 +1,6 @@
 import { Dashboard, DashboardCursorSync, DataSourceRef, defaultDashboard } from '@grafana/schema'
 import { autoLayout, averageDurationQuery, CounterMetric, GaugeMetric, goRuntimeMetricsPanels, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTimeSeriesPanel, PanelRowAndGroups, SummaryMetric, Unit } from '../src/grafana-helpers'
+import { cadvisorMetricsPanels } from '../src/k8s-cadvisor'
 
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -127,6 +128,7 @@ const panels: PanelRowAndGroups = [
     ]),
   ]),
   goRuntimeMetricsPanels({ datasource, selectors, collapsed: true }),
+  cadvisorMetricsPanels({ datasource, selectors: [`namespace=~"$namespace"`, `pod=~"^traefik-[a-z0-9]{10}-[a-z0-9]{5}"`] }), //`container="traefik"`
 ]
 
 export const dashboard: Dashboard = {

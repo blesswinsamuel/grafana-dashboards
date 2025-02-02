@@ -48,7 +48,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "transparent",
                 "value": null
               }
             ]
@@ -2966,6 +2966,256 @@
           "repeatDirection": "h",
           "targets": [
             {
+              "expr": "sum(go_info{instance=~\"$instance\", job=\"$job\"}) by (version)",
+              "legendFormat": "{{version}}",
+              "range": false,
+              "instant": true,
+              "format": "table",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "stat",
+          "title": "Go Version",
+          "gridPos": {
+            "x": 0,
+            "y": 90,
+            "w": 6,
+            "h": 3
+          },
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "values": false,
+              "fields": "/^version$/",
+              "calcs": [
+                "lastNotNull"
+              ]
+            },
+            "orientation": "auto",
+            "textMode": "auto",
+            "colorMode": "background",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "showPercentChange": false,
+            "wideLayout": true,
+            "percentChangeColorMode": "standard",
+            "text": {}
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "max(process_start_time_seconds{instance=~\"$instance\", job=\"$job\"}) * 1000",
+              "range": false,
+              "instant": true,
+              "format": "table",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "stat",
+          "title": "Process Start Time",
+          "gridPos": {
+            "x": 6,
+            "y": 90,
+            "w": 6,
+            "h": 3
+          },
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "-",
+                      "index": 0
+                    }
+                  }
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "dateTimeFromNow"
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "values": false,
+              "fields": "",
+              "calcs": [
+                "lastNotNull"
+              ]
+            },
+            "orientation": "auto",
+            "textMode": "auto",
+            "colorMode": "background",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "showPercentChange": false,
+            "wideLayout": true,
+            "percentChangeColorMode": "standard",
+            "text": {}
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "min(process_max_fds{instance=~\"$instance\", job=\"$job\"})",
+              "range": false,
+              "instant": true,
+              "format": "table",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "stat",
+          "title": "Process Max File Descriptors",
+          "gridPos": {
+            "x": 12,
+            "y": 90,
+            "w": 6,
+            "h": 3
+          },
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "values": false,
+              "fields": "",
+              "calcs": [
+                "lastNotNull"
+              ]
+            },
+            "orientation": "auto",
+            "textMode": "auto",
+            "colorMode": "background",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "showPercentChange": false,
+            "wideLayout": true,
+            "percentChangeColorMode": "standard",
+            "text": {}
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "min(process_virtual_memory_max_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "range": false,
+              "instant": true,
+              "format": "table",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "stat",
+          "title": "Process Virtual Memory Max",
+          "gridPos": {
+            "x": 18,
+            "y": 90,
+            "w": 6,
+            "h": 3
+          },
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "decbytes"
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "values": false,
+              "fields": "",
+              "calcs": [
+                "lastNotNull"
+              ]
+            },
+            "orientation": "auto",
+            "textMode": "auto",
+            "colorMode": "background",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "showPercentChange": false,
+            "wideLayout": true,
+            "percentChangeColorMode": "standard",
+            "text": {}
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
               "expr": "sum(process_open_fds{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
               "legendFormat": "{{pod}} - {{instance}}",
               "range": true,
@@ -2980,12 +3230,12 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "type": "timeseries",
-          "title": "File Descriptors",
+          "title": "Process Open File Descriptors",
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 90,
-            "w": 4,
+            "y": 93,
+            "w": 8,
             "h": 8
           },
           "fieldConfig": {
@@ -3053,6 +3303,178 @@
           "repeatDirection": "h",
           "targets": [
             {
+              "expr": "sum(go_threads{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Threads",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 8,
+            "y": 93,
+            "w": 8,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(go_goroutines{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Goroutines",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 16,
+            "y": 93,
+            "w": 8,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
               "expr": "sum(rate(process_cpu_seconds_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
               "legendFormat": "{{pod}} - {{instance}}",
               "range": true,
@@ -3070,9 +3492,9 @@
           "title": "CPU Usage",
           "maxDataPoints": 100,
           "gridPos": {
-            "x": 4,
-            "y": 90,
-            "w": 4,
+            "x": 0,
+            "y": 101,
+            "w": 6,
             "h": 8
           },
           "fieldConfig": {
@@ -3157,9 +3579,183 @@
           "title": "Memory Usage",
           "maxDataPoints": 100,
           "gridPos": {
-            "x": 8,
-            "y": 90,
-            "w": 4,
+            "x": 6,
+            "y": 101,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "decbytes"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(go_memstats_alloc_bytes_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Go Alloc Rate",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 12,
+            "y": 101,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "Bps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(go_memstats_alloc_bytes{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Go Alloc Bytes",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 18,
+            "y": 101,
+            "w": 6,
             "h": 8
           },
           "fieldConfig": {
@@ -3249,12 +3845,12 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "type": "timeseries",
-          "title": "Stack Memory Usage",
+          "title": "Stack Memory Usage (avg)",
           "maxDataPoints": 100,
           "gridPos": {
-            "x": 12,
-            "y": 90,
-            "w": 4,
+            "x": 0,
+            "y": 109,
+            "w": 6,
             "h": 8
           },
           "fieldConfig": {
@@ -3346,20 +3942,12 @@
               "refId": "C"
             },
             {
-              "expr": "avg(go_memstats_next_gc_bytes{instance=~\"$instance\", job=\"$job\"})",
-              "legendFormat": "next_gc",
-              "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "D"
-            },
-            {
               "expr": "avg(go_memstats_heap_inuse_bytes{instance=~\"$instance\", job=\"$job\"})",
               "legendFormat": "inuse",
               "range": true,
               "instant": false,
               "format": "time_series",
-              "refId": "E"
+              "refId": "D"
             },
             {
               "expr": "avg(go_memstats_heap_alloc_bytes{instance=~\"$instance\", job=\"$job\"})",
@@ -3367,7 +3955,7 @@
               "range": true,
               "instant": false,
               "format": "time_series",
-              "refId": "F"
+              "refId": "E"
             }
           ],
           "transformations": [],
@@ -3376,12 +3964,12 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "type": "timeseries",
-          "title": "Heap Memory Usage",
+          "title": "Heap Memory Usage (avg)",
           "maxDataPoints": 100,
           "gridPos": {
-            "x": 16,
-            "y": 90,
-            "w": 4,
+            "x": 6,
+            "y": 109,
+            "w": 6,
             "h": 8
           },
           "fieldConfig": {
@@ -3466,354 +4054,160 @@
           "title": "Heap Objects",
           "maxDataPoints": 100,
           "gridPos": {
-            "x": 20,
-            "y": 90,
-            "w": 4,
-            "h": 8
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisGridShow": true,
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              }
-            },
-            "overrides": []
-          },
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "max",
-                "mean",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "desc"
-            }
-          }
-        },
-        {
-          "links": [],
-          "repeatDirection": "h",
-          "targets": [
-            {
-              "expr": "sum(go_threads{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
-              "legendFormat": "{{pod}} - {{instance}}",
-              "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
-            }
-          ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
-          "title": "Threads",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 0,
-            "y": 98,
-            "w": 4,
-            "h": 8
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisGridShow": true,
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              }
-            },
-            "overrides": []
-          },
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "max",
-                "mean",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "desc"
-            }
-          }
-        },
-        {
-          "links": [],
-          "repeatDirection": "h",
-          "targets": [
-            {
-              "expr": "sum(go_goroutines{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
-              "legendFormat": "{{pod}} - {{instance}}",
-              "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
-            }
-          ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
-          "title": "Goroutines",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 4,
-            "y": 98,
-            "w": 4,
-            "h": 8
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisGridShow": true,
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              }
-            },
-            "overrides": []
-          },
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "max",
-                "mean",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "desc"
-            }
-          }
-        },
-        {
-          "links": [],
-          "repeatDirection": "h",
-          "targets": [
-            {
-              "expr": "sum(rate(go_memstats_alloc_bytes_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
-              "legendFormat": "{{pod}} - {{instance}}",
-              "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
-            }
-          ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
-          "title": "Go Alloc Rate",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 8,
-            "y": 98,
-            "w": 4,
-            "h": 8
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisGridShow": true,
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "unit": "Bps"
-            },
-            "overrides": []
-          },
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "max",
-                "mean",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "desc"
-            }
-          }
-        },
-        {
-          "links": [],
-          "repeatDirection": "h",
-          "targets": [
-            {
-              "expr": "sum(go_memstats_alloc_bytes{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
-              "legendFormat": "{{pod}} - {{instance}}",
-              "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
-            }
-          ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
-          "title": "Go Alloc Bytes",
-          "maxDataPoints": 100,
-          "gridPos": {
             "x": 12,
-            "y": 98,
-            "w": 4,
+            "y": 109,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "avg(go_memstats_mspan_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "legendFormat": "mspan_sys",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            },
+            {
+              "expr": "avg(go_memstats_mspan_inuse_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "legendFormat": "mspan_inuse",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "B"
+            },
+            {
+              "expr": "avg(go_memstats_mcache_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "legendFormat": "mcache_sys",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "C"
+            },
+            {
+              "expr": "avg(go_memstats_mcache_inuse_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "legendFormat": "mcache_inuse",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "D"
+            },
+            {
+              "expr": "avg(go_memstats_buck_hash_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "legendFormat": "buck_hash_sys",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "E"
+            },
+            {
+              "expr": "avg(go_memstats_other_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "legendFormat": "other_sys",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "F"
+            },
+            {
+              "expr": "avg(go_memstats_gc_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "legendFormat": "gc_sys",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "G"
+            },
+            {
+              "expr": "avg(go_memstats_next_gc_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "legendFormat": "next_gc",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "H"
+            },
+            {
+              "expr": "avg(go_memstats_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "legendFormat": "sys",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "I"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Other Memory (avg)",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 18,
+            "y": 109,
+            "w": 6,
             "h": 8
           },
           "fieldConfig": {
@@ -3881,7 +4275,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_gc_duration_seconds_count{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum(increase(go_gc_duration_seconds_count{instance=~\"$instance\", job=\"$job\"}[$__interval])) by (pod, instance)",
               "legendFormat": "{{pod}} - {{instance}}",
               "range": true,
               "instant": false,
@@ -3895,12 +4289,12 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "type": "timeseries",
-          "title": "Go GC Per Second",
+          "title": "Go GC count",
           "maxDataPoints": 100,
           "gridPos": {
-            "x": 16,
-            "y": 98,
-            "w": 4,
+            "x": 0,
+            "y": 117,
+            "w": 8,
             "h": 8
           },
           "fieldConfig": {
@@ -3915,45 +4309,43 @@
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
+                "drawStyle": "bars",
+                "fillOpacity": 100,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
                   "tooltip": false,
                   "viz": false
                 },
-                "lineInterpolation": "linear",
+                "lineInterpolation": "stepAfter",
                 "lineWidth": 1,
                 "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
                 },
-                "showPoints": "auto",
+                "showPoints": "never",
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
-                  "mode": "none"
+                  "mode": "normal"
                 },
                 "thresholdsStyle": {
                   "mode": "off"
                 }
-              }
+              },
+              "unit": "short"
             },
             "overrides": []
           },
           "options": {
             "legend": {
               "calcs": [
-                "min",
-                "max",
-                "mean",
-                "lastNotNull"
+                "sum"
               ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true,
-              "sortBy": "Last *",
+              "sortBy": "Total",
               "sortDesc": true
             },
             "tooltip": {
@@ -3981,12 +4373,12 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "type": "timeseries",
-          "title": "Go GC Duration Seconds",
+          "title": "Go GC Duration Seconds (rate)",
           "maxDataPoints": 100,
           "gridPos": {
-            "x": 20,
-            "y": 98,
-            "w": 4,
+            "x": 8,
+            "y": 117,
+            "w": 8,
             "h": 8
           },
           "fieldConfig": {
@@ -4026,6 +4418,441 @@
                 }
               },
               "unit": "s"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(go_gc_duration_seconds_sum{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance) / sum(rate(go_gc_duration_seconds_count{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Go GC Duration Seconds (avg)",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 16,
+            "y": 117,
+            "w": 8,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(go_memstats_lookups_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Lookups rate",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 0,
+            "y": 125,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(go_memstats_mallocs_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Mallocs rate",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 6,
+            "y": 125,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(go_memstats_frees_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Frees rate",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 12,
+            "y": 125,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(process_virtual_memory_bytes{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Process Virtual Memory",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 18,
+            "y": 125,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "decbytes"
             },
             "overrides": []
           },
