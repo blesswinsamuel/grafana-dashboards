@@ -509,7 +509,8 @@ export type PieChartPanelOpts = CommonPanelOpts & {
   options?: Partial<PieChartPanelOptions>
 }
 
-export function NewPieChartPanel(opts: PieChartPanelOpts): Panel {
+export function NewPieChartPanel(opts: PieChartPanelOpts, ...targets: Target[]): Panel {
+  targets = [...(opts.targets || []), ...(targets || [])]
   const panel: Panel<Record<string, unknown>, GraphFieldConfig> = {
     ...defaultPanel,
     datasource: opts.datasource,
@@ -519,7 +520,7 @@ export function NewPieChartPanel(opts: PieChartPanelOpts): Panel {
     interval: opts.interval,
     maxDataPoints: opts.maxDataPoints,
     gridPos: { x: 0, y: 0, w: opts.width ?? 0, h: opts.height ?? 0 },
-    targets: fromTargets(opts.targets, opts.datasource),
+    targets: fromTargets(targets, opts.datasource),
     fieldConfig: {
       defaults: {
         mappings: opts.mappings,
