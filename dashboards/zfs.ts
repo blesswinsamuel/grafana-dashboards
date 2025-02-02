@@ -61,7 +61,7 @@ const poolAllocated = new GaugeMetric('zfs_pool_allocated_bytes') // pool
 // The ratio of deduplicated size vs undeduplicated size for data in this pool.
 const poolDedupratio = new GaugeMetric('zfs_pool_deduplication_ratio') // pool
 // Ratio of pool space used.
-const poolCapacity = new GaugeMetric('zfs_pool_capacity_ratio') // pool
+const poolCapacityRatio = new GaugeMetric('zfs_pool_capacity_ratio') // pool
 // Amount of uninitialized space within the pool or device that can be used to increase the total capacity of the pool.
 const poolExpandsize = new GaugeMetric('zfs_pool_expand_size_bytes') // pool
 // The fragmentation ratio of the pool.
@@ -86,103 +86,44 @@ const panels: PanelRowAndGroups = [
       NewStatPanel({ title: 'Pools', defaultUnit: Unit.SHORT }, poolAllocated.calc('count', { selectors: 'instance=~"$instance"' })),
       NewStatPanel({ title: 'Datasets', defaultUnit: Unit.SHORT }, datasetLogicalUsedBytes.calc('count', { selectors: 'instance=~"$instance"' })),
     ]),
-    NewPanelRow({ datasource, height: 5 }, [
+    NewPanelRow({ datasource, height: 8 }, [
       NewTablePanel({
         title: 'ZFS Pools',
-        targets: [
-          { refId: 'ALLOCATED', expr: 'sum(zfs_pool_allocated_bytes{instance=~"$instance"}) by (pool)', format: 'table', type: 'instant' },
-          { refId: 'DUPLICATION_RATIO', expr: 'sum(zfs_pool_deduplication_ratio{instance=~"$instance"}) by (pool)', format: 'table', type: 'instant' },
-          { refId: 'FRAGMENTATION_RATIO', expr: 'sum(zfs_pool_fragmentation_ratio{instance=~"$instance"}) by (pool)', format: 'table', type: 'instant' },
-          { refId: 'FREE', expr: 'sum(zfs_pool_free_bytes{instance=~"$instance"}) by (pool)', format: 'table', type: 'instant' },
-          { refId: 'FREEING', expr: 'sum(zfs_pool_freeing_bytes{instance=~"$instance"}) by (pool)', format: 'table', type: 'instant' },
-          { refId: 'HEALTH', expr: 'sum(zfs_pool_health{instance=~"$instance"}) by (pool)', format: 'table', type: 'instant' },
-          { refId: 'LEAKED', expr: 'sum(zfs_pool_leaked_bytes{instance=~"$instance"}) by (pool)', format: 'table', type: 'instant' },
-          { refId: 'READONLY', expr: 'sum(zfs_pool_readonly{instance=~"$instance"}) by (pool)', format: 'table', type: 'instant' },
-          { refId: 'SIZE', expr: 'sum(zfs_pool_size_bytes{instance=~"$instance"}) by (pool)', format: 'table', type: 'instant' },
-        ],
-        overrides: [
-          { matcher: { id: 'byName', options: 'Allocated' }, properties: [{ id: 'unit', value: Unit.BYTES_SI }] },
-          { matcher: { id: 'byName', options: 'Deduplication Ratio' }, properties: [{ id: 'unit', value: Unit.SHORT }] },
-          { matcher: { id: 'byName', options: 'Fragmentation Ratio' }, properties: [{ id: 'unit', value: Unit.SHORT }] },
-          { matcher: { id: 'byName', options: 'Free' }, properties: [{ id: 'unit', value: Unit.BYTES_SI }] },
-          { matcher: { id: 'byName', options: 'Freeing' }, properties: [{ id: 'unit', value: Unit.BYTES_SI }] },
-          { matcher: { id: 'byName', options: 'Health' }, properties: [{ id: 'unit', value: Unit.SHORT }] },
-          { matcher: { id: 'byName', options: 'Leaked' }, properties: [{ id: 'unit', value: Unit.BYTES_SI }] },
-          { matcher: { id: 'byName', options: 'Readonly' }, properties: [{ id: 'unit', value: Unit.SHORT }] },
-          { matcher: { id: 'byName', options: 'Size' }, properties: [{ id: 'unit', value: Unit.BYTES_SI }] },
-        ],
-        transformations: [
-          { id: 'merge', options: {} },
-          { id: 'filterFieldsByName', options: { include: { pattern: '(pool|Value\\s.*)' } } },
-          {
-            id: 'organize',
-            options: {
-              excludeByName: tableExcludeByName(['Time']),
-              indexByName: {},
-              renameByName: {
-                pool: 'Pool',
-                'Value #ALLOCATED': 'Allocated',
-                'Value #DUPLICATION_RATIO': 'Deduplication Ratio',
-                'Value #FRAGMENTATION_RATIO': 'Fragmentation Ratio',
-                'Value #FREE': 'Free',
-                'Value #FREEING': 'Freeing',
-                'Value #HEALTH': 'Health',
-                'Value #LEAKED': 'Leaked',
-                'Value #READONLY': 'Readonly',
-                'Value #SIZE': 'Size',
-              },
-            },
+        tableConfig: {
+          queries: {
+            pool: { name: 'Pool' },
+            ALLOCATED: { name: 'Allocated', unit: Unit.BYTES_SI, target: poolAllocated.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['pool'], type: 'instant' }) },
+            DUPLICATION_RATIO: { name: 'Deduplication Ratio', unit: Unit.SHORT, target: poolDedupratio.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['pool'], type: 'instant' }) },
+            FRAGMENTATION_RATIO: { name: 'Fragmentation Ratio', unit: Unit.SHORT, target: poolFragmentation.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['pool'], type: 'instant' }) },
+            FREE: { name: 'Free', unit: Unit.BYTES_SI, target: poolFree.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['pool'], type: 'instant' }) },
+            FREEING: { name: 'Freeing', unit: Unit.BYTES_SI, target: poolFreeing.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['pool'], type: 'instant' }) },
+            HEALTH: { name: 'Health', unit: Unit.SHORT, target: poolHealth.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['pool'], type: 'instant' }) },
+            LEAKED: { name: 'Leaked', unit: Unit.BYTES_SI, target: poolLeaked.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['pool'], type: 'instant' }) },
+            READONLY: { name: 'Readonly', unit: Unit.SHORT, target: poolReadonly.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['pool'], type: 'instant' }) },
+            SIZE: { name: 'Size', unit: Unit.BYTES_SI, target: poolSize.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['pool'], type: 'instant' }) },
           },
-        ],
+          excludeColumns: ['Time'],
+        },
       }),
     ]),
-    NewPanelRow({ datasource, height: 14 }, [
+    NewPanelRow({ datasource, height: 20 }, [
       NewTablePanel({
         title: 'ZFS Datasets',
-        targets: [
-          { refId: 'AVAILABLE', expr: 'sum(zfs_dataset_available_bytes{instance=~"$instance"}) by (name, pool, type)', format: 'table', type: 'instant' },
-          { refId: 'LOGICAL_USED', expr: 'sum(zfs_dataset_logical_used_bytes{instance=~"$instance"}) by (name, pool, type)', format: 'table', type: 'instant' },
-          { refId: 'QUOTA', expr: 'sum(zfs_dataset_quota_bytes{instance=~"$instance"}) by (name, pool, type)', format: 'table', type: 'instant' },
-          { refId: 'REFERENCED', expr: 'sum(zfs_dataset_referenced_bytes{instance=~"$instance"}) by (name, pool, type)', format: 'table', type: 'instant' },
-          { refId: 'USED_BY', expr: 'sum(zfs_dataset_used_by_dataset_bytes{instance=~"$instance"}) by (name, pool, type)', format: 'table', type: 'instant' },
-          { refId: 'USED', expr: 'sum(zfs_dataset_used_bytes{instance=~"$instance"}) by (name, pool, type)', format: 'table', type: 'instant' },
-          { refId: 'WRITTEN', expr: 'sum(zfs_dataset_written_bytes{instance=~"$instance"}) by (name, pool, type)', format: 'table', type: 'instant' },
-          // { refId: 'POWER_ON', expr: 'sum(zfs_device_power_on_seconds{instance=~"$instance"}) by (name, pool, type)', format: 'table', type: 'instant' },
-        ],
-        overrides: [
-          { matcher: { id: 'byName', options: 'Available' }, properties: [{ id: 'unit', value: Unit.BYTES_SI }] },
-          { matcher: { id: 'byName', options: 'Logical Used' }, properties: [{ id: 'unit', value: Unit.BYTES_SI }] },
-          { matcher: { id: 'byName', options: 'Quota' }, properties: [{ id: 'unit', value: Unit.BYTES_SI }] },
-          { matcher: { id: 'byName', options: 'Referenced' }, properties: [{ id: 'unit', value: Unit.BYTES_SI }] },
-          { matcher: { id: 'byName', options: 'Used by' }, properties: [{ id: 'unit', value: Unit.BYTES_SI }] },
-          { matcher: { id: 'byName', options: 'Used' }, properties: [{ id: 'unit', value: Unit.BYTES_SI }] },
-          { matcher: { id: 'byName', options: 'Written' }, properties: [{ id: 'unit', value: Unit.BYTES_SI }] },
-          // { matcher: { id: 'byName', options: 'Power On Seconds' }, properties: [{ id: 'unit', value: Unit.SECONDS }] },
-        ],
-        transformations: [
-          { id: 'merge', options: {} },
-          { id: 'filterFieldsByName', options: { include: { pattern: '(name|pool|type|Value\\s.*)' } } },
-          {
-            id: 'organize',
-            options: {
-              excludeByName: tableExcludeByName(['Time']),
-              indexByName: {},
-              renameByName: {
-                name: 'Name',
-                pool: 'Pool',
-                type: 'Type',
-                'Value #AVAILABLE': 'Available',
-                'Value #LOGICAL_USED': 'Logical Used',
-                'Value #QUOTA': 'Quota',
-                'Value #REFERENCED': 'Referenced',
-                'Value #USED_BY': 'Used by',
-                'Value #USED': 'Used',
-                'Value #WRITTEN': 'Written',
-                // 'Value #POWER_ON': 'Power On Seconds',
-              },
-            },
+        tableConfig: {
+          queries: {
+            name: { name: 'Name', width: 400 },
+            pool: { name: 'Pool', width: 140 },
+            type: { name: 'Type', width: 100 },
+            AVAILABLE: { name: 'Available', unit: Unit.BYTES_SI, target: datasetAvailableBytes.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['name', 'pool', 'type'], type: 'instant' }) },
+            LOGICAL_USED: { name: 'Logical Used', unit: Unit.BYTES_SI, target: datasetLogicalUsedBytes.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['name', 'pool', 'type'], type: 'instant' }) },
+            QUOTA: { name: 'Quota', unit: Unit.BYTES_SI, target: datasetQuotaBytes.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['name', 'pool', 'type'], type: 'instant' }) },
+            REFERENCED: { name: 'Referenced', unit: Unit.BYTES_SI, target: datasetReferencedBytes.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['name', 'pool', 'type'], type: 'instant' }) },
+            USED_BY: { name: 'Used by', unit: Unit.BYTES_SI, target: datasetUsedByDatasetBytes.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['name', 'pool', 'type'], type: 'instant' }) },
+            USED: { name: 'Used', unit: Unit.BYTES_SI, target: datasetUsedBytes.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['name', 'pool', 'type'], type: 'instant' }) },
+            WRITTEN: { name: 'Written', unit: Unit.BYTES_SI, target: datasetWrittenBytes.calc('sum', { selectors: 'instance=~"$instance"', groupBy: ['name', 'pool', 'type'], type: 'instant' }) },
           },
-        ],
+          excludeColumns: ['Time'],
+        },
       }),
     ]),
   ]),

@@ -142,6 +142,7 @@
       "targets": [
         {
           "expr": "sum(zfs_pool_allocated_bytes{instance=~\"$instance\"}) by (pool)",
+          "legendFormat": "{{pool}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -149,6 +150,7 @@
         },
         {
           "expr": "sum(zfs_pool_deduplication_ratio{instance=~\"$instance\"}) by (pool)",
+          "legendFormat": "{{pool}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -156,6 +158,7 @@
         },
         {
           "expr": "sum(zfs_pool_fragmentation_ratio{instance=~\"$instance\"}) by (pool)",
+          "legendFormat": "{{pool}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -163,6 +166,7 @@
         },
         {
           "expr": "sum(zfs_pool_free_bytes{instance=~\"$instance\"}) by (pool)",
+          "legendFormat": "{{pool}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -170,6 +174,7 @@
         },
         {
           "expr": "sum(zfs_pool_freeing_bytes{instance=~\"$instance\"}) by (pool)",
+          "legendFormat": "{{pool}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -177,6 +182,7 @@
         },
         {
           "expr": "sum(zfs_pool_health{instance=~\"$instance\"}) by (pool)",
+          "legendFormat": "{{pool}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -184,6 +190,7 @@
         },
         {
           "expr": "sum(zfs_pool_leaked_bytes{instance=~\"$instance\"}) by (pool)",
+          "legendFormat": "{{pool}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -191,6 +198,7 @@
         },
         {
           "expr": "sum(zfs_pool_readonly{instance=~\"$instance\"}) by (pool)",
+          "legendFormat": "{{pool}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -198,6 +206,7 @@
         },
         {
           "expr": "sum(zfs_pool_size_bytes{instance=~\"$instance\"}) by (pool)",
+          "legendFormat": "{{pool}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -210,20 +219,23 @@
           "options": {}
         },
         {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "pattern": "(pool|Value\\s.*)"
-            }
-          }
-        },
-        {
           "id": "organize",
           "options": {
+            "indexByName": {
+              "pool": 0,
+              "Value #ALLOCATED": 1,
+              "Value #DUPLICATION_RATIO": 2,
+              "Value #FRAGMENTATION_RATIO": 3,
+              "Value #FREE": 4,
+              "Value #FREEING": 5,
+              "Value #HEALTH": 6,
+              "Value #LEAKED": 7,
+              "Value #READONLY": 8,
+              "Value #SIZE": 9
+            },
             "excludeByName": {
               "Time": true
             },
-            "indexByName": {},
             "renameByName": {
               "pool": "Pool",
               "Value #ALLOCATED": "Allocated",
@@ -249,7 +261,7 @@
         "x": 0,
         "y": 4,
         "w": 24,
-        "h": 5
+        "h": 8
       },
       "fieldConfig": {
         "defaults": {},
@@ -257,7 +269,14 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Allocated"
+              "options": "pool"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #ALLOCATED"
             },
             "properties": [
               {
@@ -269,7 +288,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Deduplication Ratio"
+              "options": "Value #DUPLICATION_RATIO"
             },
             "properties": [
               {
@@ -281,7 +300,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Fragmentation Ratio"
+              "options": "Value #FRAGMENTATION_RATIO"
             },
             "properties": [
               {
@@ -293,7 +312,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Free"
+              "options": "Value #FREE"
             },
             "properties": [
               {
@@ -305,7 +324,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Freeing"
+              "options": "Value #FREEING"
             },
             "properties": [
               {
@@ -317,7 +336,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Health"
+              "options": "Value #HEALTH"
             },
             "properties": [
               {
@@ -329,7 +348,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Leaked"
+              "options": "Value #LEAKED"
             },
             "properties": [
               {
@@ -341,7 +360,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Readonly"
+              "options": "Value #READONLY"
             },
             "properties": [
               {
@@ -353,7 +372,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Size"
+              "options": "Value #SIZE"
             },
             "properties": [
               {
@@ -376,6 +395,7 @@
       "targets": [
         {
           "expr": "sum(zfs_dataset_available_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -383,6 +403,7 @@
         },
         {
           "expr": "sum(zfs_dataset_logical_used_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -390,6 +411,7 @@
         },
         {
           "expr": "sum(zfs_dataset_quota_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -397,6 +419,7 @@
         },
         {
           "expr": "sum(zfs_dataset_referenced_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -404,6 +427,7 @@
         },
         {
           "expr": "sum(zfs_dataset_used_by_dataset_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -411,6 +435,7 @@
         },
         {
           "expr": "sum(zfs_dataset_used_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -418,6 +443,7 @@
         },
         {
           "expr": "sum(zfs_dataset_written_bytes{instance=~\"$instance\"}) by (name, pool, type)",
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": false,
           "instant": true,
           "format": "table",
@@ -430,20 +456,23 @@
           "options": {}
         },
         {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "pattern": "(name|pool|type|Value\\s.*)"
-            }
-          }
-        },
-        {
           "id": "organize",
           "options": {
+            "indexByName": {
+              "name": 0,
+              "pool": 1,
+              "type": 2,
+              "Value #AVAILABLE": 3,
+              "Value #LOGICAL_USED": 4,
+              "Value #QUOTA": 5,
+              "Value #REFERENCED": 6,
+              "Value #USED_BY": 7,
+              "Value #USED": 8,
+              "Value #WRITTEN": 9
+            },
             "excludeByName": {
               "Time": true
             },
-            "indexByName": {},
             "renameByName": {
               "name": "Name",
               "pool": "Pool",
@@ -467,9 +496,9 @@
       "title": "ZFS Datasets",
       "gridPos": {
         "x": 0,
-        "y": 9,
+        "y": 12,
         "w": 24,
-        "h": 14
+        "h": 20
       },
       "fieldConfig": {
         "defaults": {},
@@ -477,7 +506,43 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Available"
+              "options": "name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 400
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pool"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 140
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "type"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #AVAILABLE"
             },
             "properties": [
               {
@@ -489,7 +554,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Logical Used"
+              "options": "Value #LOGICAL_USED"
             },
             "properties": [
               {
@@ -501,7 +566,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Quota"
+              "options": "Value #QUOTA"
             },
             "properties": [
               {
@@ -513,7 +578,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Referenced"
+              "options": "Value #REFERENCED"
             },
             "properties": [
               {
@@ -525,7 +590,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Used by"
+              "options": "Value #USED_BY"
             },
             "properties": [
               {
@@ -537,7 +602,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Used"
+              "options": "Value #USED"
             },
             "properties": [
               {
@@ -549,7 +614,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Written"
+              "options": "Value #WRITTEN"
             },
             "properties": [
               {
@@ -593,7 +658,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 24,
+            "y": 33,
             "w": 4,
             "h": 8
           },
@@ -680,7 +745,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 4,
-            "y": 24,
+            "y": 33,
             "w": 4,
             "h": 8
           },
@@ -767,7 +832,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 8,
-            "y": 24,
+            "y": 33,
             "w": 4,
             "h": 8
           },
@@ -862,7 +927,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 24,
+            "y": 33,
             "w": 4,
             "h": 8
           },
@@ -989,7 +1054,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 16,
-            "y": 24,
+            "y": 33,
             "w": 4,
             "h": 8
           },
@@ -1076,7 +1141,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 20,
-            "y": 24,
+            "y": 33,
             "w": 4,
             "h": 8
           },
@@ -1162,7 +1227,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 32,
+            "y": 41,
             "w": 4,
             "h": 8
           },
@@ -1248,7 +1313,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 4,
-            "y": 32,
+            "y": 41,
             "w": 4,
             "h": 8
           },
@@ -1334,7 +1399,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 8,
-            "y": 32,
+            "y": 41,
             "w": 4,
             "h": 8
           },
@@ -1421,7 +1486,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 32,
+            "y": 41,
             "w": 4,
             "h": 8
           },
@@ -1508,7 +1573,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 16,
-            "y": 32,
+            "y": 41,
             "w": 4,
             "h": 8
           },
@@ -1594,7 +1659,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 20,
-            "y": 32,
+            "y": 41,
             "w": 4,
             "h": 8
           },
@@ -1662,7 +1727,7 @@
       "collapsed": true,
       "gridPos": {
         "x": 0,
-        "y": 23,
+        "y": 32,
         "w": 24,
         "h": 1
       }

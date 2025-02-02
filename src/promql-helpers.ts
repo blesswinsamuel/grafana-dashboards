@@ -1,4 +1,4 @@
-import { Target } from './panels'
+import { PrometheusTarget, Target } from './panels'
 
 export function formatLegendFormat(legendFormat: string | undefined, groupBy: string[]) {
   if (!legendFormat) {
@@ -47,7 +47,7 @@ export class CounterMetric {
     public metric: string,
     private opts: CommonMetricOpts = {}
   ) {}
-  public calc(func1: string, func2: string, opts: CommonQueryOpts & { interval?: string }): Target {
+  public calc(func1: string, func2: string, opts: CommonQueryOpts & { interval?: string }): PrometheusTarget {
     const metric = this.metric
     const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
     const interval = opts.interval ?? (opts.type === 'instant' ? '$__range' : func2 === 'rate' ? '$__rate_interval' : '$__interval')
@@ -57,13 +57,13 @@ export class CounterMetric {
       ...getTargetOpts(opts),
     }
   }
-  public rate(opts: CommonQueryOpts): Target {
+  public rate(opts: CommonQueryOpts): PrometheusTarget {
     return this.calc('sum', 'rate', opts)
   }
-  public increase(opts: CommonQueryOpts): Target {
+  public increase(opts: CommonQueryOpts): PrometheusTarget {
     return this.calc('sum', 'increase', opts)
   }
-  public percentage(opts: CommonQueryOpts & { numeratorSelectors?: string | string[]; denominatorSelectors?: string | string[]; func?: 'rate' | 'increase' }): Target {
+  public percentage(opts: CommonQueryOpts & { numeratorSelectors?: string | string[]; denominatorSelectors?: string | string[]; func?: 'rate' | 'increase' }): PrometheusTarget {
     const metric = this.metric
     const { func = 'rate' } = opts
     const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
@@ -83,7 +83,7 @@ export class GaugeMetric {
     public metric: string,
     public opts: CommonMetricOpts = {}
   ) {}
-  public calc(func: string, opts: CommonQueryOpts): Target {
+  public calc(func: string, opts: CommonQueryOpts): PrometheusTarget {
     const metric = this.metric
     const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
     const groupByStr = opts.groupBy ? ` by (${opts.groupBy.join(', ')})` : ''
@@ -92,7 +92,7 @@ export class GaugeMetric {
       ...getTargetOpts(opts),
     }
   }
-  public raw(opts: CommonQueryOpts): Target {
+  public raw(opts: CommonQueryOpts): PrometheusTarget {
     const metric = this.metric
     const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
     return {
@@ -113,7 +113,7 @@ export class HistogramMetric {
   public sum() {
     return new CounterMetric(this.metric + '_sum', this.opts)
   }
-  public histogramQuery(func: 'histogram_quantile' | 'histogram_share', value: string, opts: CommonQueryOpts): Target {
+  public histogramQuery(func: 'histogram_quantile' | 'histogram_share', value: string, opts: CommonQueryOpts): PrometheusTarget {
     const metric = this.metric + '_bucket'
     const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
     const groupByStr = opts.groupBy ? ` by (le, ${opts.groupBy.join(', ')})` : ' by (le)'
@@ -122,13 +122,13 @@ export class HistogramMetric {
       ...getTargetOpts(opts),
     }
   }
-  public histogramQuantile(value: string, opts: CommonQueryOpts): Target {
+  public histogramQuantile(value: string, opts: CommonQueryOpts): PrometheusTarget {
     return this.histogramQuery('histogram_quantile', value, opts)
   }
-  public histogramShare(value: string, opts: CommonQueryOpts): Target {
+  public histogramShare(value: string, opts: CommonQueryOpts): PrometheusTarget {
     return this.histogramQuery('histogram_share', value, opts)
   }
-  public histAvg(opts: CommonQueryOpts & { func?: 'rate' | 'increase' }): Target {
+  public histAvg(opts: CommonQueryOpts & { func?: 'rate' | 'increase' }): PrometheusTarget {
     const metric = this.metric
     const { func = 'rate' } = opts
     const groupByStr = opts.groupBy ? ` by (${opts.groupBy.join(', ')})` : ''
@@ -151,7 +151,7 @@ export class SummaryMetric {
   public sum() {
     return new CounterMetric(this.metric + '_sum', this.opts)
   }
-  public avg(opts: CommonQueryOpts & { func?: 'rate' | 'increase' }): Target {
+  public avg(opts: CommonQueryOpts & { func?: 'rate' | 'increase' }): PrometheusTarget {
     const metric = this.metric
     const { func = 'rate', groupBy } = opts
     const selectors = mergeSelectors(this.opts.selectors || '', opts.selectors || '')
@@ -163,7 +163,7 @@ export class SummaryMetric {
   }
 }
 
-function getTargetOpts(opts: CommonQueryOpts): Partial<Target> {
+function getTargetOpts(opts: CommonQueryOpts): Partial<PrometheusTarget> {
   const { legendFormat, groupBy, type, refId } = opts
   return { refId, type, format: type === 'instant' ? 'table' : undefined, legendFormat: formatLegendFormat(legendFormat, groupBy) }
 }

@@ -450,7 +450,8 @@ export function NewTablePanel(opts: TablePanelOpts): Panel {
         }
         tableIndexOrder.push(`Value #${refId}`)
         tableOverrides[`Value #${refId}`] = curOverrides
-        targets.push({ ...target, refId: refId, type: (target as any).type || 'instant', format: target.format || 'table' })
+        // targets.push({ ...target, refId: refId, type: (target as any).type || 'instant', format: target.format || 'table' })
+        targets.push({ ...target, refId: refId })
       } else {
         if (name) {
           colRenames[refId] = name
