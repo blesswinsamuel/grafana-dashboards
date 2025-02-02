@@ -1,5 +1,6 @@
 import { Dashboard, DashboardCursorSync, DataSourceRef, defaultDashboard } from '@grafana/schema'
 import { autoLayout, CounterMetric, GaugeMetric, goRuntimeMetricsPanels, NewPanelGroup, NewPanelRow, NewPieChartPanel, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewTimeSeriesPanel, PanelRowAndGroups, Unit } from '../src/grafana-helpers'
+import { cadvisorMetricsPanels } from '../src/k8s-cadvisor'
 
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -315,7 +316,7 @@ const pgWALSize = new GaugeMetric('pg_wal_size_bytes')
 // Postgres LSN (log sequence number) being generated on primary or replayed on replica (truncated to low 52 bits)
 const xlogLocationBytes = new GaugeMetric('pg_xlog_location_bytes')
 
-const selectors = `job=~"$job", namespace=~"$namespace"`
+const selectors = `instance=~"$instance", namespace=~"$namespace"`
 
 const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Database Size' }, [
@@ -339,6 +340,7 @@ const panels: PanelRowAndGroups = [
       NewTimeSeriesPanel({ title: 'Idle in transaction (aborted)' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle in transaction (aborted)"`], groupBy: ['datname'], append: ' > 0' })),
     ]),
   ]),
+  cadvisorMetricsPanels({ datasource, selectors: [`namespace=~"$namespace"`, `pod=~"$pod"`], collapsed: true }),
   goRuntimeMetricsPanels({ datasource, title: 'Resource Usage (postgres-exporter)', buildInfoMetric: 'postgres_exporter_build_info', selectors, collapsed: true }),
 ]
 
@@ -360,7 +362,8 @@ export const dashboard: Dashboard = {
       //
       NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }),
       NewQueryVariable({ datasource, name: 'namespace', label: 'Namespace', query: 'label_values(postgres_exporter_build_info, namespace)' }),
-      NewQueryVariable({ datasource, name: 'job', label: 'Job', query: 'label_values(postgres_exporter_build_info{namespace=~"$namespace"}, job)', includeAll: true, multi: true }),
+      NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(postgres_exporter_build_info{namespace=~"$namespace"}, instance)', includeAll: true, multi: true }),
+      NewQueryVariable({ datasource, name: 'pod', label: 'Pod', query: 'label_values(postgres_exporter_build_info{namespace=~"$namespace", instance=~"$instance"}, pod)', includeAll: true, multi: true }),
     ],
   },
 }

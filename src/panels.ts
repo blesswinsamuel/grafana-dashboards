@@ -154,7 +154,7 @@ export type CommonPanelOpts = {
 }
 
 function inferUnit(targets: Target[], type?: 'line' | 'bar', defaultUnit?: Unit): [Unit | undefined, 'line' | 'bar'] {
-  const expr = targets.length > 0 ? (targets[0] as any).expr : ''
+  const expr = targets.length > 0 ? ((targets[0] as any).expr as string) : ''
   if (!type) {
     if (expr.includes('$__interval')) {
       // interval (bar chart)
@@ -186,6 +186,10 @@ function inferUnit(targets: Target[], type?: 'line' | 'bar', defaultUnit?: Unit)
             defaultUnit = Unit.RPS
           } else if (expr.includes('_bytes_total')) {
             defaultUnit = Unit.BYTES_PER_SEC_SI
+          } else if (expr.includes('_reads_total')) {
+            defaultUnit = Unit.RPS
+          } else if (expr.includes('_writes_total')) {
+            defaultUnit = Unit.WPS
           } else if (expr.includes('_packets_total')) {
             defaultUnit = Unit.PPS
           } else if (expr.includes('_seconds_sum') && expr.includes('_seconds_count') && expr.includes('rate') && expr.includes('/')) {

@@ -128,7 +128,7 @@ const panels: PanelRowAndGroups = [
     ]),
   ]),
   goRuntimeMetricsPanels({ datasource, selectors, collapsed: true }),
-  cadvisorMetricsPanels({ datasource, selectors: [`namespace=~"$namespace"`, `pod=~"^traefik-[a-z0-9]{10}-[a-z0-9]{5}"`] }), //`container="traefik"`
+  cadvisorMetricsPanels({ datasource, selectors: [`namespace=~"$namespace"`, `pod=~"$pod"`], collapsed: true }), //`container="traefik"`
 ]
 
 export const dashboard: Dashboard = {
@@ -149,8 +149,9 @@ export const dashboard: Dashboard = {
       NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }),
       NewQueryVariable({ datasource, name: 'namespace', label: 'Namespace', query: 'label_values(traefik_config_reloads_total, namespace)', includeAll: true, multi: true }),
       NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(traefik_config_reloads_total{namespace=~"$namespace"}, instance)', includeAll: true, multi: true }),
-      NewQueryVariable({ datasource, name: 'entrypoint', label: 'Entrypoint', query: 'label_values(traefik_entrypoint_requests_total{namespace=~"$namespace"}, entrypoint)', includeAll: true, multi: true }),
-      NewQueryVariable({ datasource, name: 'service', label: 'Service', query: 'label_values(traefik_service_requests_total{namespace=~"$namespace"}, service)', includeAll: true, multi: true }),
+      NewQueryVariable({ datasource, name: 'pod', label: 'Pod', query: 'label_values(traefik_config_reloads_total{namespace=~"$namespace", instance=~"$instance"}, pod)', includeAll: true, multi: true }),
+      NewQueryVariable({ datasource, name: 'entrypoint', label: 'Entrypoint', query: 'label_values(traefik_entrypoint_requests_total{instance=~"$instance"}, entrypoint)', includeAll: true, multi: true }),
+      NewQueryVariable({ datasource, name: 'service', label: 'Service', query: 'label_values(traefik_service_requests_total{instance=~"$instance"}, service)', includeAll: true, multi: true }),
     ],
   },
 }

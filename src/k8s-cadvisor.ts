@@ -99,7 +99,7 @@ const machineNvmAvgPowerBudgetWatts = new GaugeMetric('machine_nvm_avg_power_bud
 const machineNvmCapacity = new GaugeMetric('machine_nvm_capacity', { description: 'NVM capacity value labeled by NVM mode (memory mode or app direct mode)' })
 const machineThreadSiblingsCount = new GaugeMetric('machine_thread_siblings_count', { description: 'Number of CPU thread siblings' })
 
-export function cadvisorMetricsPanels({ datasource, title, buildInfoMetric, selectors = [], groupBy = ['pod', 'instance'], collapsed }: { datasource?: DataSourceRef; title?: string; buildInfoMetric?: string; groupBy?: string[]; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
+export function cadvisorMetricsPanels({ datasource, title, selectors = [], groupBy = ['pod', 'instance'], collapsed }: { datasource?: DataSourceRef; title?: string; groupBy?: string[]; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
   return NewPanelGroup({ title: title ?? 'cAdvisor Metrics', collapsed }, [
     NewPanelRow({ datasource, height: 3 }, [
       //
@@ -149,8 +149,8 @@ export function cadvisorMetricsPanels({ datasource, title, buildInfoMetric, sele
     NewPanelRow({ datasource, height: 8 }, [
       NewTimeSeriesPanel({ title: 'FS Reads Bytes' }, containerFsReadsBytesTotal.calc('sum', 'rate', { selectors, groupBy })),
       NewTimeSeriesPanel({ title: 'FS Writes Bytes' }, containerFsWritesBytesTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'FS Reads' }, containerFsReadsTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'FS Writes' }, containerFsWritesTotal.calc('sum', 'rate', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'FS Read rate' }, containerFsReadsTotal.calc('sum', 'rate', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'FS Write rate' }, containerFsWritesTotal.calc('sum', 'rate', { selectors, groupBy })),
     ]),
   ])
 }

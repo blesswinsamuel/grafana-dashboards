@@ -4330,2487 +4330,2490 @@
     {
       "type": "row",
       "title": "cAdvisor Metrics",
-      "panels": [],
-      "collapsed": false,
+      "panels": [
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "max(container_start_time_seconds{namespace=~\"$namespace\", pod=~\"$pod\"}) * 1000",
+              "range": false,
+              "instant": true,
+              "format": "table",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "stat",
+          "title": "Container Start Time (max)",
+          "gridPos": {
+            "x": 0,
+            "y": 108,
+            "w": 24,
+            "h": 3
+          },
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "-",
+                      "index": 0
+                    }
+                  }
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "dateTimeFromNow"
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "values": false,
+              "fields": "",
+              "calcs": [
+                "lastNotNull"
+              ]
+            },
+            "orientation": "auto",
+            "textMode": "auto",
+            "colorMode": "background",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "showPercentChange": false,
+            "wideLayout": true,
+            "percentChangeColorMode": "standard",
+            "text": {}
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "CPU Usage",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 0,
+            "y": 111,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(container_memory_usage_bytes{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Memory Usage",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 6,
+            "y": 111,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "decbytes"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(container_memory_working_set_bytes{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Memory Working Set",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 12,
+            "y": 111,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "decbytes"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(container_memory_cache{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Memory Cache",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 18,
+            "y": 111,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "decbytes"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(container_threads{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Threads",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 0,
+            "y": 119,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(container_processes{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Processes",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 6,
+            "y": 119,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(container_file_descriptors{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "File Descriptors",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 12,
+            "y": 119,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(container_sockets{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Sockets",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 18,
+            "y": 119,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(container_cpu_load_average_10s{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "CPU Load Average 10s",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 0,
+            "y": 127,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(container_cpu_user_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "CPU Usage User",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 6,
+            "y": 127,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(container_cpu_system_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "CPU Usage System",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 12,
+            "y": 127,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(container_cpu_cfs_throttled_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "CPU Usage Throttled",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 18,
+            "y": 127,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(increase(container_memory_failures_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance, failure_type)",
+              "legendFormat": "{{pod}} - {{instance}} - {{failure_type}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Memory Failures",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 0,
+            "y": 135,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "bars",
+                "fillOpacity": 100,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "stepAfter",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "sum"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Total",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(increase(container_oom_events_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "OOM Events",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 6,
+            "y": 135,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "bars",
+                "fillOpacity": 100,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "stepAfter",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "sum"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Total",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(container_memory_swap{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Memory Swap",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 12,
+            "y": 135,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(increase(container_memory_failcnt{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Memory Failcnt",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 18,
+            "y": 135,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "bars",
+                "fillOpacity": 100,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "stepAfter",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "sum"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Total",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(container_network_receive_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Network Receive Bytes",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 0,
+            "y": 143,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "Bps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(container_network_transmit_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Network Transmit Bytes",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 6,
+            "y": 143,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "Bps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(increase(container_network_receive_errors_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Network Receive Errors",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 12,
+            "y": 143,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "bars",
+                "fillOpacity": 100,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "stepAfter",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "sum"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Total",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(increase(container_network_transmit_errors_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Network Transmit Errors",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 18,
+            "y": 143,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "bars",
+                "fillOpacity": 100,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "stepAfter",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "sum"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Total",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(container_network_receive_packets_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Network Receive Packets",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 0,
+            "y": 151,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "pps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(container_network_transmit_packets_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Network Transmit Packets",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 6,
+            "y": 151,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "pps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(increase(container_network_receive_packets_dropped_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Network Receive Packets Dropped",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 12,
+            "y": 151,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "bars",
+                "fillOpacity": 100,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "stepAfter",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "sum"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Total",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(increase(container_network_transmit_packets_dropped_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "Network Transmit Packets Dropped",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 18,
+            "y": 151,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "bars",
+                "fillOpacity": 100,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "stepAfter",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "sum"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Total",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(container_fs_reads_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "FS Reads Bytes",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 0,
+            "y": 159,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "Bps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(container_fs_writes_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "FS Writes Bytes",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 6,
+            "y": 159,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "Bps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(container_fs_reads_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "FS Read rate",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 12,
+            "y": 159,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "rps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "links": [],
+          "repeatDirection": "h",
+          "targets": [
+            {
+              "expr": "sum(rate(container_fs_writes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "legendFormat": "{{pod}} - {{instance}}",
+              "range": true,
+              "instant": false,
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "transformations": [],
+          "transparent": false,
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "type": "timeseries",
+          "title": "FS Write rate",
+          "maxDataPoints": 100,
+          "gridPos": {
+            "x": 18,
+            "y": 159,
+            "w": 6,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisGridShow": true,
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "unit": "wps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "mean",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        }
+      ],
+      "collapsed": true,
       "gridPos": {
         "x": 0,
         "y": 107,
         "w": 24,
         "h": 1
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "max(container_start_time_seconds{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}) * 1000",
-          "range": false,
-          "instant": true,
-          "format": "table",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "stat",
-      "title": "Container Start Time (max)",
-      "gridPos": {
-        "x": 0,
-        "y": 108,
-        "w": 24,
-        "h": 3
-      },
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "-",
-                  "index": 0
-                }
-              }
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": null
-              }
-            ]
-          },
-          "unit": "dateTimeFromNow"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "fields": "",
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "showPercentChange": false,
-        "wideLayout": true,
-        "percentChangeColorMode": "standard",
-        "text": {}
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__rate_interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "CPU Usage",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 111,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(container_memory_usage_bytes{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Memory Usage",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 111,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "decbytes"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(container_memory_working_set_bytes{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Memory Working Set",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 111,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "decbytes"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(container_memory_cache{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Memory Cache",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 18,
-        "y": 111,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "decbytes"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(container_threads{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Threads",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 119,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(container_processes{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Processes",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 119,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(container_file_descriptors{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "File Descriptors",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 119,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(container_sockets{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Sockets",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 18,
-        "y": 119,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(container_cpu_load_average_10s{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "CPU Load Average 10s",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 127,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(rate(container_cpu_user_seconds_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__rate_interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "CPU Usage User",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 127,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(rate(container_cpu_system_seconds_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__rate_interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "CPU Usage System",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 127,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(rate(container_cpu_cfs_throttled_seconds_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__rate_interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "CPU Usage Throttled",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 18,
-        "y": 127,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(increase(container_memory_failures_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__interval])) by (pod, instance, failure_type)",
-          "legendFormat": "{{pod}} - {{instance}} - {{failure_type}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Memory Failures",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 135,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "stepAfter",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Total",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(increase(container_oom_events_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "OOM Events",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 135,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "stepAfter",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Total",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(container_memory_swap{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Memory Swap",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 135,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(increase(container_memory_failcnt{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Memory Failcnt",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 18,
-        "y": 135,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "stepAfter",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Total",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(rate(container_network_receive_bytes_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__rate_interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Network Receive Bytes",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 143,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "Bps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(rate(container_network_transmit_bytes_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__rate_interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Network Transmit Bytes",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 143,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "Bps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(increase(container_network_receive_errors_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Network Receive Errors",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 143,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "stepAfter",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Total",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(increase(container_network_transmit_errors_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Network Transmit Errors",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 18,
-        "y": 143,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "stepAfter",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Total",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(rate(container_network_receive_packets_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__rate_interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Network Receive Packets",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 151,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "pps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(rate(container_network_transmit_packets_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__rate_interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Network Transmit Packets",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 151,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "pps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(increase(container_network_receive_packets_dropped_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Network Receive Packets Dropped",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 151,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "stepAfter",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Total",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(increase(container_network_transmit_packets_dropped_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "Network Transmit Packets Dropped",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 18,
-        "y": 151,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "stepAfter",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Total",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(rate(container_fs_reads_bytes_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__rate_interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "FS Reads Bytes",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 159,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "Bps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(rate(container_fs_writes_bytes_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__rate_interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "FS Writes Bytes",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 159,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "unit": "Bps"
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(rate(container_fs_reads_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__rate_interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "FS Reads",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 159,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "links": [],
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "expr": "sum(rate(container_fs_writes_total{namespace=~\"$namespace\", pod=~\"^traefik-[a-z0-9]{10}-[a-z0-9]{5}\"}[$__rate_interval])) by (pod, instance)",
-          "legendFormat": "{{pod}} - {{instance}}",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
-        }
-      ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
-      "title": "FS Writes",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 18,
-        "y": 159,
-        "w": 6,
-        "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
       }
     }
   ],
@@ -6887,9 +6890,26 @@
         },
         "hide": 0,
         "type": "query",
+        "label": "Pod",
+        "name": "pod",
+        "query": "label_values(traefik_config_reloads_total{namespace=~\"$namespace\", instance=~\"$instance\"}, pod)",
+        "sort": 1,
+        "refresh": 2
+      },
+      {
+        "allowCustomValue": true,
+        "includeAll": true,
+        "multi": true,
+        "options": [],
+        "skipUrlSync": false,
+        "datasource": {
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "hide": 0,
+        "type": "query",
         "label": "Entrypoint",
         "name": "entrypoint",
-        "query": "label_values(traefik_entrypoint_requests_total{namespace=~\"$namespace\"}, entrypoint)",
+        "query": "label_values(traefik_entrypoint_requests_total{instance=~\"$instance\"}, entrypoint)",
         "sort": 1,
         "refresh": 2
       },
@@ -6906,7 +6926,7 @@
         "type": "query",
         "label": "Service",
         "name": "service",
-        "query": "label_values(traefik_service_requests_total{namespace=~\"$namespace\"}, service)",
+        "query": "label_values(traefik_service_requests_total{instance=~\"$instance\"}, service)",
         "sort": 1,
         "refresh": 2
       }
