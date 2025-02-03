@@ -21,7 +21,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(smartctl_devices{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum(smartctl_devices{instance=~\"$instance\", job=\"$job\"})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -81,7 +81,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(smartctl_devices{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"}) - sum(smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum(smartctl_devices{instance=~\"$instance\", job=\"$job\"}) - sum(smartctl_device{instance=~\"$instance\", job=\"$job\"})",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -566,6 +566,7 @@
               "job": true
             },
             "renameByName": {
+              "Value #value": "value",
               "device": "Device",
               "model_name": "Model name",
               "form_factor": "Form factor",
@@ -811,6 +812,7 @@
               "device": "Device",
               "instance": "Instance",
               "model_name": "Model name",
+              "Value #DEVICE": "DEVICE",
               "Value #TEMP": "Temperature",
               "Value #EXIT": "Exit status",
               "Value #PASSED": "Passed",

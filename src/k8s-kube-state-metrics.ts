@@ -178,10 +178,31 @@ const statefulsetLabels = new GaugeMetric('kube_statefulset_labels', { descripti
 const statefulsetStatusCurrentRevision = new GaugeMetric('kube_statefulset_status_current_revision', { labels: ['statefulset', 'namespace', 'revision'] })
 const statefulsetStatusUpdateRevision = new GaugeMetric('kube_statefulset_status_update_revision', { labels: ['statefulset', 'namespace', 'revision'] })
 
-export function kubeStateMetricsPanels({ datasource, title, selectors = [], groupBy = ['pod', 'instance'], collapsed }: { datasource?: DataSourceRef; title?: string; groupBy?: string[]; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
-  return NewPanelGroup({ title: title ?? 'Kubernetes', collapsed }, [
-    NewPanelRow({ datasource, height: 3 }, [
-      //
+export function podMetricsPanels({ datasource, title, selectors = [], collapsed }: { datasource?: DataSourceRef; title?: string; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
+  const groupBy = ['namespace', 'pod']
+  return NewPanelGroup({ title: title ?? 'Kubernetes Pod Metrics', collapsed }, [
+    NewPanelRow({ datasource, height: 14 }, [
+      NewTablePanel({
+        title: 'Pod Info',
+        tableConfig: {
+          queries: {
+            created_by_kind: { name: 'Created By' },
+            created_by_name: { name: 'Created By Name' },
+            host_ip: { name: 'Host IP' },
+            host_network: { name: 'Host Network' },
+            namespace: { name: 'Namespace' },
+            node: { name: 'Node' },
+            pod: { name: 'Pod' },
+            pod_ip: { name: 'Pod IP' },
+            uid: { name: 'UID' },
+
+            'Pod Info': { target: podInfo.calc('max', { selectors, groupBy: podInfo.labels(), type: 'instant' }) },
+            'Pod Start Time': { target: podStartTime.calc('max', { selectors, groupBy: podStartTime.labels(), type: 'instant' }) },
+            'Pod Completion Time': { target: podCompletionTime.calc('max', { selectors, groupBy: podCompletionTime.labels(), type: 'instant' }) },
+          },
+          excludeColumns: ['Time', 'Value #Pod Info'],
+        },
+      }),
     ]),
   ])
 }

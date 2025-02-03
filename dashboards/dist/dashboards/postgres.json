@@ -3355,6 +3355,197 @@
     },
     {
       "type": "row",
+      "title": "Kubernetes Pod Metrics",
+      "panels": [],
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 86,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "expr": "max(kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, namespace, host_ip, pod_ip, node, created_by_kind, created_by_name, uid, priority_class, host_network)",
+          "legendFormat": "{{pod}} - {{namespace}} - {{host_ip}} - {{pod_ip}} - {{node}} - {{created_by_kind}} - {{created_by_name}} - {{uid}} - {{priority_class}} - {{host_network}}",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "Pod Info"
+        },
+        {
+          "expr": "max(kube_pod_start_time{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, namespace, uid)",
+          "legendFormat": "{{pod}} - {{namespace}} - {{uid}}",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "Pod Start Time"
+        },
+        {
+          "expr": "max(kube_pod_completion_time{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, namespace, uid)",
+          "legendFormat": "{{pod}} - {{namespace}} - {{uid}}",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "Pod Completion Time"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "created_by_kind": 0,
+              "created_by_name": 1,
+              "host_ip": 2,
+              "host_network": 3,
+              "namespace": 4,
+              "node": 5,
+              "pod": 6,
+              "pod_ip": 7,
+              "uid": 8,
+              "Value #Pod Info": 9,
+              "Value #Pod Start Time": 10,
+              "Value #Pod Completion Time": 11
+            },
+            "excludeByName": {
+              "Time": true,
+              "Value #Pod Info": true
+            },
+            "renameByName": {
+              "created_by_kind": "Created By",
+              "created_by_name": "Created By Name",
+              "host_ip": "Host IP",
+              "host_network": "Host Network",
+              "namespace": "Namespace",
+              "node": "Node",
+              "pod": "Pod",
+              "pod_ip": "Pod IP",
+              "uid": "UID",
+              "Value #Pod Info": "Pod Info",
+              "Value #Pod Start Time": "Pod Start Time",
+              "Value #Pod Completion Time": "Pod Completion Time"
+            }
+          }
+        }
+      ],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "type": "table",
+      "title": "Pod Info",
+      "gridPos": {
+        "x": 0,
+        "y": 87,
+        "w": 24,
+        "h": 14
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "created_by_kind"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "created_by_name"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "host_ip"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "host_network"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "namespace"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "node"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pod"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pod_ip"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "uid"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #Pod Info"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #Pod Start Time"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #Pod Completion Time"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "md",
+        "frameIndex": -1,
+        "showHeader": true
+      }
+    },
+    {
+      "type": "row",
       "title": "Resource Usage (postgres-exporter)",
       "panels": [
         {
@@ -3379,7 +3570,7 @@
           "title": "Go Version",
           "gridPos": {
             "x": 0,
-            "y": 87,
+            "y": 102,
             "w": 6,
             "h": 3
           },
@@ -3438,7 +3629,7 @@
           "title": "Process Start Time",
           "gridPos": {
             "x": 6,
-            "y": 87,
+            "y": 102,
             "w": 6,
             "h": 3
           },
@@ -3508,7 +3699,7 @@
           "title": "Process Max File Descriptors",
           "gridPos": {
             "x": 12,
-            "y": 87,
+            "y": 102,
             "w": 6,
             "h": 3
           },
@@ -3568,7 +3759,7 @@
           "title": "Process Virtual Memory Max",
           "gridPos": {
             "x": 18,
-            "y": 87,
+            "y": 102,
             "w": 6,
             "h": 3
           },
@@ -3629,7 +3820,7 @@
           "title": "Go Build Info",
           "gridPos": {
             "x": 0,
-            "y": 90,
+            "y": 105,
             "w": 6,
             "h": 8
           },
@@ -3692,7 +3883,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 90,
+            "y": 105,
             "w": 6,
             "h": 8
           },
@@ -3779,7 +3970,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 90,
+            "y": 105,
             "w": 6,
             "h": 8
           },
@@ -3865,7 +4056,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 90,
+            "y": 105,
             "w": 6,
             "h": 8
           },
@@ -3951,7 +4142,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 98,
+            "y": 113,
             "w": 6,
             "h": 8
           },
@@ -4038,7 +4229,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 98,
+            "y": 113,
             "w": 6,
             "h": 8
           },
@@ -4125,7 +4316,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 98,
+            "y": 113,
             "w": 6,
             "h": 8
           },
@@ -4212,7 +4403,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 98,
+            "y": 113,
             "w": 6,
             "h": 8
           },
@@ -4307,7 +4498,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 106,
+            "y": 121,
             "w": 6,
             "h": 8
           },
@@ -4426,7 +4617,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 106,
+            "y": 121,
             "w": 6,
             "h": 8
           },
@@ -4513,7 +4704,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 106,
+            "y": 121,
             "w": 6,
             "h": 8
           },
@@ -4664,7 +4855,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 106,
+            "y": 121,
             "w": 6,
             "h": 8
           },
@@ -4751,7 +4942,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 114,
+            "y": 129,
             "w": 8,
             "h": 8
           },
@@ -4835,7 +5026,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 8,
-            "y": 114,
+            "y": 129,
             "w": 8,
             "h": 8
           },
@@ -4922,7 +5113,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 16,
-            "y": 114,
+            "y": 129,
             "w": 8,
             "h": 8
           },
@@ -5009,7 +5200,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 122,
+            "y": 137,
             "w": 6,
             "h": 8
           },
@@ -5096,7 +5287,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 122,
+            "y": 137,
             "w": 6,
             "h": 8
           },
@@ -5183,7 +5374,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 122,
+            "y": 137,
             "w": 6,
             "h": 8
           },
@@ -5270,7 +5461,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 122,
+            "y": 137,
             "w": 6,
             "h": 8
           },
@@ -5338,7 +5529,7 @@
       "collapsed": true,
       "gridPos": {
         "x": 0,
-        "y": 86,
+        "y": 101,
         "w": 24,
         "h": 1
       }

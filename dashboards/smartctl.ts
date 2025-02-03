@@ -95,8 +95,8 @@ const errorThresholds: ThresholdsConfig = {
 }
 
 const overviewStats = NewPanelRow({ datasource, height: 3 }, [
-  NewStatPanel({ title: 'Devices count', targets: [{ expr: `sum(${metricDeviceCount.metric}{instance=~"$instance", job="$job", serial_number=~"$serial_number"})` }], defaultUnit: Unit.SHORT }),
-  NewStatPanel({ title: 'Missing devices', targets: [{ expr: `sum(${metricDeviceCount.metric}{instance=~"$instance", job="$job", serial_number=~"$serial_number"}) - sum(${metricDeviceModel.metric}{instance=~"$instance", job="$job", serial_number=~"$serial_number"})` }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
+  NewStatPanel({ title: 'Devices count', targets: [{ expr: `sum(${metricDeviceCount.metric}{instance=~"$instance", job="$job"})` }], defaultUnit: Unit.SHORT }),
+  NewStatPanel({ title: 'Missing devices', targets: [{ expr: `sum(${metricDeviceCount.metric}{instance=~"$instance", job="$job"}) - sum(${metricDeviceModel.metric}{instance=~"$instance", job="$job"})` }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
   NewStatPanel({ title: 'Exit status', targets: [{ expr: `max(${metricDeviceExitStatus.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
   NewStatPanel({ title: 'Error log entries', targets: [{ expr: `sum(${metricDeviceNumErrLogEntries.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),
   NewStatPanel({ title: 'Media errors', targets: [{ expr: `sum(${metricDeviceMediaErrors.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }], defaultUnit: Unit.SHORT, thresholds: errorThresholds }),

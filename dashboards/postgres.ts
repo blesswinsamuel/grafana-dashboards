@@ -1,6 +1,7 @@
 import { Dashboard, DashboardCursorSync, DataSourceRef, defaultDashboard } from '@grafana/schema'
 import { autoLayout, CounterMetric, GaugeMetric, goRuntimeMetricsPanels, NewPanelGroup, NewPanelRow, NewPieChartPanel, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewTimeSeriesPanel, PanelRowAndGroups, Unit } from '../src/grafana-helpers'
 import { cadvisorMetricsPanels } from '../src/k8s-cadvisor'
+import { podMetricsPanels } from '../src/k8s-kube-state-metrics'
 
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -341,6 +342,7 @@ const panels: PanelRowAndGroups = [
     ]),
   ]),
   cadvisorMetricsPanels({ datasource, selectors: [`namespace=~"$namespace"`, `pod=~"$pod"`], collapsed: true }),
+  podMetricsPanels({ datasource, selectors: [`namespace=~"$namespace"`, `pod=~"$pod"`], collapsed: false }),
   goRuntimeMetricsPanels({ datasource, title: 'Resource Usage (postgres-exporter)', buildInfoMetric: 'postgres_exporter_build_info', selectors, collapsed: true }),
 ]
 
