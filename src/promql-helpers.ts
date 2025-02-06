@@ -25,6 +25,11 @@ export type CommonMetricOpts = {
 }
 
 export type CommonQueryOpts = Omit<CommonMetricOpts, 'description' | 'labels'> & {
+  // selectors?: string | string[]
+  // wrap?: string
+  // append?: string
+  // prepend?: string
+
   refId?: string
   groupBy?: string[]
   legendFormat?: string
@@ -55,7 +60,7 @@ function formatMetric(
 class PrometheusQueryRaw {
   constructor(public readonly expr: string) {}
 
-  public target(opts: { refId?: string; groupBy?: string[]; legendFormat?: string; type?: 'range' | 'instant' | 'both' }): PrometheusTarget {
+  public target(opts: { refId?: string; legendFormat?: string; groupBy?: string[]; type?: 'range' | 'instant' | 'both' }): PrometheusTarget {
     const { legendFormat, groupBy, type, refId } = opts
     return {
       expr: this.expr,
@@ -65,6 +70,27 @@ class PrometheusQueryRaw {
       legendFormat: formatLegendFormat(legendFormat, groupBy),
     }
   }
+
+  // public wrap(wrap: string): PrometheusQueryRaw {
+  //   if (wrap) {
+  //     return new PrometheusQueryRaw(wrap.replace('$__expr', this.expr))
+  //   }
+  //   return this
+  // }
+
+  // public append(append: string): PrometheusQueryRaw {
+  //   if (append) {
+  //     return new PrometheusQueryRaw(`${this.expr}${append}`)
+  //   }
+  //   return this
+  // }
+
+  // public prepend(prepend: string): PrometheusQueryRaw {
+  //   if (prepend) {
+  //     return new PrometheusQueryRaw(`${prepend}${this.expr}`)
+  //   }
+  //   return this
+  // }
 }
 
 // class PrometheusQueryWithSelector extends PrometheusQueryRaw {
