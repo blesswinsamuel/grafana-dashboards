@@ -322,23 +322,23 @@ const selectors = `instance=~"$instance", namespace=~"$namespace"`
 const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Database Size' }, [
     NewPanelRow({ datasource, height: 8 }, [
-      NewPieChartPanel({ title: 'Database Size', defaultUnit: Unit.BYTES_SI }, pgDatabaseSizeBytes.calc('sum', { selectors, groupBy: ['datname'] })),
-      NewTimeSeriesPanel({ title: 'Database Size', defaultUnit: Unit.BYTES_SI }, pgDatabaseSizeBytes.calc('sum', { selectors, groupBy: ['datname'] })),
-      NewTimeSeriesPanel({ title: 'Locks Count', defaultUnit: Unit.SHORT }, pgLocksCount.calc('sum', { selectors, groupBy: ['datname', 'mode'], append: ' > 0' })),
-      NewTimeSeriesPanel({ title: 'Number of backends connected', defaultUnit: Unit.SHORT }, statDatabaseNumbackends.calc('sum', { selectors: [selectors, `datname!=""`], groupBy: ['datname'] })),
+      NewPieChartPanel({ title: 'Database Size', defaultUnit: Unit.BYTES_SI }, pgDatabaseSizeBytes.calc('sum', { selectors, groupBy: ['datname'] }).target()),
+      NewTimeSeriesPanel({ title: 'Database Size', defaultUnit: Unit.BYTES_SI }, pgDatabaseSizeBytes.calc('sum', { selectors, groupBy: ['datname'] }).target()),
+      NewTimeSeriesPanel({ title: 'Locks Count', defaultUnit: Unit.SHORT }, pgLocksCount.calc('sum', { selectors, groupBy: ['datname', 'mode'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Number of backends connected', defaultUnit: Unit.SHORT }, statDatabaseNumbackends.calc('sum', { selectors: [selectors, `datname!=""`], groupBy: ['datname'] }).target()),
     ]),
   ]),
   NewPanelGroup({ title: 'Activity count' }, [
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Active' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="active"`], groupBy: ['datname'], append: ' > 0' })),
-      NewTimeSeriesPanel({ title: 'Disabled' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="disabled"`], groupBy: ['datname'], append: ' > 0' })),
-      NewTimeSeriesPanel({ title: 'Fastpath function call' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="fastpath function call"`], groupBy: ['datname'], append: ' > 0' })),
-      NewTimeSeriesPanel({ title: 'Idle' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle"`], groupBy: ['datname'], append: ' > 0' })),
+      NewTimeSeriesPanel({ title: 'Active' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="active"`], groupBy: ['datname'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Disabled' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="disabled"`], groupBy: ['datname'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Fastpath function call' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="fastpath function call"`], groupBy: ['datname'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Idle' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle"`], groupBy: ['datname'], append: ' > 0' }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'Idle in transaction' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle in transaction"`], groupBy: ['datname'], append: ' > 0' })),
-      NewTimeSeriesPanel({ title: 'Idle in transaction (aborted)' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle in transaction (aborted)"`], groupBy: ['datname'], append: ' > 0' })),
+      NewTimeSeriesPanel({ title: 'Idle in transaction' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle in transaction"`], groupBy: ['datname'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Idle in transaction (aborted)' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle in transaction (aborted)"`], groupBy: ['datname'], append: ' > 0' }).target()),
     ]),
   ]),
   cadvisorMetricsPanels({ datasource, selectors: [`namespace=~"$namespace"`, `pod=~"$pod"`], collapsed: true }),

@@ -110,7 +110,7 @@ const deviceInfoTablePanel = NewPanelRow({ datasource, height: 14 }, [
     title: 'Device Info',
     tableConfig: {
       queries: {
-        value: { target: metricDeviceModel.raw({ selectors: `instance=~"$instance", job="$job", serial_number=~"$serial_number"`, type: 'instant' }) },
+        value: { target: metricDeviceModel.raw({ selectors: `instance=~"$instance", job="$job", serial_number=~"$serial_number"`, type: 'instant' }).target() },
         device: { name: 'Device' },
         model_name: { name: 'Model name' },
         form_factor: { name: 'Form factor' },
@@ -136,7 +136,7 @@ const smartOverviewTablePanel = NewPanelRow({ datasource, height: 14 }, [
         device: { name: 'Device', width: 70 },
         instance: { name: 'Instance', width: 320 },
         model_name: { name: 'Model name', width: 220 },
-        DEVICE: { target: metricDeviceModel.calc('sum', { selectors: `instance=~"$instance", job="$job", serial_number=~"$serial_number"`, type: 'instant', groupBy: ['instance', 'device', 'model_name'] }) },
+        DEVICE: { target: metricDeviceModel.calc('sum', { selectors: `instance=~"$instance", job="$job", serial_number=~"$serial_number"`, type: 'instant', groupBy: ['instance', 'device', 'model_name'] }).target() },
         TEMP: { name: 'Temperature', unit: Unit.CELSIUS, target: { expr: `sum(${metricDeviceTemperature.metric}{instance=~"$instance", job="$job", temperature_type="current"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
         EXIT: { name: 'Exit status', target: { expr: `sum(${metricDeviceExitStatus.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
         PASSED: { name: 'Passed', target: { expr: `sum(${metricDeviceSmartStatus.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },

@@ -62,69 +62,69 @@ const selectors = `namespace=~"$namespace", instance=~"$instance"`
 const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Overview' }, [
     NewPanelRow({ datasource, height: 3 }, [
-      NewStatPanel({ title: 'Request Count', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], interval: '$__range' })),
-      NewStatPanel({ title: 'Request Bytes', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], interval: '$__range' })),
-      NewStatPanel({ title: 'Response Bytes', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], interval: '$__range' })),
-      NewStatPanel({ title: 'Config reloads', defaultUnit: Unit.SHORT }, configReloads.calc('sum', 'increase', { selectors, interval: '$__range' })),
-      NewStatPanel({ title: 'Last successful config reload', defaultUnit: Unit.DATE_TIME_FROM_NOW }, lastConfigReloadSuccess.calc('max', { selectors, append: '* 1000' })),
+      NewStatPanel({ title: 'Request Count', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], interval: '$__range' }).target()),
+      NewStatPanel({ title: 'Request Bytes', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], interval: '$__range' }).target()),
+      NewStatPanel({ title: 'Response Bytes', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], interval: '$__range' }).target()),
+      NewStatPanel({ title: 'Config reloads', defaultUnit: Unit.SHORT }, configReloads.calc('sum', 'increase', { selectors, interval: '$__range' }).target()),
+      NewStatPanel({ title: 'Last successful config reload', defaultUnit: Unit.DATE_TIME_FROM_NOW }, lastConfigReloadSuccess.calc('max', { selectors, append: '* 1000' }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'Open connections', defaultUnit: Unit.SHORT }, openConnections.calc('sum', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint', 'protocol'] })),
+      NewTimeSeriesPanel({ title: 'Open connections', defaultUnit: Unit.SHORT }, openConnections.calc('sum', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint', 'protocol'] }).target()),
     ]),
   ]),
   NewPanelGroup({ title: 'Entrypoint Metrics' }, [
     // available labels: entrypoint, code, method, protocol
     NewPanelRow({ datasource, height: 8 }, [
       // by entrypoint
-      NewTimeSeriesPanel({ title: 'Request Count', defaultUnit: Unit.SHORT }, entryPointReqs.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint'] })),
-      NewTimeSeriesPanel({ title: 'Request Bytes', defaultUnit: Unit.BYTES_SI }, entryPointReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint'] })),
-      NewTimeSeriesPanel({ title: 'Response Bytes', defaultUnit: Unit.BYTES_SI }, entryPointRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint'] })),
-      NewTimeSeriesPanel({ title: 'Avg request duration', defaultUnit: Unit.SECONDS }, entryPointReqDurations.avg({ selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint'] })),
+      NewTimeSeriesPanel({ title: 'Request Count', defaultUnit: Unit.SHORT }, entryPointReqs.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint'] }).target()),
+      NewTimeSeriesPanel({ title: 'Request Bytes', defaultUnit: Unit.BYTES_SI }, entryPointReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint'] }).target()),
+      NewTimeSeriesPanel({ title: 'Response Bytes', defaultUnit: Unit.BYTES_SI }, entryPointRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint'] }).target()),
+      NewTimeSeriesPanel({ title: 'Avg request duration', defaultUnit: Unit.SECONDS }, entryPointReqDurations.avg({ selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint'] }).target()),
     ]),
   ]),
   NewPanelGroup({ title: 'Service Metrics' }, [
     // available labels: service, code, method, protocol
     NewPanelRow({ datasource, height: 8 }, [
       // by service
-      NewTimeSeriesPanel({ title: 'Request Count by service', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service'] })),
-      NewTimeSeriesPanel({ title: 'Request Bytes by service', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service'] })),
-      NewTimeSeriesPanel({ title: 'Response Bytes by service', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service'] })),
-      NewTimeSeriesPanel({ title: 'Avg request duration by service', defaultUnit: Unit.SECONDS }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service"'], groupBy: ['service'] })),
+      NewTimeSeriesPanel({ title: 'Request Count by service', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service'] }).target()),
+      NewTimeSeriesPanel({ title: 'Request Bytes by service', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service'] }).target()),
+      NewTimeSeriesPanel({ title: 'Response Bytes by service', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service'] }).target()),
+      NewTimeSeriesPanel({ title: 'Avg request duration by service', defaultUnit: Unit.SECONDS }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service"'], groupBy: ['service'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       // by protocol
-      NewTimeSeriesPanel({ title: 'Request Count by protocol', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['protocol'] })),
-      NewTimeSeriesPanel({ title: 'Request Bytes by protocol', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['protocol'] })),
-      NewTimeSeriesPanel({ title: 'Response Bytes by protocol', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['protocol'] })),
-      NewTimeSeriesPanel({ title: 'Avg request duration by protocol', defaultUnit: Unit.SECONDS }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service"'], groupBy: ['protocol'] })),
+      NewTimeSeriesPanel({ title: 'Request Count by protocol', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['protocol'] }).target()),
+      NewTimeSeriesPanel({ title: 'Request Bytes by protocol', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['protocol'] }).target()),
+      NewTimeSeriesPanel({ title: 'Response Bytes by protocol', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['protocol'] }).target()),
+      NewTimeSeriesPanel({ title: 'Avg request duration by protocol', defaultUnit: Unit.SECONDS }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service"'], groupBy: ['protocol'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       // by method
-      NewTimeSeriesPanel({ title: 'Request Count by method', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['method'] })),
-      NewTimeSeriesPanel({ title: 'Request Bytes by method', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['method'] })),
-      NewTimeSeriesPanel({ title: 'Response Bytes by method', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['method'] })),
-      NewTimeSeriesPanel({ title: 'Avg request duration by method', defaultUnit: Unit.SECONDS }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service"'], groupBy: ['method'] })),
+      NewTimeSeriesPanel({ title: 'Request Count by method', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['method'] }).target()),
+      NewTimeSeriesPanel({ title: 'Request Bytes by method', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['method'] }).target()),
+      NewTimeSeriesPanel({ title: 'Response Bytes by method', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['method'] }).target()),
+      NewTimeSeriesPanel({ title: 'Avg request duration by method', defaultUnit: Unit.SECONDS }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service"'], groupBy: ['method'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       // by code
-      NewTimeSeriesPanel({ title: 'Request Count by code', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['code'] })),
-      NewTimeSeriesPanel({ title: 'Request Bytes by code', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['code'] })),
-      NewTimeSeriesPanel({ title: 'Response Bytes by code', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['code'] })),
-      NewTimeSeriesPanel({ title: 'Avg request duration by code', defaultUnit: Unit.SECONDS }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service"'], groupBy: ['code'] })),
+      NewTimeSeriesPanel({ title: 'Request Count by code', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['code'] }).target()),
+      NewTimeSeriesPanel({ title: 'Request Bytes by code', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['code'] }).target()),
+      NewTimeSeriesPanel({ title: 'Response Bytes by code', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['code'] }).target()),
+      NewTimeSeriesPanel({ title: 'Avg request duration by code', defaultUnit: Unit.SECONDS }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service"'], groupBy: ['code'] }).target()),
     ]),
     // NewPanelRow({ datasource, height: 8 }, [
     //   //
-    //   NewTimeSeriesPanel({ title: 'Service Retries', defaultUnit: Unit.SHORT }, serviceRetries.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service'] })),
-    //   NewTimeSeriesPanel({ title: 'Service Server Up', defaultUnit: Unit.SHORT }, serviceServerUp.calc('max', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service', 'url'] })),
+    //   NewTimeSeriesPanel({ title: 'Service Retries', defaultUnit: Unit.SHORT }, serviceRetries.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service'] }).target()),
+    //   NewTimeSeriesPanel({ title: 'Service Server Up', defaultUnit: Unit.SHORT }, serviceServerUp.calc('max', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service', 'url'] }).target()),
     // ]),
   ]),
   NewPanelGroup({ title: 'TLS Metrics' }, [
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'TLS requests by entrypoint', defaultUnit: Unit.SHORT }, entryPointReqsTLS.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint', 'tls_cipher', 'version'] })),
-      NewTimeSeriesPanel({ title: 'TLS requests by service', defaultUnit: Unit.SHORT }, serviceReqsTLS.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service', 'tls_cipher', 'version'] })),
-      NewTimeSeriesPanel({ title: 'TLS certs expiration timestamp', defaultUnit: Unit.DATE_TIME_FROM_NOW }, tlsCertsNotAfterTimestamp.calc('max', { selectors: [selectors], groupBy: ['cn', 'sans', 'serial'], append: ' * 1000' })),
+      NewTimeSeriesPanel({ title: 'TLS requests by entrypoint', defaultUnit: Unit.SHORT }, entryPointReqsTLS.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint', 'tls_cipher', 'version'] }).target()),
+      NewTimeSeriesPanel({ title: 'TLS requests by service', defaultUnit: Unit.SHORT }, serviceReqsTLS.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service', 'tls_cipher', 'version'] }).target()),
+      NewTimeSeriesPanel({ title: 'TLS certs expiration timestamp', defaultUnit: Unit.DATE_TIME_FROM_NOW }, tlsCertsNotAfterTimestamp.calc('max', { selectors: [selectors], groupBy: ['cn', 'sans', 'serial'], append: ' * 1000' }).target()),
     ]),
   ]),
   goRuntimeMetricsPanels({ datasource, selectors, collapsed: true }),

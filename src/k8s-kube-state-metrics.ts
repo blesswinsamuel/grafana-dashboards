@@ -196,9 +196,9 @@ export function podMetricsPanels({ datasource, title, selectors = [], collapsed 
             pod_ip: { name: 'Pod IP' },
             uid: { name: 'UID' },
 
-            'Pod Info': { target: podInfo.calc('max', { selectors, groupBy: podInfo.labels(), type: 'instant' }) },
-            'Pod Start Time': { target: podStartTime.calc('max', { selectors, groupBy: podStartTime.labels(), type: 'instant' }) },
-            'Pod Completion Time': { target: podCompletionTime.calc('max', { selectors, groupBy: podCompletionTime.labels(), type: 'instant' }) },
+            'Pod Info': { target: podInfo.calc('max', { selectors, groupBy: podInfo.labels(), type: 'instant' }).target() },
+            'Pod Start Time': { target: podStartTime.calc('max', { selectors, groupBy: podStartTime.labels(), type: 'instant' }).target() },
+            'Pod Completion Time': { target: podCompletionTime.calc('max', { selectors, groupBy: podCompletionTime.labels(), type: 'instant' }).target() },
           },
           excludeColumns: ['Time', 'Value #Pod Info'],
         },

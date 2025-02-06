@@ -19,20 +19,20 @@ export type CommonMetricOpts = {
   description?: string
   labels?: string[]
   selectors?: string | string[]
-  wrap?: string
-  append?: string
-  prepend?: string
+  // wrap?: string
+  // append?: string
+  // prepend?: string
 }
 
 export type CommonQueryOpts = Omit<CommonMetricOpts, 'description' | 'labels'> & {
   // selectors?: string | string[]
-  // wrap?: string
-  // append?: string
-  // prepend?: string
+  wrap?: string
+  append?: string
+  prepend?: string
 
-  refId?: string
+  // refId?: string
   groupBy?: string[]
-  legendFormat?: string
+  // legendFormat?: string
   type?: 'range' | 'instant' | 'both'
 }
 
@@ -58,10 +58,16 @@ function formatMetric(
 }
 
 class PrometheusQueryRaw {
-  constructor(public readonly expr: string) {}
+  constructor(
+    private readonly expr: string,
+    readonly opts?: {
+      type?: 'range' | 'instant' | 'both'
+      groupBy?: string[]
+    }
+  ) {}
 
-  public target(opts: { refId?: string; legendFormat?: string; groupBy?: string[]; type?: 'range' | 'instant' | 'both' }): PrometheusTarget {
-    const { legendFormat, groupBy, type, refId } = opts
+  public target(opts?: { refId?: string; legendFormat?: string; groupBy?: string[]; type?: 'range' | 'instant' | 'both' }): PrometheusTarget {
+    const { legendFormat, groupBy = this.opts?.groupBy, type = this.opts?.type, refId } = opts ?? {}
     return {
       expr: this.expr,
       refId,
@@ -71,26 +77,30 @@ class PrometheusQueryRaw {
     }
   }
 
-  // public wrap(wrap: string): PrometheusQueryRaw {
-  //   if (wrap) {
-  //     return new PrometheusQueryRaw(wrap.replace('$__expr', this.expr))
-  //   }
-  //   return this
-  // }
+  public toString() {
+    return this.expr
+  }
 
-  // public append(append: string): PrometheusQueryRaw {
-  //   if (append) {
-  //     return new PrometheusQueryRaw(`${this.expr}${append}`)
-  //   }
-  //   return this
-  // }
+  public wrap(wrap: string): PrometheusQueryRaw {
+    if (wrap) {
+      return new PrometheusQueryRaw(wrap.replace('$__expr', this.expr), this.opts)
+    }
+    return this
+  }
 
-  // public prepend(prepend: string): PrometheusQueryRaw {
-  //   if (prepend) {
-  //     return new PrometheusQueryRaw(`${prepend}${this.expr}`)
-  //   }
-  //   return this
-  // }
+  public append(append: string): PrometheusQueryRaw {
+    if (append) {
+      return new PrometheusQueryRaw(`${this.expr}${append}`, this.opts)
+    }
+    return this
+  }
+
+  public prepend(prepend: string): PrometheusQueryRaw {
+    if (prepend) {
+      return new PrometheusQueryRaw(`${prepend}${this.expr}`, this.opts)
+    }
+    return this
+  }
 }
 
 // class PrometheusQueryWithSelector extends PrometheusQueryRaw {
@@ -129,20 +139,23 @@ export class CounterMetric extends PrometheusMetricBase {
   ) {
     super(metric, opts)
   }
-  public calc(func: string, aggrOp: string, opts: CommonQueryOpts & { interval?: string }): PrometheusTarget {
+  public calc(func: string, aggrOp: string, opts: CommonQueryOpts & { interval?: string }): PrometheusQueryRaw {
     const metric = this.metric
     const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
     const interval = opts.interval ?? (opts.type === 'instant' ? '$__range' : aggrOp === 'rate' ? '$__rate_interval' : '$__interval')
     const groupByStr = opts.groupBy ? ` by (${opts.groupBy.join(', ')})` : ''
-    return new PrometheusQueryRaw(formatMetric(`${func}(${aggrOp}(${metric}{${selectors}}[${interval}]))${groupByStr}`, { ...this.opts, ...opts })).target(opts)
+    return new PrometheusQueryRaw(formatMetric(`${func}(${aggrOp}(${metric}{${selectors}}[${interval}]))${groupByStr}`, { ...this.opts, ...opts }), {
+      type: opts.type,
+      groupBy: opts.groupBy,
+    })
   }
-  public rate(opts: CommonQueryOpts): PrometheusTarget {
+  public rate(opts: CommonQueryOpts): PrometheusQueryRaw {
     return this.calc('sum', 'rate', opts)
   }
-  public increase(opts: CommonQueryOpts): PrometheusTarget {
+  public increase(opts: CommonQueryOpts): PrometheusQueryRaw {
     return this.calc('sum', 'increase', opts)
   }
-  public percentage(opts: CommonQueryOpts & { numeratorSelectors?: string | string[]; denominatorSelectors?: string | string[]; func?: 'rate' | 'increase' }): PrometheusTarget {
+  public percentage(opts: CommonQueryOpts & { numeratorSelectors?: string | string[]; denominatorSelectors?: string | string[]; func?: 'rate' | 'increase' }): PrometheusQueryRaw {
     const metric = this.metric
     const { func = 'rate' } = opts
     const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
@@ -150,7 +163,10 @@ export class CounterMetric extends PrometheusMetricBase {
     const denominatorSelectors = mergeSelectors(selectors, opts.denominatorSelectors || '')
     const interval = func === 'rate' ? '$__rate_interval' : '$__interval'
     const groupByStr = opts.groupBy ? ` by (${opts.groupBy.join(', ')})` : ''
-    return new PrometheusQueryRaw(formatMetric(`sum(${func}(${metric}{${numeratorSelectors}}[${interval}]))${groupByStr} / sum(${func}(${metric}{${denominatorSelectors}}[${interval}]))${groupByStr}`, { ...this.opts, ...opts })).target(opts)
+    return new PrometheusQueryRaw(formatMetric(`sum(${func}(${metric}{${numeratorSelectors}}[${interval}]))${groupByStr} / sum(${func}(${metric}{${denominatorSelectors}}[${interval}]))${groupByStr}`, { ...this.opts, ...opts }), {
+      type: opts.type,
+      groupBy: opts.groupBy,
+    })
   }
 }
 
@@ -161,7 +177,7 @@ export class GaugeMetric extends PrometheusMetricBase {
   ) {
     super(metric, opts)
   }
-  public calc(func: string, opts: CommonQueryOpts): PrometheusTarget {
+  public calc(func: string, opts: CommonQueryOpts): PrometheusQueryRaw {
     const metric = this.metric
     const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
     let expr = `${metric}{${selectors}}`
@@ -169,9 +185,12 @@ export class GaugeMetric extends PrometheusMetricBase {
       const groupByStr = opts.groupBy ? ` by (${opts.groupBy.join(', ')})` : ''
       expr = `${func}(${expr})${groupByStr}`
     }
-    return new PrometheusQueryRaw(formatMetric(expr, { ...this.opts, ...opts })).target(opts)
+    return new PrometheusQueryRaw(formatMetric(expr, { ...this.opts, ...opts }), {
+      type: opts.type,
+      groupBy: opts.groupBy,
+    })
   }
-  public raw(opts: CommonQueryOpts): PrometheusTarget {
+  public raw(opts: CommonQueryOpts): PrometheusQueryRaw {
     return this.calc('', { ...this.opts, ...opts })
   }
 }
@@ -190,13 +209,16 @@ class HistogramSummaryCommon extends PrometheusMetricBase {
   public sum() {
     return new CounterMetric(this.metric + '_sum', this.opts)
   }
-  public avg(opts: CommonQueryOpts & { func?: 'rate' | 'increase' }): PrometheusTarget {
+  public avg(opts: CommonQueryOpts & { func?: 'rate' | 'increase' }): PrometheusQueryRaw {
     const metric = this.metric
     const { func = 'rate', groupBy } = opts
     const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
     const groupByStr = groupBy ? ` by (${groupBy.join(', ')})` : ''
     const interval = func === 'rate' ? '$__rate_interval' : '$__interval'
-    return new PrometheusQueryRaw(formatMetric(`sum(${func}(${metric}_sum{${selectors}}[${interval}]))${groupByStr} / sum(${func}(${metric}_count{${selectors}}[${interval}]))${groupByStr}`, { ...this.opts, ...opts })).target(opts)
+    return new PrometheusQueryRaw(formatMetric(`sum(${func}(${metric}_sum{${selectors}}[${interval}]))${groupByStr} / sum(${func}(${metric}_count{${selectors}}[${interval}]))${groupByStr}`, { ...this.opts, ...opts }), {
+      type: opts.type,
+      groupBy: opts.groupBy,
+    })
   }
 }
 
@@ -207,16 +229,19 @@ export class HistogramMetric extends HistogramSummaryCommon {
   ) {
     super(metric, opts)
   }
-  public histogramQuery(func: 'histogram_quantile' | 'histogram_share', value: string, opts: CommonQueryOpts): PrometheusTarget {
+  public histogramQuery(func: 'histogram_quantile' | 'histogram_share', value: string, opts: CommonQueryOpts): PrometheusQueryRaw {
     const metric = this.metric + '_bucket'
     const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
     const groupByStr = opts.groupBy ? ` by (le, ${opts.groupBy.join(', ')})` : ' by (le)'
-    return new PrometheusQueryRaw(formatMetric(`${func}(${value}, sum(rate(${metric}{${selectors}}[$__rate_interval]))${groupByStr})`, { ...this.opts, ...opts })).target(opts)
+    return new PrometheusQueryRaw(formatMetric(`${func}(${value}, sum(rate(${metric}{${selectors}}[$__rate_interval]))${groupByStr})`, { ...this.opts, ...opts }), {
+      type: opts.type,
+      groupBy: opts.groupBy,
+    })
   }
-  public histogramQuantile(value: string, opts: CommonQueryOpts): PrometheusTarget {
+  public histogramQuantile(value: string, opts: CommonQueryOpts): PrometheusQueryRaw {
     return this.histogramQuery('histogram_quantile', value, opts)
   }
-  public histogramShare(value: string, opts: CommonQueryOpts): PrometheusTarget {
+  public histogramShare(value: string, opts: CommonQueryOpts): PrometheusQueryRaw {
     return this.histogramQuery('histogram_share', value, opts)
   }
 }

@@ -103,54 +103,54 @@ export function cadvisorMetricsPanels({ datasource, title, selectors = [], group
   return NewPanelGroup({ title: title ?? 'cAdvisor Metrics', collapsed }, [
     NewPanelRow({ datasource, height: 3 }, [
       //
-      NewStatPanel({ title: 'Container Start Time (max)', defaultUnit: Unit.DATE_TIME_FROM_NOW }, containerStartTimeSeconds.calc('max', { selectors, type: 'instant', append: ' * 1000' })),
+      NewStatPanel({ title: 'Container Start Time (max)', defaultUnit: Unit.DATE_TIME_FROM_NOW }, containerStartTimeSeconds.calc('max', { selectors, type: 'instant', append: ' * 1000' }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'CPU Usage', defaultUnit: Unit.SHORT }, containerCpuUsageSecondsTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Memory Usage' }, containerMemoryUsageBytes.calc('sum', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Memory Working Set' }, containerMemoryWorkingSetBytes.calc('sum', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Memory Cache', defaultUnit: Unit.BYTES_SI }, containerMemoryCache.calc('sum', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'CPU Usage', defaultUnit: Unit.SHORT }, containerCpuUsageSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Usage' }, containerMemoryUsageBytes.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Working Set' }, containerMemoryWorkingSetBytes.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Cache', defaultUnit: Unit.BYTES_SI }, containerMemoryCache.calc('sum', { selectors, groupBy }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'Threads' }, containerThreads.calc('sum', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Processes' }, containerProcesses.calc('sum', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'File Descriptors' }, containerFileDescriptors.calc('sum', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Sockets' }, containerSockets.calc('sum', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'Threads' }, containerThreads.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Processes' }, containerProcesses.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'File Descriptors' }, containerFileDescriptors.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Sockets' }, containerSockets.calc('sum', { selectors, groupBy }).target()),
     ]),
     // cpu
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'CPU Load Average 10s' }, containerCpuLoadAverage10s.calc('sum', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'CPU Usage User' }, containerCpuUserSecondsTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'CPU Usage System' }, containerCpuSystemSecondsTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'CPU Usage Throttled' }, containerCpuCfsThrottledSecondsTotal.calc('sum', 'rate', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'CPU Load Average 10s' }, containerCpuLoadAverage10s.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'CPU Usage User' }, containerCpuUserSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'CPU Usage System' }, containerCpuSystemSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'CPU Usage Throttled' }, containerCpuCfsThrottledSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
     ]),
     // memory
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Memory Failures' }, containerMemoryFailuresTotal.calc('sum', 'increase', { selectors, groupBy: [...groupBy, 'failure_type'] })),
-      NewTimeSeriesPanel({ title: 'OOM Events' }, containerOomEventsTotal.calc('sum', 'increase', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Memory Swap' }, containerMemorySwap.calc('sum', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Memory Failcnt' }, containerMemoryFailcnt.calc('sum', 'increase', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'Memory Failures' }, containerMemoryFailuresTotal.calc('sum', 'increase', { selectors, groupBy: [...groupBy, 'failure_type'] }).target()),
+      NewTimeSeriesPanel({ title: 'OOM Events' }, containerOomEventsTotal.calc('sum', 'increase', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Swap' }, containerMemorySwap.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Failcnt' }, containerMemoryFailcnt.calc('sum', 'increase', { selectors, groupBy }).target()),
     ]),
     // network
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Network Receive Bytes' }, containerNetworkReceiveBytesTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Network Transmit Bytes' }, containerNetworkTransmitBytesTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Network Receive Errors' }, containerNetworkReceiveErrorsTotal.calc('sum', 'increase', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Network Transmit Errors' }, containerNetworkTransmitErrorsTotal.calc('sum', 'increase', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'Network Receive Bytes' }, containerNetworkReceiveBytesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Network Transmit Bytes' }, containerNetworkTransmitBytesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Network Receive Errors' }, containerNetworkReceiveErrorsTotal.calc('sum', 'increase', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Network Transmit Errors' }, containerNetworkTransmitErrorsTotal.calc('sum', 'increase', { selectors, groupBy }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Network Receive Packets' }, containerNetworkReceivePacketsTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Network Transmit Packets' }, containerNetworkTransmitPacketsTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Network Receive Packets Dropped' }, containerNetworkReceivePacketsDroppedTotal.calc('sum', 'increase', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'Network Transmit Packets Dropped' }, containerNetworkTransmitPacketsDroppedTotal.calc('sum', 'increase', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'Network Receive Packets' }, containerNetworkReceivePacketsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Network Transmit Packets' }, containerNetworkTransmitPacketsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Network Receive Packets Dropped' }, containerNetworkReceivePacketsDroppedTotal.calc('sum', 'increase', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Network Transmit Packets Dropped' }, containerNetworkTransmitPacketsDroppedTotal.calc('sum', 'increase', { selectors, groupBy }).target()),
     ]),
     // fs
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'FS Reads Bytes' }, containerFsReadsBytesTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'FS Writes Bytes' }, containerFsWritesBytesTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'FS Read rate' }, containerFsReadsTotal.calc('sum', 'rate', { selectors, groupBy })),
-      NewTimeSeriesPanel({ title: 'FS Write rate' }, containerFsWritesTotal.calc('sum', 'rate', { selectors, groupBy })),
+      NewTimeSeriesPanel({ title: 'FS Reads Bytes' }, containerFsReadsBytesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'FS Writes Bytes' }, containerFsWritesBytesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'FS Read rate' }, containerFsReadsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'FS Write rate' }, containerFsWritesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
     ]),
   ])
 }

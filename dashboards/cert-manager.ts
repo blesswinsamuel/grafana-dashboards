@@ -30,9 +30,9 @@ const panels: PanelRowAndGroups = [
       NewTablePanel({
         title: 'Ready status',
         targets: [
-          certificateReadyStatus.calc('sum', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace', 'condition'], refId: 'discard', type: 'instant', append: ' > 0' }),
-          certificateExpiryTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], refId: 'expiration_time', type: 'instant', append: ' * 1000' }),
-          certificateRenewalTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], refId: 'renewal_time', type: 'instant', append: ' * 1000' }),
+          certificateReadyStatus.calc('sum', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace', 'condition'], type: 'instant', append: ' > 0' }).target({ refId: 'discard' }),
+          certificateExpiryTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], type: 'instant', append: ' * 1000' }).target({ refId: 'expiration_time' }),
+          certificateRenewalTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], type: 'instant', append: ' * 1000' }).target({ refId: 'renewal_time' }),
         ],
         overrides: overridesMatchByName({
           condition: {
@@ -60,14 +60,14 @@ const panels: PanelRowAndGroups = [
     ]),
   ]),
   NewPanelRow({ datasource, height: 8 }, [
-    NewTimeSeriesPanel({ title: 'The number of sync() calls made by a controller' }, controllerSyncCallCount.increase({ groupBy: ['controller'] })),
-    NewTimeSeriesPanel({ title: 'The number of requests made by the ACME client' }, acmeClientRequestCount.increase({ groupBy: ['host', 'method', 'path', 'scheme', 'status'], append: ' > 0' })),
+    NewTimeSeriesPanel({ title: 'The number of sync() calls made by a controller' }, controllerSyncCallCount.increase({ groupBy: ['controller'] }).target()),
+    NewTimeSeriesPanel({ title: 'The number of requests made by the ACME client' }, acmeClientRequestCount.increase({ groupBy: ['host', 'method', 'path', 'scheme', 'status'], append: ' > 0' }).target()),
     // TimeSeriesPanel("The clock time", [QueryExpr("max(certmanager_clock_time_seconds_gauge[$__interval]) * 1000", "")], unit=UNITS.DATE_TIME_FROM_NOW),
   ]),
   NewPanelRow({ datasource, height: 8 }, [
-    NewTimeSeriesPanel({ title: 'Expiration time', defaultUnit: Unit.DATE_TIME_FROM_NOW }, certificateExpiryTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], append: ' * 1000' })),
-    NewTimeSeriesPanel({ title: 'Renewal time', defaultUnit: Unit.DATE_TIME_FROM_NOW }, certificateRenewalTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], append: ' * 1000' })),
-    NewTimeSeriesPanel({ title: 'Avg HTTP request latencies for the ACME client', defaultUnit: Unit.SECONDS }, acmeClientRequestDurationSeconds.avg({ groupBy: ['host', 'method', 'path', 'scheme', 'status'] })),
+    NewTimeSeriesPanel({ title: 'Expiration time', defaultUnit: Unit.DATE_TIME_FROM_NOW }, certificateExpiryTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], append: ' * 1000' }).target()),
+    NewTimeSeriesPanel({ title: 'Renewal time', defaultUnit: Unit.DATE_TIME_FROM_NOW }, certificateRenewalTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], append: ' * 1000' }).target()),
+    NewTimeSeriesPanel({ title: 'Avg HTTP request latencies for the ACME client', defaultUnit: Unit.SECONDS }, acmeClientRequestDurationSeconds.avg({ groupBy: ['host', 'method', 'path', 'scheme', 'status'] }).target()),
   ]),
 ]
 
