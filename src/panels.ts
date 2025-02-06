@@ -1,4 +1,5 @@
 import {
+  AnnotationQuery,
   AxisColorMode,
   AxisPlacement,
   BarGaugeDisplayMode,
@@ -9,6 +10,7 @@ import {
   BigValueGraphMode,
   BigValueJustifyMode,
   BigValueTextMode,
+  DataQuery,
   DataSourceRef,
   FieldColorModeId,
   FieldConfigSource,
@@ -33,6 +35,7 @@ import {
   ValueMapping,
   VisibilityMode,
   VizOrientation,
+  defaultAnnotationQuery,
   defaultPanel,
   defaultVizLegendOptions,
 } from '@grafana/schema'
@@ -182,8 +185,10 @@ function inferUnit(targets: Target[], type?: 'line' | 'bar', defaultUnit?: Unit)
           // histogram share
           defaultUnit = Unit.PERCENTUNIT
         } else {
-          if (expr.includes('_request_') || expr.includes('_response_')) {
-            defaultUnit = Unit.RPS
+          if (expr.includes('_seconds_sum') && expr.includes('_seconds_count') && expr.includes('rate') && expr.includes('/')) {
+            defaultUnit = Unit.SECONDS
+          } else if (expr.includes('_request_') || expr.includes('_response_')) {
+            defaultUnit = Unit.REQPS
           } else if (expr.includes('_bytes_total')) {
             defaultUnit = Unit.BYTES_PER_SEC_SI
           } else if (expr.includes('_reads_total')) {
@@ -192,8 +197,6 @@ function inferUnit(targets: Target[], type?: 'line' | 'bar', defaultUnit?: Unit)
             defaultUnit = Unit.WPS
           } else if (expr.includes('_packets_total')) {
             defaultUnit = Unit.PPS
-          } else if (expr.includes('_seconds_sum') && expr.includes('_seconds_count') && expr.includes('rate') && expr.includes('/')) {
-            defaultUnit = Unit.SECONDS
           }
         }
       }
@@ -589,4 +592,34 @@ export function NewPieChartPanel(opts: PieChartPanelOpts, ...targets: Target[]):
     transparent: false,
   }
   return panel as Panel
+}
+
+export type LogAnnotationOpts = {
+  datasource: DataSourceRef
+  iconColor?: string
+  name?: string
+  logQuery: string
+  tagsField?: string
+  textField?: string
+}
+
+export function NewLogAnnotation(opts: LogAnnotationOpts): AnnotationQuery<DataQuery> {
+  return {
+    ...defaultAnnotationQuery,
+    datasource: opts.datasource,
+    enable: true,
+    iconColor: opts.iconColor,
+    name: opts.name,
+    target: {
+      //@ts-ignore
+      limit: 100,
+      matchAny: false,
+      query: opts.logQuery,
+      tags: [],
+      type: 'dashboard',
+    },
+    //@ts-ignore
+    tagsField: opts.tagsField,
+    textField: opts.textField,
+  } satisfies AnnotationQuery<DataQuery>
 }
