@@ -190,7 +190,7 @@ function inferUnit(targets: Target[], type?: 'line' | 'bar', defaultUnit?: Unit)
         } else {
           if (expr.includes('_seconds_sum') && expr.includes('_seconds_count') && expr.includes('rate') && expr.includes('/')) {
             defaultUnit = Unit.SECONDS
-          } else if (expr.includes('_request_') || expr.includes('_response_')) {
+          } else if (expr.includes('_request_') || expr.includes('_requests_') || expr.includes('_response_')) {
             defaultUnit = Unit.REQPS
           } else if (expr.includes('_bytes_total')) {
             defaultUnit = Unit.BYTES_PER_SEC_SI

@@ -3,7 +3,7 @@ import { Unit } from './units'
 
 export function formatLegendFormat(legendFormat: string | undefined, groupBy: string[]) {
   if (!legendFormat) {
-    legendFormat = groupBy ? groupBy.map((k) => `{{${k}}}`).join(' - ') : undefined
+    legendFormat = groupBy ? groupBy.map((k) => `{{${k}}}`).join(' - ') : 'value'
   }
   return legendFormat
 }
