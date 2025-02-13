@@ -123,6 +123,9 @@ class PrometheusMetricBase {
   public labels() {
     return this.opts.labels
   }
+  public description() {
+    return this.opts.description
+  }
   // public select(...selectors: (string[] | string | undefined)[]): PrometheusQueryWithSelector {
   //   const selectorsStr = selectors
   //     .flat()
