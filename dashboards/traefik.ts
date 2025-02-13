@@ -1,9 +1,14 @@
 import { Dashboard, DashboardCursorSync, DataSourceRef, defaultDashboard } from '@grafana/schema'
-import { autoLayout, averageDurationQuery, CounterMetric, GaugeMetric, goRuntimeMetricsPanels, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTimeSeriesPanel, PanelRowAndGroups, SummaryMetric, Unit } from '../src/grafana-helpers'
+import { autoLayout, averageDurationQuery, CounterMetric, GaugeMetric, goRuntimeMetricsPanels, NewLokiDatasource, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTimeSeriesPanel, PanelRowAndGroups, SummaryMetric, Unit } from '../src/grafana-helpers'
 import { cadvisorMetricsPanels } from '../src/k8s-cadvisor'
+import { NewLokiLogsPanel } from '../src/panels'
 
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
+}
+
+const lokiDatasource: DataSourceRef = {
+  uid: '${DS_LOKI}',
 }
 
 // https://github.com/traefik/traefik/blob/master/pkg/metrics/prometheus.go
@@ -113,6 +118,13 @@ const panels: PanelRowAndGroups = [
       NewTimeSeriesPanel({ title: 'Response Bytes by code', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['code'] }).target()),
       NewTimeSeriesPanel({ title: 'Avg request duration by code', defaultUnit: Unit.SECONDS }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service"'], groupBy: ['code'] }).target()),
     ]),
+    NewPanelRow({ datasource, height: 8 }, [
+      // by code
+      NewTimeSeriesPanel({ title: 'Request Count by code (errors)', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service", code=~"(0|(4|5)..)"'], groupBy: ['code', 'protocol', 'method', 'service'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Request Bytes by code (errors)', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service", code=~"(0|(4|5)..)"'], groupBy: ['code', 'protocol', 'method', 'service'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Response Bytes by code (errors)', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service", code=~"(0|(4|5)..)"'], groupBy: ['code', 'protocol', 'method', 'service'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Avg request duration by code (errors)', defaultUnit: Unit.SECONDS }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service", code=~"(0|(4|5)..)"'], groupBy: ['code', 'protocol', 'method', 'service'], append: ' > 0' }).target()),
+    ]),
     // NewPanelRow({ datasource, height: 8 }, [
     //   //
     //   NewTimeSeriesPanel({ title: 'Service Retries', defaultUnit: Unit.SHORT }, serviceRetries.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service'] }).target()),
@@ -127,9 +139,23 @@ const panels: PanelRowAndGroups = [
       NewTimeSeriesPanel({ title: 'TLS certs expiration timestamp', defaultUnit: Unit.DATE_TIME_FROM_NOW }, tlsCertsNotAfterTimestamp.calc('max', { selectors: [selectors], groupBy: ['cn', 'sans', 'serial'], append: ' * 1000' }).target()),
     ]),
   ]),
+  NewPanelGroup({ title: 'Logs' }, [
+    // {container_name="traefik"} | json | DownstreamStatus >= 400
+    // ClientAddr RequestAddr RequestPath DownstreamStatus RouterName
+    NewPanelRow({ datasource: lokiDatasource, height: 16 }, [
+      // 'ServiceAddr', 'ServiceName', 'ServiceURL', 'level', 'Duration', 'OriginDuration'
+      NewLokiLogsPanel({ title: 'Downstream errors' }, { expr: `{container_name="traefik"} | json | DownstreamStatus >= 400 | line_format "{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}"` }),
+    ]),
+  ]),
   goRuntimeMetricsPanels({ datasource, selectors, collapsed: true }),
   cadvisorMetricsPanels({ datasource, selectors: [`namespace=~"$namespace"`, `pod=~"$pod"`], collapsed: true }), //`container="traefik"`
 ]
+
+export type LokiLogsPanelOpts = {
+  title: string
+  query: string
+  limit: number
+}
 
 export const dashboard: Dashboard = {
   ...defaultDashboard,
@@ -147,6 +173,7 @@ export const dashboard: Dashboard = {
   templating: {
     list: [
       NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }),
+      NewLokiDatasource({ name: 'DS_LOKI', label: 'Prometheus' }),
       NewQueryVariable({ datasource, name: 'namespace', label: 'Namespace', query: 'label_values(traefik_config_reloads_total, namespace)', includeAll: true, multi: true }),
       NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(traefik_config_reloads_total{namespace=~"$namespace"}, instance)', includeAll: true, multi: true }),
       NewQueryVariable({ datasource, name: 'pod', label: 'Pod', query: 'label_values(traefik_config_reloads_total{namespace=~"$namespace", instance=~"$instance"}, pod)', includeAll: true, multi: true }),

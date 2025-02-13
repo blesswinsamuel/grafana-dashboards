@@ -85,6 +85,19 @@ export function NewPrometheusDatasource(opts: DataSourceVariableOpts): VariableM
   }
 }
 
+export function NewLokiDatasource(opts: DataSourceVariableOpts): VariableModel {
+  return {
+    ...defaultVariableModel,
+    datasource: null,
+    hide: 0,
+    type: 'datasource',
+    label: opts.label,
+    name: opts.name,
+    regex: opts.regex,
+    query: 'loki',
+  }
+}
+
 export function NewDatasourceVariable(opts: DataSourceVariableOpts): VariableModel {
   return {
     ...defaultVariableModel,

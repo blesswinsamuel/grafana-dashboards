@@ -21,6 +21,8 @@ import {
   LegendDisplayMode,
   LegendPlacement,
   LineInterpolation,
+  LogsDedupStrategy,
+  LogsSortOrder,
   MappingType,
   Panel,
   PercentChangeColorMode,
@@ -43,6 +45,7 @@ import { PanelQuerySpec } from '@grafana/schema/dist/esm/schema/dashboard/v2alph
 import { Options as BarGaugePanelOptions } from '@grafana/schema/dist/esm/raw/composable/bargauge/panelcfg/x/BarGaugePanelCfg_types.gen'
 import { PieChartLegendValues, Options as PieChartPanelOptions, PieChartType } from '@grafana/schema/dist/esm/raw/composable/piechart/panelcfg/x/PieChartPanelCfg_types.gen'
 import { Options as SingleStatPanelOptions } from '@grafana/schema/dist/esm/raw/composable/stat/panelcfg/x/StatPanelCfg_types.gen'
+import { Options as LogsPanelOptions, defaultOptions as defaultLogsPanelOptions } from '@grafana/schema/dist/esm/raw/composable/logs/panelcfg/x/LogsPanelCfg_types.gen'
 import { Options as TablePanelOptions } from '@grafana/schema/dist/esm/raw/composable/table/panelcfg/x/TablePanelCfg_types.gen'
 import { Options as TimeSeriesPanelOptions } from '@grafana/schema/dist/esm/raw/composable/timeseries/panelcfg/x/TimeSeriesPanelCfg_types.gen'
 import { Unit } from './units'
@@ -622,4 +625,54 @@ export function NewLogAnnotation(opts: LogAnnotationOpts): AnnotationQuery<DataQ
     tagsField: opts.tagsField,
     textField: opts.textField,
   } satisfies AnnotationQuery<DataQuery>
+}
+
+export type LokiLogsPanelOpts = CommonPanelOpts & {
+  reduceCalc?: 'lastNotNull' | 'last' | 'first' | 'mean' | 'min' | 'max' | 'sum' | 'count' | 'median' | 'diff' | 'range'
+  graphMode?: BigValueGraphMode
+  options?: RecursivePartial<LogsPanelOptions>
+}
+
+export function NewLokiLogsPanel(opts: LokiLogsPanelOpts, ...targets: Target[]): Panel {
+  targets = [...(opts.targets || []), ...(targets || [])]
+  const panel: Panel<Record<string, unknown>, GraphFieldConfig> = {
+    ...defaultPanel,
+    datasource: opts.datasource,
+    type: 'logs',
+    title: opts.title,
+    description: opts.description,
+    interval: opts.interval,
+    maxDataPoints: opts.maxDataPoints,
+    gridPos: { x: 0, y: 0, w: opts.width ?? 0, h: opts.height ?? 0 },
+    targets: fromTargets(targets, opts.datasource),
+    fieldConfig: {
+      defaults: {
+        // mappings: opts.mappings ?? (opts.defaultUnit === Unit.DATE_TIME_FROM_NOW ? [{ type: MappingType.ValueToText, options: { '0': { text: '-', index: 0 } } }] : []),
+        // // thresholds: opts.thresholds ?? { mode: ThresholdsMode.Absolute, steps: [{ color: 'green', value: null }] },
+        // thresholds: opts.thresholds ?? { mode: ThresholdsMode.Absolute, steps: [{ color: 'transparent', value: null }] },
+        // unit: opts.defaultUnit,
+        // decimals: opts.decimals,
+        ...opts.fieldConfigDefaults,
+      },
+      overrides: opts.overrides ?? [],
+    },
+    options: deepMerge<LogsPanelOptions>(
+      {
+        ...defaultLogsPanelOptions,
+        showTime: true,
+        showLabels: false,
+        showCommonLabels: false,
+        wrapLogMessage: false,
+        prettifyLogMessage: false,
+        enableLogDetails: true,
+        showLogContextToggle: false,
+        dedupStrategy: LogsDedupStrategy.none,
+        sortOrder: LogsSortOrder.Descending,
+      },
+      opts.options as Partial<LogsPanelOptions>
+    ) as unknown as Record<string, unknown>,
+    transformations: opts.transformations ?? [],
+    transparent: false,
+  }
+  return panel as Panel
 }
