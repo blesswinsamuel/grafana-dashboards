@@ -104,8 +104,8 @@ const panels: PanelRowAndGroups = [
       NewTimeSeriesPanel({ title: 'SNR dBm', defaultUnit: Unit.DBM, legendCalcs: ['mean', 'min', 'last'] }, clientSnrDbm.calc('sum', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 10 }, [
-      NewTimeSeriesPanel({ title: 'Upload Rate', defaultUnit: Unit.BYTES_PER_SEC_SI }, clientTrafficUpBytes.rate({ selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target()),
-      NewTimeSeriesPanel({ title: 'Download Rate', defaultUnit: Unit.BYTES_PER_SEC_SI }, clientTrafficDownBytes.rate({ selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target()),
+      NewTimeSeriesPanel({ title: 'Upload Rate', defaultUnit: Unit.BYTES_PER_SEC_SI }, clientTrafficUpBytes.calc('sum', 'rate', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target()),
+      NewTimeSeriesPanel({ title: 'Download Rate', defaultUnit: Unit.BYTES_PER_SEC_SI }, clientTrafficDownBytes.calc('sum', 'rate', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 10 }, [
       //
@@ -136,8 +136,8 @@ const panels: PanelRowAndGroups = [
               },
             },
             SPEED: { name: 'Speed', target: portLinkSpeedMbps.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], type: 'instant' }).target(), unit: Unit.MIBITS },
-            RX: { name: 'Rx', target: portLinkRx.increase({ selectors, groupBy: ['switch_port'], type: 'instant' }).target(), unit: Unit.BYTES_SI },
-            TX: { name: 'Tx', target: portLinkTx.increase({ selectors, groupBy: ['switch_port'], type: 'instant' }).target(), unit: Unit.BYTES_SI },
+            RX: { name: 'Rx', target: portLinkRx.calc('sum', 'increase', { selectors, groupBy: ['switch_port'], type: 'instant' }).target(), unit: Unit.BYTES_SI },
+            TX: { name: 'Tx', target: portLinkTx.calc('sum', 'increase', { selectors, groupBy: ['switch_port'], type: 'instant' }).target(), unit: Unit.BYTES_SI },
             POWER: { name: 'Power', target: portPowerWatts.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], type: 'instant' }).target(), unit: Unit.WATT },
           },
           excludeColumns: ['Time', 'site'],

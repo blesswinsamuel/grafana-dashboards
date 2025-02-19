@@ -57,6 +57,14 @@ function formatMetric(
   return expr
 }
 
+export type TargetOptions = {
+  refId?: string
+  legendFormat?: string
+  groupBy?: string[]
+  type?: 'range' | 'instant' | 'both'
+  format?: 'table' | 'time_series' | 'heatmap'
+}
+
 class PrometheusQueryRaw {
   constructor(
     private readonly expr: string,
@@ -66,13 +74,13 @@ class PrometheusQueryRaw {
     }
   ) {}
 
-  public target(opts?: { refId?: string; legendFormat?: string; groupBy?: string[]; type?: 'range' | 'instant' | 'both' }): PrometheusTarget {
-    const { legendFormat, groupBy = this.opts?.groupBy, type = this.opts?.type, refId } = opts ?? {}
+  public target(opts?: TargetOptions): PrometheusTarget {
+    const { legendFormat, groupBy = this.opts?.groupBy, type = this.opts?.type, refId, format } = opts ?? {}
     return {
       expr: this.expr,
       refId,
       type,
-      format: type === 'instant' ? 'table' : undefined,
+      format: format ?? (type === 'instant' ? 'table' : undefined),
       legendFormat: formatLegendFormat(legendFormat, groupBy),
     }
   }
@@ -152,12 +160,6 @@ export class CounterMetric extends PrometheusMetricBase {
       groupBy: opts.groupBy,
     })
   }
-  public rate(opts: CommonQueryOpts): PrometheusQueryRaw {
-    return this.calc('sum', 'rate', opts)
-  }
-  public increase(opts: CommonQueryOpts): PrometheusQueryRaw {
-    return this.calc('sum', 'increase', opts)
-  }
   public percentage(opts: CommonQueryOpts & { numeratorSelectors?: string | string[]; denominatorSelectors?: string | string[]; func?: 'rate' | 'increase' }): PrometheusQueryRaw {
     const metric = this.metric
     const { func = 'rate' } = opts
@@ -232,7 +234,7 @@ export class HistogramMetric extends HistogramSummaryCommon {
   ) {
     super(metric, opts)
   }
-  public histogramQuery(func: 'histogram_quantile' | 'histogram_share', value: string, opts: CommonQueryOpts): PrometheusQueryRaw {
+  public calc(func: 'histogram_quantile' | 'histogram_share', value: string, opts: CommonQueryOpts): PrometheusQueryRaw {
     const metric = this.metric + '_bucket'
     const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
     const groupByStr = opts.groupBy ? ` by (le, ${opts.groupBy.join(', ')})` : ' by (le)'
@@ -241,11 +243,11 @@ export class HistogramMetric extends HistogramSummaryCommon {
       groupBy: opts.groupBy,
     })
   }
-  public histogramQuantile(value: string, opts: CommonQueryOpts): PrometheusQueryRaw {
-    return this.histogramQuery('histogram_quantile', value, opts)
+  public quantile(value: string, opts: CommonQueryOpts): PrometheusQueryRaw {
+    return this.calc('histogram_quantile', value, opts)
   }
-  public histogramShare(value: string, opts: CommonQueryOpts): PrometheusQueryRaw {
-    return this.histogramQuery('histogram_share', value, opts)
+  public share(value: string, opts: CommonQueryOpts): PrometheusQueryRaw {
+    return this.calc('histogram_share', value, opts)
   }
 }
 

@@ -60,8 +60,8 @@ const panels: PanelRowAndGroups = [
     ]),
   ]),
   NewPanelRow({ datasource, height: 8 }, [
-    NewTimeSeriesPanel({ title: 'The number of sync() calls made by a controller' }, controllerSyncCallCount.increase({ groupBy: ['controller'] }).target()),
-    NewTimeSeriesPanel({ title: 'The number of requests made by the ACME client' }, acmeClientRequestCount.increase({ groupBy: ['host', 'method', 'path', 'scheme', 'status'], append: ' > 0' }).target()),
+    NewTimeSeriesPanel({ title: 'The number of sync() calls made by a controller' }, controllerSyncCallCount.calc('sum', 'increase', { groupBy: ['controller'] }).target()),
+    NewTimeSeriesPanel({ title: 'The number of requests made by the ACME client' }, acmeClientRequestCount.calc('sum', 'increase', { groupBy: ['host', 'method', 'path', 'scheme', 'status'], append: ' > 0' }).target()),
     // TimeSeriesPanel("The clock time", [QueryExpr("max(certmanager_clock_time_seconds_gauge[$__interval]) * 1000", "")], unit=UNITS.DATE_TIME_FROM_NOW),
   ]),
   NewPanelRow({ datasource, height: 8 }, [
