@@ -39,7 +39,7 @@ type PanelArrayOpts = {
   width?: number
 }
 
-export function NewPanelRow(opts: PanelArrayOpts, panels: Array<Panel | undefined | boolean>): PanelRow {
+export function NewPanelRow(opts: PanelArrayOpts, panels: Array<Panel | undefined | false>): PanelRow {
   const panelsFiltered = filterNonUndefined(panels)
   for (const panel of panelsFiltered) {
     if (opts.datasource && !panel.datasource) {
@@ -59,11 +59,11 @@ export function NewPanelRow(opts: PanelArrayOpts, panels: Array<Panel | undefine
   }
 }
 
-function filterNonUndefined<T>(array: Array<T | undefined | boolean>): Array<T> {
-  return array.filter((item): item is T => item !== undefined)
+function filterNonUndefined<T>(array: Array<T | undefined | false>): Array<T> {
+  return array.filter((item): item is T => item !== undefined && item !== false)
 }
 
-export function NewPanelGroup(opts: { title: string; collapsed?: boolean }, panelRows: Array<PanelRow | undefined | boolean>): PanelGroup {
+export function NewPanelGroup(opts: { title: string; collapsed?: boolean }, panelRows: Array<PanelRow | undefined | false>): PanelGroup {
   return {
     type: 'panel-group',
     title: opts.title,
@@ -221,7 +221,7 @@ export function autoLayout(panelRows: PanelRowAndGroups): Array<Panel | RowPanel
       y += maxh
       if (isPanelGroup) {
         let rowPanelsInGroup: Array<Panel> = []
-        ;[rowPanelsInGroup, y] = autoLayoutInner(panelRowOrGroup.panelRows, y) as [Array<Panel>, number]
+        ;[rowPanelsInGroup, y] = autoLayoutInner(panelRowOrGroup.panelRows, y)
         groupHeader.panels = rowPanelsInGroup
         if (!panelRowOrGroup.collapsed) {
           panels.push(...rowPanelsInGroup)
@@ -235,8 +235,8 @@ export function autoLayout(panelRows: PanelRowAndGroups): Array<Panel | RowPanel
   return autoLayoutInner(panelRows)[0]
 }
 
-export async function writeDashboardAndPostToGrafana(opts: { grafanaURL?: string; grafanaUsername?: string; grafanaPassword?: string; grafanaSession?: string; dashboard: Dashboard; folderUid?: string; addDebugNamePrefix?: boolean; filename: string }) {
-  const { grafanaURL = process.env.GRAFANA_URL, grafanaSession = process.env.GRAFANA_SESSION, grafanaUsername = process.env.GRAFANA_USERNAME, grafanaPassword = process.env.GRAFANA_PASSWORD, dashboard, addDebugNamePrefix = true } = opts
+export async function writeDashboardAndPostToGrafana(opts: { grafanaURL?: string; grafanaUsername?: string; grafanaPassword?: string; grafanaSession?: string; grafanaApiToken?: string; dashboard: Dashboard; folderUid?: string; addDebugNamePrefix?: boolean; filename: string }) {
+  const { grafanaURL = process.env.GRAFANA_URL, grafanaSession = process.env.GRAFANA_SESSION, grafanaApiToken = process.env.GRAFANA_API_TOKEN, grafanaUsername = process.env.GRAFANA_USERNAME, grafanaPassword = process.env.GRAFANA_PASSWORD, dashboard, addDebugNamePrefix = true } = opts
   // create parent folder if it doesn't exist
   if (opts.filename.includes('/')) {
     const folder = opts.filename.split('/').slice(0, -1).join('/')
@@ -264,6 +264,9 @@ export async function writeDashboardAndPostToGrafana(opts: { grafanaURL?: string
     }
     if (grafanaUsername && grafanaPassword) {
       headers['Authorization'] = 'Basic ' + btoa(grafanaUsername + ':' + grafanaPassword)
+    }
+    if (grafanaApiToken) {
+      headers['Authorization'] = `Bearer ${grafanaApiToken}`
     }
     if (grafanaSession) {
       headers['Cookie'] = `grafana_session=${grafanaSession}`

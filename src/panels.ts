@@ -459,6 +459,7 @@ export type TablePanelOpts = CommonPanelOpts & {
         name?: string
         width?: number
         unit?: Unit
+        exclude?: boolean
         overrides?: Record<string, unknown>
       }
     >
@@ -474,8 +475,8 @@ export function NewTablePanel(opts: TablePanelOpts): Panel {
   const colRenames = {}
   const targets = opts.targets ?? []
   if (opts.tableConfig) {
-    const { queries, excludeColumns, extraTransformations } = opts.tableConfig
-    for (const [refId, { target, unit, width, overrides, name }] of Object.entries(queries)) {
+    const { queries, excludeColumns = [], extraTransformations } = opts.tableConfig
+    for (const [refId, { target, unit, width, overrides, name, exclude }] of Object.entries(queries)) {
       const curOverrides = { ...overrides }
       if (unit) {
         curOverrides['unit'] = unit
@@ -500,13 +501,16 @@ export function NewTablePanel(opts: TablePanelOpts): Panel {
         tableIndexOrder.push(refId)
         tableOverrides[refId] = curOverrides
       }
+      if (exclude) {
+        excludeColumns.push(refId)
+      }
     }
     transformations.push({ id: 'merge', options: {} })
     transformations.push({
       id: 'organize',
       options: {
         indexByName: tableIndexByName(tableIndexOrder),
-        excludeByName: tableExcludeByName(excludeColumns ?? []),
+        excludeByName: tableExcludeByName(excludeColumns),
         renameByName: colRenames,
       },
     })
@@ -627,6 +631,29 @@ export function NewLogAnnotation(opts: LogAnnotationOpts): AnnotationQuery<DataQ
     //@ts-ignore
     tagsField: opts.tagsField,
     textField: opts.textField,
+  } satisfies AnnotationQuery<DataQuery>
+}
+
+export type GrafanaAnnotationOpts = {
+  iconColor?: string
+  name?: string
+  tags: string[]
+}
+
+export function NewGrafanaAnnotation(opts: GrafanaAnnotationOpts): AnnotationQuery<DataQuery> {
+  return {
+    ...defaultAnnotationQuery,
+    datasource: { type: 'datasource', uid: 'grafana' },
+    enable: true,
+    iconColor: opts.iconColor,
+    name: opts.name,
+    target: {
+      //@ts-ignore
+      limit: 100,
+      matchAny: true,
+      tags: opts.tags,
+      type: 'tags',
+    },
   } satisfies AnnotationQuery<DataQuery>
 }
 
