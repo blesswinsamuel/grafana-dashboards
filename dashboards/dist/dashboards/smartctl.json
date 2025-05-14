@@ -530,6 +530,7 @@
       "targets": [
         {
           "expr": "smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"}",
+          "legendFormat": "value",
           "range": false,
           "instant": true,
           "format": "table",
@@ -3029,6 +3030,7 @@
           "targets": [
             {
               "expr": "max(process_start_time_seconds{instance=~\"$instance\", job=\"$job\"}) * 1000",
+              "legendFormat": "value",
               "range": false,
               "instant": true,
               "format": "table",
@@ -3099,6 +3101,7 @@
           "targets": [
             {
               "expr": "min(process_max_fds{instance=~\"$instance\", job=\"$job\"})",
+              "legendFormat": "value",
               "range": false,
               "instant": true,
               "format": "table",
@@ -3159,6 +3162,7 @@
           "targets": [
             {
               "expr": "min(process_virtual_memory_max_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "legendFormat": "value",
               "range": false,
               "instant": true,
               "format": "table",

@@ -22,6 +22,7 @@
       "targets": [
         {
           "expr": "sum(omada_port_power_watts{site=~\"$site\"})",
+          "legendFormat": "value",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -82,6 +83,7 @@
       "targets": [
         {
           "expr": "max(omada_controller_uptime_seconds{site=~\"$site\"})",
+          "legendFormat": "value",
           "range": false,
           "instant": true,
           "format": "table",
@@ -142,6 +144,7 @@
       "targets": [
         {
           "expr": "sum(omada_port_link_status{site=~\"$site\"})",
+          "legendFormat": "value",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -201,6 +204,7 @@
       "targets": [
         {
           "expr": "sum(omada_client_connected_total{site=~\"$site\"})",
+          "legendFormat": "value",
           "range": true,
           "instant": false,
           "format": "time_series",

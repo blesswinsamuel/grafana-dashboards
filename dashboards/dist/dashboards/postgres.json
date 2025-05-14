@@ -874,6 +874,7 @@
           "targets": [
             {
               "expr": "max(container_start_time_seconds{namespace=~\"$namespace\", pod=~\"$pod\"}) * 1000",
+              "legendFormat": "value",
               "range": false,
               "instant": true,
               "format": "table",
@@ -3614,6 +3615,7 @@
           "targets": [
             {
               "expr": "max(process_start_time_seconds{instance=~\"$instance\", namespace=~\"$namespace\"}) * 1000",
+              "legendFormat": "value",
               "range": false,
               "instant": true,
               "format": "table",
@@ -3684,6 +3686,7 @@
           "targets": [
             {
               "expr": "min(process_max_fds{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "legendFormat": "value",
               "range": false,
               "instant": true,
               "format": "table",
@@ -3744,6 +3747,7 @@
           "targets": [
             {
               "expr": "min(process_virtual_memory_max_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "legendFormat": "value",
               "range": false,
               "instant": true,
               "format": "table",

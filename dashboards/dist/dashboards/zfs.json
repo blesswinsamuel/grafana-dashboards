@@ -22,6 +22,7 @@
       "targets": [
         {
           "expr": "count(zfs_pool_allocated_bytes{instance=~\"$instance\", pool=~\"$pool\"})",
+          "legendFormat": "value",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -82,6 +83,7 @@
       "targets": [
         {
           "expr": "count(zfs_dataset_logical_used_bytes{instance=~\"$instance\", pool=~\"$pool\"})",
+          "legendFormat": "value",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -3636,6 +3638,7 @@
           "targets": [
             {
               "expr": "max(process_start_time_seconds{instance=~\"$instace\"}) * 1000",
+              "legendFormat": "value",
               "range": false,
               "instant": true,
               "format": "table",
@@ -3706,6 +3709,7 @@
           "targets": [
             {
               "expr": "min(process_max_fds{instance=~\"$instace\"})",
+              "legendFormat": "value",
               "range": false,
               "instant": true,
               "format": "table",
@@ -3766,6 +3770,7 @@
           "targets": [
             {
               "expr": "min(process_virtual_memory_max_bytes{instance=~\"$instace\"})",
+              "legendFormat": "value",
               "range": false,
               "instant": true,
               "format": "table",
