@@ -41,7 +41,7 @@ import {
   defaultPanel,
   defaultVizLegendOptions,
 } from '@grafana/schema'
-import { PanelQuerySpec } from '@grafana/schema/dist/esm/schema/dashboard/v2alpha0/dashboard.gen'
+import { PanelQuerySpec } from '@grafana/schema/dist/esm/schema/dashboard/v2alpha1/types.spec.gen'
 import { Options as BarGaugePanelOptions } from '@grafana/schema/dist/esm/raw/composable/bargauge/panelcfg/x/BarGaugePanelCfg_types.gen'
 import { PieChartLegendValues, Options as PieChartPanelOptions, PieChartType } from '@grafana/schema/dist/esm/raw/composable/piechart/panelcfg/x/PieChartPanelCfg_types.gen'
 import { Options as SingleStatPanelOptions } from '@grafana/schema/dist/esm/raw/composable/stat/panelcfg/x/StatPanelCfg_types.gen'
