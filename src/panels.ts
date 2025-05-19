@@ -287,6 +287,7 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: Target
         unit: opts.defaultUnit,
         min: opts.min,
         max: opts.max,
+        ...opts.fieldConfigDefaults,
       },
       overrides: opts.overrides ?? [],
     },

@@ -148,6 +148,7 @@ export type TextboxVariableOpts = {
   label: string
   name: string
   hide?: boolean
+  default?: string
 }
 
 export function NewTextboxVariable(opts: TextboxVariableOpts): VariableModel {
@@ -157,6 +158,7 @@ export function NewTextboxVariable(opts: TextboxVariableOpts): VariableModel {
     type: 'textbox',
     label: opts.label,
     name: opts.name,
+    query: opts.default,
     options: [],
   }
 }
