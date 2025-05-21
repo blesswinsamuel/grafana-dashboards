@@ -120,10 +120,10 @@ const panels: PanelRowAndGroups = [
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       // by code
-      NewTimeSeriesPanel({ title: 'Request Count by code (errors)', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service", code=~"(0|(4|5)..)"'], groupBy: ['code', 'protocol', 'method', 'service'], append: ' > 0' }).target()),
-      NewTimeSeriesPanel({ title: 'Request Bytes by code (errors)', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service", code=~"(0|(4|5)..)"'], groupBy: ['code', 'protocol', 'method', 'service'], append: ' > 0' }).target()),
-      NewTimeSeriesPanel({ title: 'Response Bytes by code (errors)', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service", code=~"(0|(4|5)..)"'], groupBy: ['code', 'protocol', 'method', 'service'], append: ' > 0' }).target()),
-      NewTimeSeriesPanel({ title: 'Avg request duration by code (errors)', defaultUnit: Unit.SECONDS }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service", code=~"(0|(4|5)..)"'], groupBy: ['code', 'protocol', 'method', 'service'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Request Count by code (errors)', defaultUnit: Unit.SHORT }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service", code=~"(4|5).."'], groupBy: ['code', 'protocol', 'method', 'service'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Request Bytes by code (errors)', defaultUnit: Unit.BYTES_SI }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service", code=~"(4|5).."'], groupBy: ['code', 'protocol', 'method', 'service'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Response Bytes by code (errors)', defaultUnit: Unit.BYTES_SI }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service", code=~"(4|5).."'], groupBy: ['code', 'protocol', 'method', 'service'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Avg request duration by code (errors)', defaultUnit: Unit.SECONDS }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service", code=~"(4|5).."'], groupBy: ['code', 'protocol', 'method', 'service'], append: ' > 0' }).target()),
     ]),
     // NewPanelRow({ datasource, height: 8 }, [
     //   //
@@ -142,10 +142,10 @@ const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Logs' }, [
     // {container_name="traefik"} | json | DownstreamStatus >= 400
     // ClientAddr RequestAddr RequestPath DownstreamStatus RouterName
-    NewPanelRow({ datasource: lokiDatasource, height: 16 }, [
-      // 'ServiceAddr', 'ServiceName', 'ServiceURL', 'level', 'Duration', 'OriginDuration'
-      NewLokiLogsPanel({ title: 'Downstream errors' }, { expr: `{container_name="traefik"} | json | DownstreamStatus >= 400 | line_format "{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}"` }),
-    ]),
+    // 'ServiceAddr', 'ServiceName', 'ServiceURL', 'level', 'Duration', 'OriginDuration'
+    NewPanelRow({ datasource: lokiDatasource, height: 16 }, [NewLokiLogsPanel({ title: 'Downstream errors (4xx)' }, { expr: `{container_name="traefik"} | json | DownstreamStatus >= 400 and DownstreamStatus < 500 | line_format "{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}"` })]),
+    NewPanelRow({ datasource: lokiDatasource, height: 16 }, [NewLokiLogsPanel({ title: 'Downstream errors (5xx)' }, { expr: `{container_name="traefik"} | json | DownstreamStatus >= 500 | line_format "{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}"` })]),
+    // NewPanelRow({ datasource: lokiDatasource, height: 16 }, [NewLokiLogsPanel({ title: 'Downstream errors (0)' }, { expr: `{container_name="traefik"} | json | DownstreamStatus == 0 | line_format "{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}"` })]),
   ]),
   goRuntimeMetricsPanels({ datasource, selectors, collapsed: true }),
   cadvisorMetricsPanels({ datasource, selectors: [`namespace=~"$namespace"`, `pod=~"$pod"`], collapsed: true }), //`container="traefik"`

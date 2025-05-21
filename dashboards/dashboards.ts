@@ -5,7 +5,7 @@ import { dashboard as traefikDashboard } from './traefik'
 import { dashboard as certManagerDashboard } from './cert-manager'
 import { dashboard as zfsDashboard } from './zfs'
 import { writeDashboardAndPostToGrafana, writePrometheusRules } from '../src/grafana-helpers'
-import path = require('path')
+import path from 'path'
 
 const dashboards = {
   postgres: postgresDashboard,

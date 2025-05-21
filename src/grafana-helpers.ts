@@ -45,11 +45,11 @@ export function NewPanelRow(opts: PanelArrayOpts, panels: Array<Panel | undefine
     if (opts.datasource && !panel.datasource) {
       panel.datasource = opts.datasource
     }
-    if (opts.height && !panel.gridPos.h) {
-      panel.gridPos.h = opts.height
+    if (opts.height && !panel.gridPos!.h) {
+      panel.gridPos!.h = opts.height
     }
-    if (opts.width && !panel.gridPos.w) {
-      panel.gridPos.w = opts.width
+    if (opts.width && !panel.gridPos!.w) {
+      panel.gridPos!.w = opts.width
     }
   }
 
@@ -170,7 +170,7 @@ export function autoLayout(panelRows: PanelRowAndGroups): Array<Panel | RowPanel
       const isPanelGroup = panelRowOrGroup.type === 'panel-group'
       let groupHeader: RowPanel | undefined = isPanelGroup
         ? {
-            id: undefined,
+            id: 0,
             type: 'row',
             title: panelRowOrGroup.title,
             panels: [],
@@ -178,26 +178,26 @@ export function autoLayout(panelRows: PanelRowAndGroups): Array<Panel | RowPanel
             gridPos: { x: 0, y: 0, w: 24, h: 1 },
           }
         : undefined
-      let rowPanels: [RowPanel] | Panel[] = isPanelGroup ? [groupHeader] : panelRowOrGroup.panels
+      let rowPanels: [RowPanel] | Panel[] = isPanelGroup ? (groupHeader ? [groupHeader] : []) : panelRowOrGroup.panels
 
       let maxh = 0
       let x = 0
-      const panelCountInThisRowWithoutW = rowPanels.filter((panel) => panel.gridPos.w === 0).length
-      const availableRemainingWidth = 24 - rowPanels.map((panel: RowPanel | Panel) => panel.gridPos.w || 0).reduce((a, b) => a + b, 0)
+      const panelCountInThisRowWithoutW = rowPanels.filter((panel) => panel.gridPos!.w === 0).length
+      const availableRemainingWidth = 24 - rowPanels.map((panel: RowPanel | Panel) => panel.gridPos!.w || 0).reduce((a, b) => a + b, 0)
       for (const panel of rowPanels) {
-        if (panel.gridPos.w === 0) {
-          panel.gridPos.w = Math.floor(availableRemainingWidth / panelCountInThisRowWithoutW)
+        if (panel.gridPos!.w === 0) {
+          panel.gridPos!.w = Math.floor(availableRemainingWidth / panelCountInThisRowWithoutW)
         }
       }
-      // let moreAvailableRemainingWidth = 24 - rowPanels.map((panel: RowPanel | Panel) => panel.gridPos.w || 0).reduce((a, b) => a + b, 0)
+      // let moreAvailableRemainingWidth = 24 - rowPanels.map((panel: RowPanel | Panel) => panel.gridPos!.w || 0).reduce((a, b) => a + b, 0)
       // for (let i = 0; i < rowPanels.length; i++) {
       //   if (moreAvailableRemainingWidth === 0) {
       //     break
       //   }
-      //   rowPanels[i].gridPos.w += 1
+      //   rowPanels[i].gridPos!.w += 1
       //   moreAvailableRemainingWidth -= 1
       //   if (moreAvailableRemainingWidth !== 0) {
-      //     rowPanels[rowPanels.length - i - 1].gridPos.w += 1
+      //     rowPanels[rowPanels.length - i - 1].gridPos!.w += 1
       //     moreAvailableRemainingWidth -= 1
       //   }
       // }
@@ -208,20 +208,20 @@ export function autoLayout(panelRows: PanelRowAndGroups): Array<Panel | RowPanel
           maxh = 0
         }
 
-        panel.gridPos.x = x
-        panel.gridPos.y = y
+        panel.gridPos!.x = x
+        panel.gridPos!.y = y
 
-        if (panel.gridPos.h > maxh) {
-          maxh = panel.gridPos.h
+        if (panel.gridPos!.h > maxh) {
+          maxh = panel.gridPos!.h
         }
 
-        x += panel.gridPos.w
+        x += panel.gridPos!.w
 
         panels.push(panel)
       }
 
       y += maxh
-      if (isPanelGroup) {
+      if (isPanelGroup && groupHeader) {
         let rowPanelsInGroup: Array<Panel> = []
         ;[rowPanelsInGroup, y] = autoLayoutInner(panelRowOrGroup.panelRows, y)
         groupHeader.panels = rowPanelsInGroup
@@ -261,7 +261,7 @@ export async function writeDashboardAndPostToGrafana(opts: { grafanaURL?: string
     dashboard['uid'] = dashboard['uid'].substring(0, 40)
     dashboard['title'] = `${addDebugNamePrefix ? '[Debug] ' : ''}${dashboard['title']}`
     // dashboard['version'] = Math.floor(Math.random() * 1000)
-    const headers = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     }
     if (grafanaUsername && grafanaPassword) {

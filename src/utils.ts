@@ -5,7 +5,7 @@ export function overridesMatchByName(overrides: { [key: string]: { [key: string]
   for (const matcher of Object.keys(overrides)) {
     result.push({
       matcher: { id: 'byName', options: matcher },
-      properties: Object.entries(overrides[matcher]).map(([key, value]) => {
+      properties: Object.entries(overrides[matcher]!).map(([key, value]) => {
         return { id: key, value }
       }),
     })
@@ -16,7 +16,7 @@ export function overridesMatchByName(overrides: { [key: string]: { [key: string]
 export const tableIndexByName = (columns: string[]): { [key: string]: number } => {
   const indexByName: { [key: string]: number } = {}
   for (let i = 0; i < columns.length; i++) {
-    indexByName[columns[i]] = i
+    indexByName[columns[i]!] = i
   }
   return indexByName
 }
@@ -24,7 +24,7 @@ export const tableIndexByName = (columns: string[]): { [key: string]: number } =
 export const tableExcludeByName = (columns: string[]): { [key: string]: boolean } => {
   const excludeByName: { [key: string]: boolean } = {}
   for (let i = 0; i < columns.length; i++) {
-    excludeByName[columns[i]] = true
+    excludeByName[columns[i]!] = true
   }
   return excludeByName
 }

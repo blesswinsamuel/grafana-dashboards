@@ -2142,7 +2142,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(0|(4|5)..)\"}[$__interval])) by (code, protocol, method, service) > 0",
+          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(4|5)..\"}[$__interval])) by (code, protocol, method, service) > 0",
           "legendFormat": "{{code}} - {{protocol}} - {{method}} - {{service}}",
           "range": true,
           "instant": false,
@@ -2226,7 +2226,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(0|(4|5)..)\"}[$__interval])) by (code, protocol, method, service) > 0",
+          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(4|5)..\"}[$__interval])) by (code, protocol, method, service) > 0",
           "legendFormat": "{{code}} - {{protocol}} - {{method}} - {{service}}",
           "range": true,
           "instant": false,
@@ -2310,7 +2310,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(0|(4|5)..)\"}[$__interval])) by (code, protocol, method, service) > 0",
+          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(4|5)..\"}[$__interval])) by (code, protocol, method, service) > 0",
           "legendFormat": "{{code}} - {{protocol}} - {{method}} - {{service}}",
           "range": true,
           "instant": false,
@@ -2394,7 +2394,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(0|(4|5)..)\"}[$__rate_interval])) by (code, protocol, method, service) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(0|(4|5)..)\"}[$__rate_interval])) by (code, protocol, method, service) > 0",
+          "expr": "sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(4|5)..\"}[$__rate_interval])) by (code, protocol, method, service) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(4|5)..\"}[$__rate_interval])) by (code, protocol, method, service) > 0",
           "legendFormat": "{{code}} - {{protocol}} - {{method}} - {{service}}",
           "range": true,
           "instant": false,
@@ -2760,7 +2760,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "{container_name=\"traefik\"} | json | DownstreamStatus >= 400 | line_format \"{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}\"",
+          "expr": "{container_name=\"traefik\"} | json | DownstreamStatus >= 400 and DownstreamStatus < 500 | line_format \"{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}\"",
           "range": true,
           "instant": false,
           "format": "time_series",
@@ -2773,10 +2773,52 @@
         "uid": "${DS_LOKI}"
       },
       "type": "logs",
-      "title": "Downstream errors",
+      "title": "Downstream errors (4xx)",
       "gridPos": {
         "x": 0,
         "y": 72,
+        "w": 24,
+        "h": 16
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "displayedFields": [],
+        "showTime": true,
+        "showLabels": false,
+        "showCommonLabels": false,
+        "wrapLogMessage": false,
+        "prettifyLogMessage": false,
+        "enableLogDetails": true,
+        "showLogContextToggle": false,
+        "dedupStrategy": "none",
+        "sortOrder": "Descending"
+      }
+    },
+    {
+      "links": [],
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "expr": "{container_name=\"traefik\"} | json | DownstreamStatus >= 500 | line_format \"{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}\"",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "transparent": false,
+      "datasource": {
+        "uid": "${DS_LOKI}"
+      },
+      "type": "logs",
+      "title": "Downstream errors (5xx)",
+      "gridPos": {
+        "x": 0,
+        "y": 88,
         "w": 24,
         "h": 16
       },
@@ -2823,7 +2865,7 @@
           "title": "Go Version",
           "gridPos": {
             "x": 0,
-            "y": 89,
+            "y": 105,
             "w": 6,
             "h": 3
           },
@@ -2883,7 +2925,7 @@
           "title": "Process Start Time",
           "gridPos": {
             "x": 6,
-            "y": 89,
+            "y": 105,
             "w": 6,
             "h": 3
           },
@@ -2954,7 +2996,7 @@
           "title": "Process Max File Descriptors",
           "gridPos": {
             "x": 12,
-            "y": 89,
+            "y": 105,
             "w": 6,
             "h": 3
           },
@@ -3015,7 +3057,7 @@
           "title": "Process Virtual Memory Max",
           "gridPos": {
             "x": 18,
-            "y": 89,
+            "y": 105,
             "w": 6,
             "h": 3
           },
@@ -3077,7 +3119,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 92,
+            "y": 108,
             "w": 8,
             "h": 8
           },
@@ -3164,7 +3206,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 8,
-            "y": 92,
+            "y": 108,
             "w": 8,
             "h": 8
           },
@@ -3250,7 +3292,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 16,
-            "y": 92,
+            "y": 108,
             "w": 8,
             "h": 8
           },
@@ -3336,7 +3378,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 100,
+            "y": 116,
             "w": 6,
             "h": 8
           },
@@ -3423,7 +3465,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 100,
+            "y": 116,
             "w": 6,
             "h": 8
           },
@@ -3510,7 +3552,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 100,
+            "y": 116,
             "w": 6,
             "h": 8
           },
@@ -3597,7 +3639,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 100,
+            "y": 116,
             "w": 6,
             "h": 8
           },
@@ -3692,7 +3734,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 108,
+            "y": 124,
             "w": 6,
             "h": 8
           },
@@ -3811,7 +3853,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 108,
+            "y": 124,
             "w": 6,
             "h": 8
           },
@@ -3898,7 +3940,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 108,
+            "y": 124,
             "w": 6,
             "h": 8
           },
@@ -4049,7 +4091,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 108,
+            "y": 124,
             "w": 6,
             "h": 8
           },
@@ -4136,7 +4178,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 116,
+            "y": 132,
             "w": 8,
             "h": 8
           },
@@ -4220,7 +4262,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 8,
-            "y": 116,
+            "y": 132,
             "w": 8,
             "h": 8
           },
@@ -4307,7 +4349,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 16,
-            "y": 116,
+            "y": 132,
             "w": 8,
             "h": 8
           },
@@ -4394,7 +4436,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 124,
+            "y": 140,
             "w": 6,
             "h": 8
           },
@@ -4481,7 +4523,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 124,
+            "y": 140,
             "w": 6,
             "h": 8
           },
@@ -4568,7 +4610,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 124,
+            "y": 140,
             "w": 6,
             "h": 8
           },
@@ -4655,7 +4697,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 124,
+            "y": 140,
             "w": 6,
             "h": 8
           },
@@ -4723,7 +4765,7 @@
       "collapsed": true,
       "gridPos": {
         "x": 0,
-        "y": 88,
+        "y": 104,
         "w": 24,
         "h": 1
       }
@@ -4754,7 +4796,7 @@
           "title": "Container Start Time (max)",
           "gridPos": {
             "x": 0,
-            "y": 133,
+            "y": 149,
             "w": 24,
             "h": 3
           },
@@ -4826,7 +4868,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 136,
+            "y": 152,
             "w": 6,
             "h": 8
           },
@@ -4913,7 +4955,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 136,
+            "y": 152,
             "w": 6,
             "h": 8
           },
@@ -5000,7 +5042,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 136,
+            "y": 152,
             "w": 6,
             "h": 8
           },
@@ -5087,7 +5129,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 136,
+            "y": 152,
             "w": 6,
             "h": 8
           },
@@ -5174,7 +5216,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 144,
+            "y": 160,
             "w": 6,
             "h": 8
           },
@@ -5260,7 +5302,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 144,
+            "y": 160,
             "w": 6,
             "h": 8
           },
@@ -5346,7 +5388,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 144,
+            "y": 160,
             "w": 6,
             "h": 8
           },
@@ -5432,7 +5474,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 144,
+            "y": 160,
             "w": 6,
             "h": 8
           },
@@ -5518,7 +5560,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 152,
+            "y": 168,
             "w": 6,
             "h": 8
           },
@@ -5604,7 +5646,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 152,
+            "y": 168,
             "w": 6,
             "h": 8
           },
@@ -5690,7 +5732,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 152,
+            "y": 168,
             "w": 6,
             "h": 8
           },
@@ -5776,7 +5818,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 152,
+            "y": 168,
             "w": 6,
             "h": 8
           },
@@ -5862,7 +5904,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 160,
+            "y": 176,
             "w": 6,
             "h": 8
           },
@@ -5946,7 +5988,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 160,
+            "y": 176,
             "w": 6,
             "h": 8
           },
@@ -6030,7 +6072,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 160,
+            "y": 176,
             "w": 6,
             "h": 8
           },
@@ -6116,7 +6158,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 160,
+            "y": 176,
             "w": 6,
             "h": 8
           },
@@ -6200,7 +6242,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 168,
+            "y": 184,
             "w": 6,
             "h": 8
           },
@@ -6287,7 +6329,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 168,
+            "y": 184,
             "w": 6,
             "h": 8
           },
@@ -6374,7 +6416,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 168,
+            "y": 184,
             "w": 6,
             "h": 8
           },
@@ -6458,7 +6500,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 168,
+            "y": 184,
             "w": 6,
             "h": 8
           },
@@ -6542,7 +6584,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 176,
+            "y": 192,
             "w": 6,
             "h": 8
           },
@@ -6629,7 +6671,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 176,
+            "y": 192,
             "w": 6,
             "h": 8
           },
@@ -6716,7 +6758,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 176,
+            "y": 192,
             "w": 6,
             "h": 8
           },
@@ -6800,7 +6842,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 176,
+            "y": 192,
             "w": 6,
             "h": 8
           },
@@ -6884,7 +6926,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 0,
-            "y": 184,
+            "y": 200,
             "w": 6,
             "h": 8
           },
@@ -6971,7 +7013,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 6,
-            "y": 184,
+            "y": 200,
             "w": 6,
             "h": 8
           },
@@ -7058,7 +7100,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 12,
-            "y": 184,
+            "y": 200,
             "w": 6,
             "h": 8
           },
@@ -7145,7 +7187,7 @@
           "maxDataPoints": 100,
           "gridPos": {
             "x": 18,
-            "y": 184,
+            "y": 200,
             "w": 6,
             "h": 8
           },
@@ -7213,7 +7255,7 @@
       "collapsed": true,
       "gridPos": {
         "x": 0,
-        "y": 132,
+        "y": 148,
         "w": 24,
         "h": 1
       }

@@ -55,7 +55,7 @@ export function goRuntimeMetricsPanels({ datasource, title, buildInfoMetric, sel
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      buildInfoMetric && NewStatPanel({ width: 6, title: 'Go Build Info', options: { text: { titleSize: 12 }, orientation: VizOrientation.Horizontal, reduceOptions: { fields: '/^(branch|goarch|goos|goversion|revision|tags|version)$/' } } }, new GaugeMetric(buildInfoMetric).calc('sum', { selectors, groupBy: ['branch', 'goarch', 'goos', 'goversion', 'revision', 'tags', 'version'], type: 'instant' }).target()),
+      buildInfoMetric ? NewStatPanel({ width: 6, title: 'Go Build Info', options: { text: { titleSize: 12 }, orientation: VizOrientation.Horizontal, reduceOptions: { fields: '/^(branch|goarch|goos|goversion|revision|tags|version)$/' } } }, new GaugeMetric(buildInfoMetric).calc('sum', { selectors, groupBy: ['branch', 'goarch', 'goos', 'goversion', 'revision', 'tags', 'version'], type: 'instant' }).target()) : undefined,
       NewTimeSeriesPanel({ title: 'Process Open File Descriptors', defaultUnit: Unit.SHORT }, processOpenFds.calc('sum', { selectors, groupBy }).target()),
       NewTimeSeriesPanel({ title: 'Threads' }, goThreads.calc('sum', { selectors, groupBy }).target()),
       NewTimeSeriesPanel({ title: 'Goroutines' }, goGoroutines.calc('sum', { selectors, groupBy }).target()),

@@ -1,7 +1,7 @@
 import { PrometheusTarget, Target } from './panels'
 import { Unit } from './units'
 
-export function formatLegendFormat(legendFormat: string | undefined, groupBy: string[]) {
+export function formatLegendFormat(legendFormat: string | undefined, groupBy: string[] | undefined) {
   if (!legendFormat) {
     legendFormat = groupBy ? groupBy.map((k) => `{{${k}}}`).join(' - ') : 'value'
   }
@@ -144,8 +144,8 @@ class PrometheusMetricBase {
 
 export class CounterMetric extends PrometheusMetricBase {
   constructor(
-    public readonly metric: string,
-    protected opts: CommonMetricOpts = {}
+    public override readonly metric: string,
+    protected override opts: CommonMetricOpts = {}
   ) {
     super(metric, opts)
   }
@@ -176,8 +176,8 @@ export class CounterMetric extends PrometheusMetricBase {
 
 export class GaugeMetric extends PrometheusMetricBase {
   constructor(
-    public readonly metric: string,
-    protected opts: CommonMetricOpts = {}
+    public override readonly metric: string,
+    protected override opts: CommonMetricOpts = {}
   ) {
     super(metric, opts)
   }
@@ -202,8 +202,8 @@ export class GaugeMetric extends PrometheusMetricBase {
 
 class HistogramSummaryCommon extends PrometheusMetricBase {
   constructor(
-    public readonly metric: string,
-    protected opts: CommonMetricOpts = {}
+    public override readonly metric: string,
+    protected override opts: CommonMetricOpts = {}
   ) {
     super(metric, opts)
   }
@@ -228,8 +228,8 @@ class HistogramSummaryCommon extends PrometheusMetricBase {
 
 export class HistogramMetric extends HistogramSummaryCommon {
   constructor(
-    public readonly metric: string,
-    protected opts: CommonMetricOpts = {}
+    public override readonly metric: string,
+    protected override opts: CommonMetricOpts = {}
   ) {
     super(metric, opts)
   }
@@ -252,8 +252,8 @@ export class HistogramMetric extends HistogramSummaryCommon {
 
 export class SummaryMetric extends HistogramSummaryCommon {
   constructor(
-    public readonly metric: string,
-    protected opts: CommonMetricOpts = {}
+    public override readonly metric: string,
+    protected override opts: CommonMetricOpts = {}
   ) {
     super(metric, opts)
   }
