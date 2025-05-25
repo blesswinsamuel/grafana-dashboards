@@ -116,7 +116,9 @@
       }
     ]
   },
-  "annotations": {},
+  "annotations": {
+    "list": []
+  },
   "title": "Smartctl",
   "panels": [
     {
@@ -130,8 +132,8 @@
         "y": 0
       },
       "options": {
-        "mode": "markdown",
-        "content": "This is a generated dashboard. Any changes made here will be lost on the next generation."
+        "mode": "html",
+        "content": "<div style=\"background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;\">\n<h4>This dashboard was generated from code</h4>\n\n<p>Any edits will be lost when the dashboard is regenerated.</p>\n</div>"
       }
     },
     {
@@ -601,7 +603,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"}",
+          "expr": "smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}",
           "refId": "value",
           "format": "table",
           "legendFormat": "value",
@@ -781,7 +783,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"}) by (instance, device, model_name)",
+          "expr": "sum by(instance, device, model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"})",
           "refId": "DEVICE",
           "format": "table",
           "legendFormat": "{{instance}} - {{device}} - {{model_name}}",
@@ -2775,7 +2777,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_info{instance=~\"$instance\", job=\"$job\"}) by (version)",
+              "expr": "sum by(version) (go_info{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "table",
               "legendFormat": "{{version}}",
@@ -2832,7 +2834,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "max(process_start_time_seconds{instance=~\"$instance\", job=\"$job\"}) * 1000",
+              "expr": "max(process_start_time_seconds{instance=~\"$instance\",job=\"$job\"}) * 1000",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",
@@ -2900,7 +2902,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "min(process_max_fds{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "min(process_max_fds{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",
@@ -2958,7 +2960,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "min(process_virtual_memory_max_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "min(process_virtual_memory_max_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",
@@ -3016,7 +3018,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(process_open_fds{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (process_open_fds{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3089,7 +3091,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_threads{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (go_threads{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3161,7 +3163,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_goroutines{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (go_goroutines{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3233,7 +3235,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(process_cpu_seconds_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(process_cpu_seconds_total{instance=~\"$instance\",job=\"$job\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3306,7 +3308,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(process_resident_memory_bytes{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (process_resident_memory_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3379,7 +3381,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_alloc_bytes_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_memstats_alloc_bytes_total{instance=~\"$instance\",job=\"$job\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3452,7 +3454,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_memstats_alloc_bytes{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (go_memstats_alloc_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3525,7 +3527,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_stack_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_stack_sys_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "sys",
@@ -3533,7 +3535,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_stack_inuse_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_stack_inuse_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "B",
               "format": "time_series",
               "legendFormat": "inuse",
@@ -3606,7 +3608,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_heap_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_heap_sys_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "sys",
@@ -3614,7 +3616,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_heap_idle_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_heap_idle_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "B",
               "format": "time_series",
               "legendFormat": "idle",
@@ -3622,7 +3624,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_heap_released_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_heap_released_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "C",
               "format": "time_series",
               "legendFormat": "released",
@@ -3630,7 +3632,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_heap_inuse_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_heap_inuse_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "D",
               "format": "time_series",
               "legendFormat": "inuse",
@@ -3638,7 +3640,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_heap_alloc_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_heap_alloc_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "E",
               "format": "time_series",
               "legendFormat": "alloc",
@@ -3711,7 +3713,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_heap_objects{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
+              "expr": "avg by(pod, instance) (go_memstats_heap_objects{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3784,7 +3786,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_mspan_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_mspan_sys_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "mspan_sys",
@@ -3792,7 +3794,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_mspan_inuse_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_mspan_inuse_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "B",
               "format": "time_series",
               "legendFormat": "mspan_inuse",
@@ -3800,7 +3802,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_mcache_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_mcache_sys_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "C",
               "format": "time_series",
               "legendFormat": "mcache_sys",
@@ -3808,7 +3810,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_mcache_inuse_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_mcache_inuse_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "D",
               "format": "time_series",
               "legendFormat": "mcache_inuse",
@@ -3816,7 +3818,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_buck_hash_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_buck_hash_sys_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "E",
               "format": "time_series",
               "legendFormat": "buck_hash_sys",
@@ -3824,7 +3826,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_other_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_other_sys_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "F",
               "format": "time_series",
               "legendFormat": "other_sys",
@@ -3832,7 +3834,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_gc_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_gc_sys_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "G",
               "format": "time_series",
               "legendFormat": "gc_sys",
@@ -3840,7 +3842,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_next_gc_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_next_gc_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "H",
               "format": "time_series",
               "legendFormat": "next_gc",
@@ -3848,7 +3850,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_sys_bytes{instance=~\"$instance\", job=\"$job\"})",
+              "expr": "avg(go_memstats_sys_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "I",
               "format": "time_series",
               "legendFormat": "sys",
@@ -3921,7 +3923,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(go_gc_duration_seconds_count{instance=~\"$instance\", job=\"$job\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(go_gc_duration_seconds_count{instance=~\"$instance\",job=\"$job\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3991,7 +3993,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_gc_duration_seconds_sum{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_gc_duration_seconds_sum{instance=~\"$instance\",job=\"$job\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4064,7 +4066,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_gc_duration_seconds_sum{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance) / sum(rate(go_gc_duration_seconds_count{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "(sum by(pod, instance) (rate(go_gc_duration_seconds_sum{instance=~\"$instance\",job=\"$job\"}[$__rate_interval]))) / (sum by(pod, instance) (rate(go_gc_duration_seconds_count{instance=~\"$instance\",job=\"$job\"}[$__rate_interval])))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4137,7 +4139,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_lookups_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_memstats_lookups_total{instance=~\"$instance\",job=\"$job\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4210,7 +4212,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_mallocs_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_memstats_mallocs_total{instance=~\"$instance\",job=\"$job\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4283,7 +4285,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_frees_total{instance=~\"$instance\", job=\"$job\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_memstats_frees_total{instance=~\"$instance\",job=\"$job\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4356,7 +4358,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(process_virtual_memory_bytes{instance=~\"$instance\", job=\"$job\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (process_virtual_memory_bytes{instance=~\"$instance\",job=\"$job\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",

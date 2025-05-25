@@ -1,5 +1,6 @@
 import * as prometheus from '@grafana/grafana-foundation-sdk/prometheus'
 import { PrometheusTarget } from './panels/target'
+import * as promql from '@grafana/promql-builder'
 
 export function formatLegendFormat(legendFormat: string | undefined, groupBy: string[] | undefined) {
   if (!legendFormat) {
@@ -135,18 +136,6 @@ class PrometheusQueryRaw {
   }
 }
 
-// class PrometheusQueryWithSelector extends PrometheusQueryRaw {
-//   constructor(metric: PrometheusMetricBase, selector: string) {
-//     super(`${metric.metric}{${selector}}`)
-//   }
-//   public range(range: string, resolution?: string): PrometheusQueryRaw {
-//     if (resolution) {
-//       return new PrometheusQueryRaw(`${this.expr}[${range}:${resolution}]`)
-//     }
-//     return new PrometheusQueryRaw(`${this.expr}[${range}]`)
-//   }
-// }
-
 class PrometheusMetricBase {
   constructor(
     public readonly metric: string,
@@ -158,13 +147,79 @@ class PrometheusMetricBase {
   public description() {
     return this.opts.description
   }
-  // public select(...selectors: (string[] | string | undefined)[]): PrometheusQueryWithSelector {
-  //   const selectorsStr = selectors
-  //     .flat()
-  //     .filter((s) => s)
-  //     .join(', ')
-  //   return new PrometheusQueryWithSelector(this, selectorsStr)
-  // }
+}
+
+type FunctionVal = 'rate' | 'irate' | 'increase' | 'resets' | 'delta' | 'idelta' | 'changes' | 'deriv' | 'predict_linear' | 'histogram_quantile' | 'histogram_share'
+
+function applyFunc(functionVal: FunctionVal, ...args: promql.Builder<promql.Expr>[]): promql.FuncCallExprBuilder {
+  const builder = new promql.FuncCallExprBuilder()
+  builder.functionVal(functionVal)
+  builder.args(args)
+  return builder
+}
+
+function applyAggr(op: promql.AggregationOp, vector: promql.Builder<promql.Expr>): promql.AggregationExprBuilder {
+  const builder = new promql.AggregationExprBuilder()
+  builder.op(op)
+  builder.expr(vector)
+  return builder
+}
+
+function parsePromQLSelectors(input: string): promql.LabelSelector[] {
+  const regex = /([a-zA-Z_][a-zA-Z0-9_]*)\s*(=~|!~|=|!=)\s*("(?:\\.|[^"\\])*")/g
+
+  const selectors: promql.LabelSelector[] = []
+  let match: RegExpExecArray | null
+
+  while ((match = regex.exec(input)) !== null) {
+    const [, key, operator, rawValue] = match
+    if (!key) {
+      throw new Error(`Invalid selector "${input}" - missing key`)
+    }
+    if (!operator) {
+      throw new Error(`Invalid selector "${input}" - missing operator`)
+    }
+    if (rawValue === undefined || !rawValue.startsWith('"') || !rawValue.endsWith('"')) {
+      throw new Error(`Invalid selector "${input}" - value must be a quoted string`)
+    }
+    const value = rawValue.slice(1, -1)
+    if (operator !== '=' && operator !== '!=' && operator !== '=~' && operator !== '!~') {
+      throw new Error(`Invalid operator "${operator}" in selector '${key}${operator}${value}' (input: '${input}')`)
+    }
+    selectors.push({ name: key, operator, value })
+  }
+
+  return selectors
+}
+
+function applyLabels<T extends promql.VectorExprBuilder>(expr: T, selectors: string): T {
+  const labels: promql.LabelSelector[] = parsePromQLSelectors(selectors || '')
+  const bs = []
+  for (const label of labels) {
+    const b = new promql.LabelSelectorBuilder()
+    b.name(label.name)
+    b.operator(label.operator)
+    b.value(label.value)
+    bs.push(b)
+  }
+  return expr.labels(bs)
+}
+
+function getRangeString(opts: CommonQueryOpts & { interval?: string }, functionVal?: FunctionVal): string {
+  if (opts.interval) {
+    return opts.interval
+  }
+  if (opts.type === 'instant') {
+    return '$__range'
+  }
+  if (functionVal === 'rate' || functionVal === 'irate') {
+    return '$__rate_interval'
+  }
+  if (functionVal === 'increase') {
+    return '$__interval'
+  }
+  // default to $__interval
+  return '$__interval'
 }
 
 export class CounterMetric extends PrometheusMetricBase {
@@ -174,12 +229,12 @@ export class CounterMetric extends PrometheusMetricBase {
   ) {
     super(metric, opts)
   }
-  public calc(func: string, aggrOp: string, opts: CommonQueryOpts & { interval?: string }): PrometheusQueryRaw {
+  public calc(aggrOp: promql.AggregationOp, functionVal: FunctionVal, opts: CommonQueryOpts & { interval?: string }): PrometheusQueryRaw {
     const metric = this.metric
     const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
-    const interval = opts.interval ?? (opts.type === 'instant' ? '$__range' : aggrOp === 'rate' ? '$__rate_interval' : '$__interval')
-    const groupByStr = opts.groupBy && opts.groupBy.length > 0 ? ` by (${opts.groupBy.join(', ')})` : ''
-    return new PrometheusQueryRaw(formatMetric(`${func}(${aggrOp}(${metric}{${selectors}}[${interval}]))${groupByStr}`, { ...this.opts, ...opts }), {
+    const range = getRangeString(opts, functionVal)
+    let qb = applyAggr(aggrOp, applyFunc(functionVal, applyLabels(promql.vector(metric), selectors).range(range))).by(opts.groupBy ?? [])
+    return new PrometheusQueryRaw(formatMetric(qb.toString(), { ...this.opts, ...opts }), {
       type: opts.type,
       groupBy: opts.groupBy,
     })
@@ -190,9 +245,13 @@ export class CounterMetric extends PrometheusMetricBase {
     const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
     const numeratorSelectors = mergeSelectors(selectors, opts.numeratorSelectors || '')
     const denominatorSelectors = mergeSelectors(selectors, opts.denominatorSelectors || '')
-    const interval = func === 'rate' ? '$__rate_interval' : '$__interval'
-    const groupByStr = opts.groupBy && opts.groupBy.length > 0 ? ` by (${opts.groupBy.join(', ')})` : ''
-    return new PrometheusQueryRaw(formatMetric(`sum(${func}(${metric}{${numeratorSelectors}}[${interval}]))${groupByStr} / sum(${func}(${metric}{${denominatorSelectors}}[${interval}]))${groupByStr}`, { ...this.opts, ...opts }), {
+    const range = getRangeString(opts, func)
+    let qb = promql.div(
+      //
+      applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric), numeratorSelectors).range(range))).by(opts.groupBy ?? []),
+      applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric), denominatorSelectors).range(range))).by(opts.groupBy ?? [])
+    )
+    return new PrometheusQueryRaw(formatMetric(qb.toString(), { ...this.opts, ...opts }), {
       type: opts.type,
       groupBy: opts.groupBy,
     })
@@ -206,22 +265,22 @@ export class GaugeMetric extends PrometheusMetricBase {
   ) {
     super(metric, opts)
   }
-  public calc(func: string, opts: CommonQueryOpts & { interval?: string }): PrometheusQueryRaw {
+  public calc(aggrOp: promql.AggregationOp | undefined, opts: CommonQueryOpts & { interval?: string }): PrometheusQueryRaw {
     const metric = this.metric
     const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
-    const interval = opts.interval ? `[${opts.interval}]` : ''
-    let expr = `${metric}{${selectors}}${interval}`
-    if (func) {
-      const groupByStr = opts.groupBy && opts.groupBy.length > 0 ? ` by (${opts.groupBy.join(', ')})` : ''
-      expr = `${func}(${expr})${groupByStr}`
+    const mb = applyLabels(promql.vector(metric), selectors)
+    let qb: promql.VectorExprBuilder | promql.AggregationExprBuilder = mb
+    if (opts.interval) mb.range(opts.interval)
+    if (aggrOp) {
+      qb = applyAggr(aggrOp, mb).by(opts.groupBy ?? [])
     }
-    return new PrometheusQueryRaw(formatMetric(expr, { ...this.opts, ...opts }), {
+    return new PrometheusQueryRaw(formatMetric(qb.toString(), { ...this.opts, ...opts }), {
       type: opts.type,
       groupBy: opts.groupBy,
     })
   }
   public raw(opts: CommonQueryOpts): PrometheusQueryRaw {
-    return this.calc('', { ...this.opts, ...opts })
+    return this.calc(undefined, { ...this.opts, ...opts })
   }
 }
 
@@ -240,11 +299,15 @@ class HistogramSummaryCommon extends PrometheusMetricBase {
   }
   public avg(opts: CommonQueryOpts & { func?: 'rate' | 'increase' }): PrometheusQueryRaw {
     const metric = this.metric
-    const { func = 'rate', groupBy } = opts
+    const { func = 'rate' } = opts
     const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
-    const groupByStr = groupBy ? ` by (${groupBy.join(', ')})` : ''
-    const interval = func === 'rate' ? '$__rate_interval' : '$__interval'
-    return new PrometheusQueryRaw(formatMetric(`sum(${func}(${metric}_sum{${selectors}}[${interval}]))${groupByStr} / sum(${func}(${metric}_count{${selectors}}[${interval}]))${groupByStr}`, { ...this.opts, ...opts }), {
+    const range = getRangeString(opts, func)
+    const qb = promql.div(
+      //
+      applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric + '_sum'), selectors).range(range))).by(opts.groupBy ?? []),
+      applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric + '_count'), selectors).range(range))).by(opts.groupBy ?? [])
+    )
+    return new PrometheusQueryRaw(formatMetric(qb.toString(), { ...this.opts, ...opts }), {
       type: opts.type,
       groupBy: opts.groupBy,
     })
@@ -261,8 +324,10 @@ export class HistogramMetric extends HistogramSummaryCommon {
   public calc(func: 'histogram_quantile' | 'histogram_share', value: string, opts: CommonQueryOpts): PrometheusQueryRaw {
     const metric = this.metric + '_bucket'
     const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
-    const groupByStr = opts.groupBy && opts.groupBy.length > 0 ? ` by (le, ${opts.groupBy.join(', ')})` : ' by (le)'
-    return new PrometheusQueryRaw(formatMetric(`${func}(${value}, sum(rate(${metric}{${selectors}}[$__rate_interval]))${groupByStr})`, { ...this.opts, ...opts }), {
+    const groupBy = ['le', ...(opts.groupBy || [])]
+    const iqb = promql.sum(promql.rate(applyLabels(promql.vector(metric), selectors).range(getRangeString(opts)))).by(groupBy)
+    const qb = applyFunc(func, promql.n(parseFloat(value)), iqb)
+    return new PrometheusQueryRaw(formatMetric(qb.toString(), { ...this.opts, ...opts }), {
       type: opts.type,
       groupBy: opts.groupBy,
     })
@@ -287,141 +352,3 @@ export class SummaryMetric extends HistogramSummaryCommon {
     return new GaugeMetric(this.metric, { ...this.opts, selectors })
   }
 }
-
-// https://github.com/grafana/grafana/blob/main/packages/grafana-prometheus/src/querybuilder/types.ts
-export interface PromVisualQuery {
-  metric: string
-  labels: QueryBuilderLabelFilter[]
-  operations: QueryBuilderOperation[]
-  binaryQueries?: PromVisualQueryBinary[]
-}
-
-export type PromVisualQueryBinary = VisualQueryBinary<PromVisualQuery>
-export interface VisualQueryBinary<T> {
-  operator: string
-  vectorMatchesType?: 'on' | 'ignoring'
-  vectorMatches?: string
-  query: T
-}
-
-export interface QueryBuilderLabelFilter {
-  label: string
-  op: string
-  value: string
-}
-export interface QueryBuilderOperation {
-  id: PromOperationId
-  params: QueryBuilderOperationParamValue[]
-}
-export type QueryBuilderOperationParamValue = string | number | boolean
-
-export enum PromOperationId {
-  Abs = 'abs',
-  Absent = 'absent',
-  AbsentOverTime = 'absent_over_time',
-  Acos = 'acos',
-  Acosh = 'acosh',
-  Asin = 'asin',
-  Asinh = 'asinh',
-  Atan = 'atan',
-  Atanh = 'atanh',
-  Avg = 'avg',
-  AvgOverTime = 'avg_over_time',
-  BottomK = 'bottomk',
-  Ceil = 'ceil',
-  Changes = 'changes',
-  Clamp = 'clamp',
-  ClampMax = 'clamp_max',
-  ClampMin = 'clamp_min',
-  Cos = 'cos',
-  Cosh = 'cosh',
-  Count = 'count',
-  CountOverTime = 'count_over_time',
-  CountScalar = 'count_scalar',
-  CountValues = 'count_values',
-  DayOfMonth = 'day_of_month',
-  DayOfWeek = 'day_of_week',
-  DayOfYear = 'day_of_year',
-  DaysInMonth = 'days_in_month',
-  Deg = 'deg',
-  Delta = 'delta',
-  Deriv = 'deriv',
-  DoubleExponentialSmoothing = 'double_exponential_smoothing',
-  DropCommonLabels = 'drop_common_labels',
-  Exp = 'exp',
-  Floor = 'floor',
-  Group = 'group',
-  HistogramQuantile = 'histogram_quantile',
-  HistogramAvg = 'histogram_avg',
-  HistogramCount = 'histogram_count',
-  HistogramSum = 'histogram_sum',
-  HistogramFraction = 'histogram_fraction',
-  HistogramStddev = 'histogram_stddev',
-  HistogramStdvar = 'histogram_stdvar',
-  // Renamed as DoubleExponentialSmoothing with Prometheus v3.x
-  // https://github.com/prometheus/prometheus/pull/14930
-  HoltWinters = 'holt_winters',
-  Hour = 'hour',
-  Idelta = 'idelta',
-  Increase = 'increase',
-  Irate = 'irate',
-  LabelJoin = 'label_join',
-  LabelReplace = 'label_replace',
-  Last = 'last',
-  LastOverTime = 'last_over_time',
-  Ln = 'ln',
-  Log10 = 'log10',
-  Log2 = 'log2',
-  Max = 'max',
-  MaxOverTime = 'max_over_time',
-  Min = 'min',
-  MinOverTime = 'min_over_time',
-  Minute = 'minute',
-  Month = 'month',
-  Pi = 'pi',
-  PredictLinear = 'predict_linear',
-  Present = 'present',
-  PresentOverTime = 'present_over_time',
-  Quantile = 'quantile',
-  QuantileOverTime = 'quantile_over_time',
-  Rad = 'rad',
-  Rate = 'rate',
-  Resets = 'resets',
-  Round = 'round',
-  Scalar = 'scalar',
-  Sgn = 'sgn',
-  Sin = 'sin',
-  Sinh = 'sinh',
-  Sort = 'sort',
-  SortDesc = 'sort_desc',
-  Sqrt = 'sqrt',
-  Stddev = 'stddev',
-  StddevOverTime = 'stddev_over_time',
-  Sum = 'sum',
-  SumOverTime = 'sum_over_time',
-  Tan = 'tan',
-  Tanh = 'tanh',
-  Time = 'time',
-  Timestamp = 'timestamp',
-  TopK = 'topk',
-  Vector = 'vector',
-  Year = 'year',
-  // Binary ops
-  Addition = '__addition',
-  Subtraction = '__subtraction',
-  MultiplyBy = '__multiply_by',
-  DivideBy = '__divide_by',
-  Modulo = '__modulo',
-  Exponent = '__exponent',
-  NestedQuery = '__nested_query',
-  EqualTo = '__equal_to',
-  NotEqualTo = '__not_equal_to',
-  GreaterThan = '__greater_than',
-  LessThan = '__less_than',
-  GreaterOrEqual = '__greater_or_equal',
-  LessOrEqual = '__less_or_equal',
-}
-
-// export function averageDurationQuery(histogram_metric: string, selector: string, grouping: string): string {
-//   return `sum(rate(${histogram_metric}_sum${selector}[$__rate_interval])) by (${grouping}) / sum(rate(${histogram_metric}_count${selector}[$__rate_interval])) by (${grouping})`
-// }

@@ -129,7 +129,9 @@
       }
     ]
   },
-  "annotations": {},
+  "annotations": {
+    "list": []
+  },
   "title": "Traefik",
   "panels": [
     {
@@ -143,8 +145,8 @@
         "y": 0
       },
       "options": {
-        "mode": "markdown",
-        "content": "This is a generated dashboard. Any changes made here will be lost on the next generation."
+        "mode": "html",
+        "content": "<div style=\"background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;\">\n<h4>This dashboard was generated from code</h4>\n\n<p>Any edits will be lost when the dashboard is regenerated.</p>\n</div>"
       }
     },
     {
@@ -166,7 +168,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__range]))",
+          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__range]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "value",
@@ -223,7 +225,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__range]))",
+          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__range]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "value",
@@ -281,7 +283,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__range]))",
+          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__range]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "value",
@@ -339,7 +341,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_config_reloads_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__range]))",
+          "expr": "sum(increase(traefik_config_reloads_total{namespace=~\"$namespace\",instance=~\"$instance\"}[$__range]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "value",
@@ -396,7 +398,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "max(traefik_config_last_reload_success{namespace=~\"$namespace\", instance=~\"$instance\"})* 1000",
+          "expr": "max(traefik_config_last_reload_success{namespace=~\"$namespace\",instance=~\"$instance\"})* 1000",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "value",
@@ -479,7 +481,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(traefik_open_connections{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}) by (entrypoint, protocol)",
+          "expr": "sum by(entrypoint, protocol) (traefik_open_connections{namespace=~\"$namespace\",instance=~\"$instance\",entrypoint=~\"$entrypoint\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{entrypoint}} - {{protocol}}",
@@ -564,7 +566,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_entrypoint_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval])) by (entrypoint)",
+          "expr": "sum by(entrypoint) (increase(traefik_entrypoint_requests_total{namespace=~\"$namespace\",instance=~\"$instance\",entrypoint=~\"$entrypoint\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{entrypoint}}",
@@ -634,7 +636,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_entrypoint_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval])) by (entrypoint)",
+          "expr": "sum by(entrypoint) (increase(traefik_entrypoint_requests_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",entrypoint=~\"$entrypoint\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{entrypoint}}",
@@ -704,7 +706,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_entrypoint_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval])) by (entrypoint)",
+          "expr": "sum by(entrypoint) (increase(traefik_entrypoint_responses_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",entrypoint=~\"$entrypoint\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{entrypoint}}",
@@ -774,7 +776,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(rate(traefik_entrypoint_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__rate_interval])) by (entrypoint) / sum(rate(traefik_entrypoint_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__rate_interval])) by (entrypoint)",
+          "expr": "(sum by(entrypoint) (rate(traefik_entrypoint_request_duration_seconds_sum{namespace=~\"$namespace\",instance=~\"$instance\",entrypoint=~\"$entrypoint\"}[$__rate_interval]))) / (sum by(entrypoint) (rate(traefik_entrypoint_request_duration_seconds_count{namespace=~\"$namespace\",instance=~\"$instance\",entrypoint=~\"$entrypoint\"}[$__rate_interval])))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{entrypoint}}",
@@ -860,7 +862,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (service)",
+          "expr": "sum by(service) (increase(traefik_service_requests_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{service}}",
@@ -930,7 +932,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (service)",
+          "expr": "sum by(service) (increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{service}}",
@@ -1000,7 +1002,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (service)",
+          "expr": "sum by(service) (increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{service}}",
@@ -1070,7 +1072,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (service) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (service)",
+          "expr": "(sum by(service) (rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__rate_interval]))) / (sum by(service) (rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__rate_interval])))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{service}}",
@@ -1156,7 +1158,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (protocol)",
+          "expr": "sum by(protocol) (increase(traefik_service_requests_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{protocol}}",
@@ -1226,7 +1228,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (protocol)",
+          "expr": "sum by(protocol) (increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{protocol}}",
@@ -1296,7 +1298,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (protocol)",
+          "expr": "sum by(protocol) (increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{protocol}}",
@@ -1366,7 +1368,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (protocol) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (protocol)",
+          "expr": "(sum by(protocol) (rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__rate_interval]))) / (sum by(protocol) (rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__rate_interval])))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{protocol}}",
@@ -1452,7 +1454,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (method)",
+          "expr": "sum by(method) (increase(traefik_service_requests_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{method}}",
@@ -1522,7 +1524,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (method)",
+          "expr": "sum by(method) (increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{method}}",
@@ -1592,7 +1594,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (method)",
+          "expr": "sum by(method) (increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{method}}",
@@ -1662,7 +1664,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (method) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (method)",
+          "expr": "(sum by(method) (rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__rate_interval]))) / (sum by(method) (rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__rate_interval])))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{method}}",
@@ -1748,7 +1750,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (code)",
+          "expr": "sum by(code) (increase(traefik_service_requests_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{code}}",
@@ -1818,7 +1820,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (code)",
+          "expr": "sum by(code) (increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{code}}",
@@ -1888,7 +1890,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (code)",
+          "expr": "sum by(code) (increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{code}}",
@@ -1958,7 +1960,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (code) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__rate_interval])) by (code)",
+          "expr": "(sum by(code) (rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__rate_interval]))) / (sum by(code) (rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__rate_interval])))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{code}}",
@@ -2044,7 +2046,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(4|5)..\"}[$__interval])) by (code, protocol, method, service) > 0",
+          "expr": "sum by(code, protocol, method, service) (increase(traefik_service_requests_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__interval])) > 0",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{code}} - {{protocol}} - {{method}} - {{service}}",
@@ -2114,7 +2116,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(4|5)..\"}[$__interval])) by (code, protocol, method, service) > 0",
+          "expr": "sum by(code, protocol, method, service) (increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__interval])) > 0",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{code}} - {{protocol}} - {{method}} - {{service}}",
@@ -2184,7 +2186,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(4|5)..\"}[$__interval])) by (code, protocol, method, service) > 0",
+          "expr": "sum by(code, protocol, method, service) (increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__interval])) > 0",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{code}} - {{protocol}} - {{method}} - {{service}}",
@@ -2254,7 +2256,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(4|5)..\"}[$__rate_interval])) by (code, protocol, method, service) / sum(rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\", code=~\"(4|5)..\"}[$__rate_interval])) by (code, protocol, method, service) > 0",
+          "expr": "(sum by(code, protocol, method, service) (rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__rate_interval]))) / (sum by(code, protocol, method, service) (rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__rate_interval]))) > 0",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{code}} - {{protocol}} - {{method}} - {{service}}",
@@ -2340,7 +2342,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_entrypoint_requests_tls_total{namespace=~\"$namespace\", instance=~\"$instance\", entrypoint=~\"$entrypoint\"}[$__interval])) by (entrypoint, tls_cipher, version)",
+          "expr": "sum by(entrypoint, tls_cipher, version) (increase(traefik_entrypoint_requests_tls_total{namespace=~\"$namespace\",instance=~\"$instance\",entrypoint=~\"$entrypoint\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{entrypoint}} - {{tls_cipher}} - {{version}}",
@@ -2410,7 +2412,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(increase(traefik_service_requests_tls_total{namespace=~\"$namespace\", instance=~\"$instance\", service=~\"$service\"}[$__interval])) by (service, tls_cipher, version)",
+          "expr": "sum by(service, tls_cipher, version) (increase(traefik_service_requests_tls_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\"}[$__interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{service}} - {{tls_cipher}} - {{version}}",
@@ -2480,7 +2482,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "max(traefik_tls_certs_not_after_timestamp{namespace=~\"$namespace\", instance=~\"$instance\"}) by (cn, sans, serial) * 1000",
+          "expr": "max by(cn, sans, serial) (traefik_tls_certs_not_after_timestamp{namespace=~\"$namespace\",instance=~\"$instance\"}) * 1000",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{cn}} - {{sans}} - {{serial}}",
@@ -2641,7 +2643,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_info{namespace=~\"$namespace\", instance=~\"$instance\"}) by (version)",
+              "expr": "sum by(version) (go_info{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "table",
               "legendFormat": "{{version}}",
@@ -2698,7 +2700,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "max(process_start_time_seconds{namespace=~\"$namespace\", instance=~\"$instance\"}) * 1000",
+              "expr": "max(process_start_time_seconds{namespace=~\"$namespace\",instance=~\"$instance\"}) * 1000",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",
@@ -2766,7 +2768,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "min(process_max_fds{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "min(process_max_fds{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",
@@ -2824,7 +2826,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "min(process_virtual_memory_max_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "min(process_virtual_memory_max_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",
@@ -2882,7 +2884,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(process_open_fds{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (process_open_fds{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2955,7 +2957,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_threads{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (go_threads{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3027,7 +3029,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_goroutines{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (go_goroutines{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3099,7 +3101,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(process_cpu_seconds_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(process_cpu_seconds_total{namespace=~\"$namespace\",instance=~\"$instance\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3172,7 +3174,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(process_resident_memory_bytes{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (process_resident_memory_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3245,7 +3247,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_alloc_bytes_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_memstats_alloc_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3318,7 +3320,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_memstats_alloc_bytes{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (go_memstats_alloc_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3391,7 +3393,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_stack_sys_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_stack_sys_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "sys",
@@ -3399,7 +3401,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_stack_inuse_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_stack_inuse_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "B",
               "format": "time_series",
               "legendFormat": "inuse",
@@ -3472,7 +3474,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_heap_sys_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_heap_sys_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "sys",
@@ -3480,7 +3482,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_heap_idle_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_heap_idle_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "B",
               "format": "time_series",
               "legendFormat": "idle",
@@ -3488,7 +3490,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_heap_released_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_heap_released_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "C",
               "format": "time_series",
               "legendFormat": "released",
@@ -3496,7 +3498,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_heap_inuse_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_heap_inuse_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "D",
               "format": "time_series",
               "legendFormat": "inuse",
@@ -3504,7 +3506,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_heap_alloc_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_heap_alloc_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "E",
               "format": "time_series",
               "legendFormat": "alloc",
@@ -3577,7 +3579,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_heap_objects{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+              "expr": "avg by(pod, instance) (go_memstats_heap_objects{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3650,7 +3652,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_mspan_sys_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_mspan_sys_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "mspan_sys",
@@ -3658,7 +3660,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_mspan_inuse_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_mspan_inuse_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "B",
               "format": "time_series",
               "legendFormat": "mspan_inuse",
@@ -3666,7 +3668,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_mcache_sys_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_mcache_sys_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "C",
               "format": "time_series",
               "legendFormat": "mcache_sys",
@@ -3674,7 +3676,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_mcache_inuse_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_mcache_inuse_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "D",
               "format": "time_series",
               "legendFormat": "mcache_inuse",
@@ -3682,7 +3684,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_buck_hash_sys_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_buck_hash_sys_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "E",
               "format": "time_series",
               "legendFormat": "buck_hash_sys",
@@ -3690,7 +3692,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_other_sys_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_other_sys_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "F",
               "format": "time_series",
               "legendFormat": "other_sys",
@@ -3698,7 +3700,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_gc_sys_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_gc_sys_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "G",
               "format": "time_series",
               "legendFormat": "gc_sys",
@@ -3706,7 +3708,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_next_gc_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_next_gc_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "H",
               "format": "time_series",
               "legendFormat": "next_gc",
@@ -3714,7 +3716,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_sys_bytes{namespace=~\"$namespace\", instance=~\"$instance\"})",
+              "expr": "avg(go_memstats_sys_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "I",
               "format": "time_series",
               "legendFormat": "sys",
@@ -3787,7 +3789,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(go_gc_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(go_gc_duration_seconds_count{namespace=~\"$namespace\",instance=~\"$instance\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3857,7 +3859,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_gc_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_gc_duration_seconds_sum{namespace=~\"$namespace\",instance=~\"$instance\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3930,7 +3932,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_gc_duration_seconds_sum{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])) by (pod, instance) / sum(rate(go_gc_duration_seconds_count{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "(sum by(pod, instance) (rate(go_gc_duration_seconds_sum{namespace=~\"$namespace\",instance=~\"$instance\"}[$__rate_interval]))) / (sum by(pod, instance) (rate(go_gc_duration_seconds_count{namespace=~\"$namespace\",instance=~\"$instance\"}[$__rate_interval])))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4003,7 +4005,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_lookups_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_memstats_lookups_total{namespace=~\"$namespace\",instance=~\"$instance\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4076,7 +4078,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_mallocs_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_memstats_mallocs_total{namespace=~\"$namespace\",instance=~\"$instance\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4149,7 +4151,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_frees_total{namespace=~\"$namespace\", instance=~\"$instance\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_memstats_frees_total{namespace=~\"$namespace\",instance=~\"$instance\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4222,7 +4224,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(process_virtual_memory_bytes{namespace=~\"$namespace\", instance=~\"$instance\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (process_virtual_memory_bytes{namespace=~\"$namespace\",instance=~\"$instance\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4309,7 +4311,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "max(container_start_time_seconds{namespace=~\"$namespace\", pod=~\"$pod\"}) * 1000",
+              "expr": "max(container_start_time_seconds{namespace=~\"$namespace\",pod=~\"$pod\"}) * 1000",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",
@@ -4377,7 +4379,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_cpu_usage_seconds_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4450,7 +4452,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_memory_usage_bytes{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_memory_usage_bytes{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4523,7 +4525,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_memory_working_set_bytes{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_memory_working_set_bytes{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4596,7 +4598,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_memory_cache{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_memory_cache{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4669,7 +4671,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_threads{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_threads{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4741,7 +4743,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_processes{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_processes{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4813,7 +4815,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_file_descriptors{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_file_descriptors{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4885,7 +4887,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_sockets{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_sockets{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4957,7 +4959,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_cpu_load_average_10s{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_cpu_load_average_10s{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5029,7 +5031,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_cpu_user_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_cpu_user_seconds_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5101,7 +5103,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_cpu_system_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_cpu_system_seconds_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5173,7 +5175,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_cpu_cfs_throttled_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_cpu_cfs_throttled_seconds_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5245,7 +5247,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_memory_failures_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance, failure_type)",
+              "expr": "sum by(pod, instance, failure_type) (increase(container_memory_failures_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}} - {{failure_type}}",
@@ -5315,7 +5317,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_oom_events_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(container_oom_events_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5385,7 +5387,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_memory_swap{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_memory_swap{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5457,7 +5459,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_memory_failcnt{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(container_memory_failcnt{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5527,7 +5529,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_network_receive_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_network_receive_bytes_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5600,7 +5602,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_network_transmit_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_network_transmit_bytes_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5673,7 +5675,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_network_receive_errors_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(container_network_receive_errors_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5743,7 +5745,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_network_transmit_errors_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(container_network_transmit_errors_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5813,7 +5815,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_network_receive_packets_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_network_receive_packets_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5886,7 +5888,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_network_transmit_packets_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_network_transmit_packets_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -5959,7 +5961,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_network_receive_packets_dropped_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(container_network_receive_packets_dropped_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -6029,7 +6031,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_network_transmit_packets_dropped_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(container_network_transmit_packets_dropped_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -6099,7 +6101,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_fs_reads_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_fs_reads_bytes_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -6172,7 +6174,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_fs_writes_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_fs_writes_bytes_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -6245,7 +6247,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_fs_reads_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_fs_reads_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -6318,7 +6320,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_fs_writes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_fs_writes_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",

@@ -22,6 +22,9 @@ export { overridesMatchByName } from './helpers/panels/commons'
 export { writeDashboardAndPostToGrafana } from './helpers/grafana'
 export { writePrometheusRules } from './helpers/alerting-rules'
 
+// PromQL
+export * as promql from '@grafana/promql-builder'
+
 // Units
 export * as units from '@grafana/grafana-foundation-sdk/units'
 

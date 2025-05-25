@@ -78,7 +78,9 @@
       }
     ]
   },
-  "annotations": {},
+  "annotations": {
+    "list": []
+  },
   "title": "Postgres",
   "panels": [
     {
@@ -92,8 +94,8 @@
         "y": 0
       },
       "options": {
-        "mode": "markdown",
-        "content": "This is a generated dashboard. Any changes made here will be lost on the next generation."
+        "mode": "html",
+        "content": "<div style=\"background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;\">\n<h4>This dashboard was generated from code</h4>\n\n<p>Any edits will be lost when the dashboard is regenerated.</p>\n</div>"
       }
     },
     {
@@ -115,7 +117,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(pg_database_size_bytes{instance=~\"$instance\", namespace=~\"$namespace\"}) by (datname)",
+          "expr": "sum by(datname) (pg_database_size_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{datname}}",
@@ -172,7 +174,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(pg_database_size_bytes{instance=~\"$instance\", namespace=~\"$namespace\"}) by (datname)",
+          "expr": "sum by(datname) (pg_database_size_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{datname}}",
@@ -245,7 +247,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(pg_locks_count{instance=~\"$instance\", namespace=~\"$namespace\"}) by (datname, mode) > 0",
+          "expr": "sum by(datname, mode) (pg_locks_count{instance=~\"$instance\",namespace=~\"$namespace\"}) > 0",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{datname}} - {{mode}}",
@@ -317,7 +319,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(pg_stat_database_numbackends{instance=~\"$instance\", namespace=~\"$namespace\", datname!=\"\"}) by (datname)",
+          "expr": "sum by(datname) (pg_stat_database_numbackends{instance=~\"$instance\",namespace=~\"$namespace\",datname!=\"\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{datname}}",
@@ -402,7 +404,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(pg_stat_activity_count{instance=~\"$instance\", namespace=~\"$namespace\", state=\"active\"}) by (datname) > 0",
+          "expr": "sum by(datname) (pg_stat_activity_count{instance=~\"$instance\",namespace=~\"$namespace\",state=\"active\"}) > 0",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{datname}}",
@@ -474,7 +476,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(pg_stat_activity_count{instance=~\"$instance\", namespace=~\"$namespace\", state=\"disabled\"}) by (datname) > 0",
+          "expr": "sum by(datname) (pg_stat_activity_count{instance=~\"$instance\",namespace=~\"$namespace\",state=\"disabled\"}) > 0",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{datname}}",
@@ -546,7 +548,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(pg_stat_activity_count{instance=~\"$instance\", namespace=~\"$namespace\", state=\"fastpath function call\"}) by (datname) > 0",
+          "expr": "sum by(datname) (pg_stat_activity_count{instance=~\"$instance\",namespace=~\"$namespace\",state=\"fastpath function call\"}) > 0",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{datname}}",
@@ -618,7 +620,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(pg_stat_activity_count{instance=~\"$instance\", namespace=~\"$namespace\", state=\"idle\"}) by (datname) > 0",
+          "expr": "sum by(datname) (pg_stat_activity_count{instance=~\"$instance\",namespace=~\"$namespace\",state=\"idle\"}) > 0",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{datname}}",
@@ -690,7 +692,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(pg_stat_activity_count{instance=~\"$instance\", namespace=~\"$namespace\", state=\"idle in transaction\"}) by (datname) > 0",
+          "expr": "sum by(datname) (pg_stat_activity_count{instance=~\"$instance\",namespace=~\"$namespace\",state=\"idle in transaction\"}) > 0",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{datname}}",
@@ -762,7 +764,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(pg_stat_activity_count{instance=~\"$instance\", namespace=~\"$namespace\", state=\"idle in transaction (aborted)\"}) by (datname) > 0",
+          "expr": "sum by(datname) (pg_stat_activity_count{instance=~\"$instance\",namespace=~\"$namespace\",state=\"idle in transaction (aborted)\"}) > 0",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{datname}}",
@@ -839,7 +841,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "max(container_start_time_seconds{namespace=~\"$namespace\", pod=~\"$pod\"}) * 1000",
+              "expr": "max(container_start_time_seconds{namespace=~\"$namespace\",pod=~\"$pod\"}) * 1000",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",
@@ -907,7 +909,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_cpu_usage_seconds_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -980,7 +982,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_memory_usage_bytes{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_memory_usage_bytes{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1053,7 +1055,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_memory_working_set_bytes{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_memory_working_set_bytes{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1126,7 +1128,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_memory_cache{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_memory_cache{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1199,7 +1201,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_threads{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_threads{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1271,7 +1273,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_processes{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_processes{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1343,7 +1345,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_file_descriptors{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_file_descriptors{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1415,7 +1417,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_sockets{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_sockets{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1487,7 +1489,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_cpu_load_average_10s{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_cpu_load_average_10s{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1559,7 +1561,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_cpu_user_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_cpu_user_seconds_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1631,7 +1633,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_cpu_system_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_cpu_system_seconds_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1703,7 +1705,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_cpu_cfs_throttled_seconds_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_cpu_cfs_throttled_seconds_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1775,7 +1777,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_memory_failures_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance, failure_type)",
+              "expr": "sum by(pod, instance, failure_type) (increase(container_memory_failures_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}} - {{failure_type}}",
@@ -1845,7 +1847,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_oom_events_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(container_oom_events_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1915,7 +1917,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(container_memory_swap{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (container_memory_swap{namespace=~\"$namespace\",pod=~\"$pod\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -1987,7 +1989,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_memory_failcnt{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(container_memory_failcnt{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2057,7 +2059,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_network_receive_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_network_receive_bytes_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2130,7 +2132,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_network_transmit_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_network_transmit_bytes_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2203,7 +2205,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_network_receive_errors_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(container_network_receive_errors_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2273,7 +2275,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_network_transmit_errors_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(container_network_transmit_errors_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2343,7 +2345,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_network_receive_packets_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_network_receive_packets_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2416,7 +2418,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_network_transmit_packets_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_network_transmit_packets_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2489,7 +2491,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_network_receive_packets_dropped_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(container_network_receive_packets_dropped_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2559,7 +2561,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(container_network_transmit_packets_dropped_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(container_network_transmit_packets_dropped_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2629,7 +2631,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_fs_reads_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_fs_reads_bytes_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2702,7 +2704,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_fs_writes_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_fs_writes_bytes_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2775,7 +2777,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_fs_reads_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_fs_reads_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2848,7 +2850,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(container_fs_writes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(container_fs_writes_total{namespace=~\"$namespace\",pod=~\"$pod\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -2943,7 +2945,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "max(kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, namespace, host_ip, pod_ip, node, created_by_kind, created_by_name, uid, priority_class, host_network)",
+          "expr": "max by(pod, namespace, host_ip, pod_ip, node, created_by_kind, created_by_name, uid, priority_class, host_network) (kube_pod_info{namespace=~\"$namespace\",pod=~\"$pod\"})",
           "refId": "Pod Info",
           "format": "table",
           "legendFormat": "{{pod}} - {{namespace}} - {{host_ip}} - {{pod_ip}} - {{node}} - {{created_by_kind}} - {{created_by_name}} - {{uid}} - {{priority_class}} - {{host_network}}",
@@ -2951,7 +2953,7 @@
           "range": false
         },
         {
-          "expr": "max(kube_pod_start_time{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, namespace, uid)",
+          "expr": "max by(pod, namespace, uid) (kube_pod_start_time{namespace=~\"$namespace\",pod=~\"$pod\"})",
           "refId": "Pod Start Time",
           "format": "table",
           "legendFormat": "{{pod}} - {{namespace}} - {{uid}}",
@@ -2959,7 +2961,7 @@
           "range": false
         },
         {
-          "expr": "max(kube_pod_completion_time{namespace=~\"$namespace\", pod=~\"$pod\"}) by (pod, namespace, uid)",
+          "expr": "max by(pod, namespace, uid) (kube_pod_completion_time{namespace=~\"$namespace\",pod=~\"$pod\"})",
           "refId": "Pod Completion Time",
           "format": "table",
           "legendFormat": "{{pod}} - {{namespace}} - {{uid}}",
@@ -3133,7 +3135,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_info{instance=~\"$instance\", namespace=~\"$namespace\"}) by (version)",
+              "expr": "sum by(version) (go_info{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "table",
               "legendFormat": "{{version}}",
@@ -3190,7 +3192,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "max(process_start_time_seconds{instance=~\"$instance\", namespace=~\"$namespace\"}) * 1000",
+              "expr": "max(process_start_time_seconds{instance=~\"$instance\",namespace=~\"$namespace\"}) * 1000",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",
@@ -3258,7 +3260,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "min(process_max_fds{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "min(process_max_fds{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",
@@ -3316,7 +3318,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "min(process_virtual_memory_max_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "min(process_virtual_memory_max_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",
@@ -3374,7 +3376,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(postgres_exporter_build_info{instance=~\"$instance\", namespace=~\"$namespace\"}) by (branch, goarch, goos, goversion, revision, tags, version)",
+              "expr": "sum by(branch, goarch, goos, goversion, revision, tags, version) (postgres_exporter_build_info{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "table",
               "legendFormat": "{{branch}} - {{goarch}} - {{goos}} - {{goversion}} - {{revision}} - {{tags}} - {{version}}",
@@ -3431,7 +3433,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(process_open_fds{instance=~\"$instance\", namespace=~\"$namespace\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (process_open_fds{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3504,7 +3506,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_threads{instance=~\"$instance\", namespace=~\"$namespace\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (go_threads{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3576,7 +3578,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_goroutines{instance=~\"$instance\", namespace=~\"$namespace\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (go_goroutines{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3648,7 +3650,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(process_cpu_seconds_total{instance=~\"$instance\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(process_cpu_seconds_total{instance=~\"$instance\",namespace=~\"$namespace\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3721,7 +3723,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(process_resident_memory_bytes{instance=~\"$instance\", namespace=~\"$namespace\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (process_resident_memory_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3794,7 +3796,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_alloc_bytes_total{instance=~\"$instance\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_memstats_alloc_bytes_total{instance=~\"$instance\",namespace=~\"$namespace\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3867,7 +3869,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_memstats_alloc_bytes{instance=~\"$instance\", namespace=~\"$namespace\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (go_memstats_alloc_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -3940,7 +3942,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_stack_sys_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_stack_sys_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "sys",
@@ -3948,7 +3950,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_stack_inuse_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_stack_inuse_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "B",
               "format": "time_series",
               "legendFormat": "inuse",
@@ -4021,7 +4023,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_heap_sys_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_heap_sys_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "sys",
@@ -4029,7 +4031,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_heap_idle_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_heap_idle_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "B",
               "format": "time_series",
               "legendFormat": "idle",
@@ -4037,7 +4039,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_heap_released_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_heap_released_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "C",
               "format": "time_series",
               "legendFormat": "released",
@@ -4045,7 +4047,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_heap_inuse_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_heap_inuse_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "D",
               "format": "time_series",
               "legendFormat": "inuse",
@@ -4053,7 +4055,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_heap_alloc_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_heap_alloc_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "E",
               "format": "time_series",
               "legendFormat": "alloc",
@@ -4126,7 +4128,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_heap_objects{instance=~\"$instance\", namespace=~\"$namespace\"}) by (pod, instance)",
+              "expr": "avg by(pod, instance) (go_memstats_heap_objects{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4199,7 +4201,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_mspan_sys_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_mspan_sys_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "mspan_sys",
@@ -4207,7 +4209,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_mspan_inuse_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_mspan_inuse_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "B",
               "format": "time_series",
               "legendFormat": "mspan_inuse",
@@ -4215,7 +4217,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_mcache_sys_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_mcache_sys_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "C",
               "format": "time_series",
               "legendFormat": "mcache_sys",
@@ -4223,7 +4225,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_mcache_inuse_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_mcache_inuse_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "D",
               "format": "time_series",
               "legendFormat": "mcache_inuse",
@@ -4231,7 +4233,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_buck_hash_sys_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_buck_hash_sys_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "E",
               "format": "time_series",
               "legendFormat": "buck_hash_sys",
@@ -4239,7 +4241,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_other_sys_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_other_sys_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "F",
               "format": "time_series",
               "legendFormat": "other_sys",
@@ -4247,7 +4249,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_gc_sys_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_gc_sys_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "G",
               "format": "time_series",
               "legendFormat": "gc_sys",
@@ -4255,7 +4257,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_next_gc_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_next_gc_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "H",
               "format": "time_series",
               "legendFormat": "next_gc",
@@ -4263,7 +4265,7 @@
               "instant": false
             },
             {
-              "expr": "avg(go_memstats_sys_bytes{instance=~\"$instance\", namespace=~\"$namespace\"})",
+              "expr": "avg(go_memstats_sys_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "I",
               "format": "time_series",
               "legendFormat": "sys",
@@ -4336,7 +4338,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(go_gc_duration_seconds_count{instance=~\"$instance\", namespace=~\"$namespace\"}[$__interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (increase(go_gc_duration_seconds_count{instance=~\"$instance\",namespace=~\"$namespace\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4406,7 +4408,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_gc_duration_seconds_sum{instance=~\"$instance\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_gc_duration_seconds_sum{instance=~\"$instance\",namespace=~\"$namespace\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4479,7 +4481,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_gc_duration_seconds_sum{instance=~\"$instance\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod, instance) / sum(rate(go_gc_duration_seconds_count{instance=~\"$instance\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "(sum by(pod, instance) (rate(go_gc_duration_seconds_sum{instance=~\"$instance\",namespace=~\"$namespace\"}[$__rate_interval]))) / (sum by(pod, instance) (rate(go_gc_duration_seconds_count{instance=~\"$instance\",namespace=~\"$namespace\"}[$__rate_interval])))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4552,7 +4554,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_lookups_total{instance=~\"$instance\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_memstats_lookups_total{instance=~\"$instance\",namespace=~\"$namespace\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4625,7 +4627,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_mallocs_total{instance=~\"$instance\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_memstats_mallocs_total{instance=~\"$instance\",namespace=~\"$namespace\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4698,7 +4700,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_frees_total{instance=~\"$instance\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod, instance)",
+              "expr": "sum by(pod, instance) (rate(go_memstats_frees_total{instance=~\"$instance\",namespace=~\"$namespace\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",
@@ -4771,7 +4773,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(process_virtual_memory_bytes{instance=~\"$instance\", namespace=~\"$namespace\"}) by (pod, instance)",
+              "expr": "sum by(pod, instance) (process_virtual_memory_bytes{instance=~\"$instance\",namespace=~\"$namespace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{pod}} - {{instance}}",

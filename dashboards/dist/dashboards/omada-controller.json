@@ -59,7 +59,9 @@
       }
     ]
   },
-  "annotations": {},
+  "annotations": {
+    "list": []
+  },
   "title": "Omada Controller",
   "panels": [
     {
@@ -73,8 +75,8 @@
         "y": 0
       },
       "options": {
-        "mode": "markdown",
-        "content": "This is a generated dashboard. Any changes made here will be lost on the next generation."
+        "mode": "html",
+        "content": "<div style=\"background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;\">\n<h4>This dashboard was generated from code</h4>\n\n<p>Any edits will be lost when the dashboard is regenerated.</p>\n</div>"
       }
     },
     {
@@ -339,7 +341,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(omada_device_cpu_percentage{site=~\"$site\"}) by (device, device_type, ip)",
+          "expr": "sum by(device, device_type, ip) (omada_device_cpu_percentage{site=~\"$site\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
@@ -413,7 +415,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(omada_device_mem_percentage{site=~\"$site\"}) by (device, device_type, ip)",
+          "expr": "sum by(device, device_type, ip) (omada_device_mem_percentage{site=~\"$site\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
@@ -487,7 +489,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(omada_device_rx_rate{site=~\"$site\"}) by (device, device_type, ip)",
+          "expr": "sum by(device, device_type, ip) (omada_device_rx_rate{site=~\"$site\"})",
           "refId": "RX",
           "format": "time_series",
           "legendFormat": "Rx - {{ device }} {{ device_type }} {{ ip }}",
@@ -495,7 +497,7 @@
           "instant": false
         },
         {
-          "expr": "-sum(omada_device_tx_rate{site=~\"$site\"}) by (device, device_type, ip)",
+          "expr": "-sum by(device, device_type, ip) (omada_device_tx_rate{site=~\"$site\"})",
           "refId": "TX",
           "format": "time_series",
           "legendFormat": "Tx - {{ device }} {{ device_type }} {{ ip }}",
@@ -566,7 +568,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "max(omada_device_uptime_seconds{site=~\"$site\"}) by (device, device_type, ip)",
+          "expr": "max by(device, device_type, ip) (omada_device_uptime_seconds{site=~\"$site\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
@@ -639,7 +641,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "max(omada_device_poe_remain_watts{site=~\"$site\"}) by (device, device_type, ip)",
+          "expr": "max by(device, device_type, ip) (omada_device_poe_remain_watts{site=~\"$site\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
@@ -725,7 +727,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(omada_client_connected_total{site=~\"$site\"}) by (connection_mode, wifi_mode)",
+          "expr": "sum by(connection_mode, wifi_mode) (omada_client_connected_total{site=~\"$site\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{connection_mode}} - {{wifi_mode}}",
@@ -798,7 +800,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(omada_client_signal_pct{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "expr": "sum by(client, ap_name, connection_mode, ssid, vlan_id, wifi_mode) (omada_client_signal_pct{site=~\"$site\",ip!=\"\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
@@ -872,7 +874,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(omada_client_rssi_dbm{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "expr": "sum by(client, ap_name, connection_mode, ssid, vlan_id, wifi_mode) (omada_client_rssi_dbm{site=~\"$site\",ip!=\"\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
@@ -944,7 +946,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(omada_client_snr_dbm{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "expr": "sum by(client, ap_name, connection_mode, ssid, vlan_id, wifi_mode) (omada_client_snr_dbm{site=~\"$site\",ip!=\"\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
@@ -1016,7 +1018,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(rate(omada_client_traffic_up_bytes{site=~\"$site\", ip!=\"\"}[$__rate_interval])) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "expr": "sum by(client, ap_name, connection_mode, ssid, vlan_id, wifi_mode) (rate(omada_client_traffic_up_bytes{site=~\"$site\",ip!=\"\"}[$__rate_interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
@@ -1089,7 +1091,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(rate(omada_client_traffic_down_bytes{site=~\"$site\", ip!=\"\"}[$__rate_interval])) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "expr": "sum by(client, ap_name, connection_mode, ssid, vlan_id, wifi_mode) (rate(omada_client_traffic_down_bytes{site=~\"$site\",ip!=\"\"}[$__rate_interval]))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
@@ -1162,7 +1164,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(omada_client_rx_rate{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "expr": "sum by(client, ap_name, connection_mode, ssid, vlan_id, wifi_mode) (omada_client_rx_rate{site=~\"$site\",ip!=\"\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
@@ -1235,7 +1237,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(omada_client_tx_rate{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "expr": "sum by(client, ap_name, connection_mode, ssid, vlan_id, wifi_mode) (omada_client_tx_rate{site=~\"$site\",ip!=\"\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
@@ -1321,7 +1323,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(omada_port_link_status{site=~\"$site\"}) by (client, device, name, profile, site, switch_port, vlan_id)",
+          "expr": "sum by(client, device, name, profile, site, switch_port, vlan_id) (omada_port_link_status{site=~\"$site\"})",
           "refId": "STATUS",
           "format": "table",
           "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
@@ -1329,7 +1331,7 @@
           "range": false
         },
         {
-          "expr": "sum(omada_port_link_speed_mbps{site=~\"$site\"}) by (client, device, name, profile, site, switch_port, vlan_id)",
+          "expr": "sum by(client, device, name, profile, site, switch_port, vlan_id) (omada_port_link_speed_mbps{site=~\"$site\"})",
           "refId": "SPEED",
           "format": "table",
           "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
@@ -1337,7 +1339,7 @@
           "range": false
         },
         {
-          "expr": "sum(increase(omada_port_link_rx{site=~\"$site\"}[$__range])) by (switch_port)",
+          "expr": "sum by(switch_port) (increase(omada_port_link_rx{site=~\"$site\"}[$__range]))",
           "refId": "RX",
           "format": "table",
           "legendFormat": "{{switch_port}}",
@@ -1345,7 +1347,7 @@
           "range": false
         },
         {
-          "expr": "sum(increase(omada_port_link_tx{site=~\"$site\"}[$__range])) by (switch_port)",
+          "expr": "sum by(switch_port) (increase(omada_port_link_tx{site=~\"$site\"}[$__range]))",
           "refId": "TX",
           "format": "table",
           "legendFormat": "{{switch_port}}",
@@ -1353,7 +1355,7 @@
           "range": false
         },
         {
-          "expr": "sum(omada_port_power_watts{site=~\"$site\"}) by (client, device, name, profile, site, switch_port, vlan_id)",
+          "expr": "sum by(client, device, name, profile, site, switch_port, vlan_id) (omada_port_power_watts{site=~\"$site\"})",
           "refId": "POWER",
           "format": "table",
           "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",

@@ -59,7 +59,9 @@
       }
     ]
   },
-  "annotations": {},
+  "annotations": {
+    "list": []
+  },
   "title": "ZFS",
   "panels": [
     {
@@ -73,8 +75,8 @@
         "y": 0
       },
       "options": {
-        "mode": "markdown",
-        "content": "This is a generated dashboard. Any changes made here will be lost on the next generation."
+        "mode": "html",
+        "content": "<div style=\"background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;\">\n<h4>This dashboard was generated from code</h4>\n\n<p>Any edits will be lost when the dashboard is regenerated.</p>\n</div>"
       }
     },
     {
@@ -96,7 +98,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "count(zfs_pool_allocated_bytes{instance=~\"$instance\", pool=~\"$pool\"})",
+          "expr": "count(zfs_pool_allocated_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "value",
@@ -154,7 +156,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "count(zfs_dataset_logical_used_bytes{instance=~\"$instance\", pool=~\"$pool\"})",
+          "expr": "count(zfs_dataset_logical_used_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "value",
@@ -212,7 +214,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_pool_allocated_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_allocated_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "ALLOCATED",
           "format": "table",
           "legendFormat": "{{pool}}",
@@ -220,7 +222,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_pool_deduplication_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_deduplication_ratio{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "DUPLICATION_RATIO",
           "format": "table",
           "legendFormat": "{{pool}}",
@@ -228,7 +230,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_pool_fragmentation_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_fragmentation_ratio{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "FRAGMENTATION_RATIO",
           "format": "table",
           "legendFormat": "{{pool}}",
@@ -236,7 +238,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_pool_free_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_free_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "FREE",
           "format": "table",
           "legendFormat": "{{pool}}",
@@ -244,7 +246,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_pool_freeing_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_freeing_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "FREEING",
           "format": "table",
           "legendFormat": "{{pool}}",
@@ -252,7 +254,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_pool_health{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_health{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "HEALTH",
           "format": "table",
           "legendFormat": "{{pool}}",
@@ -260,7 +262,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_pool_leaked_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_leaked_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "LEAKED",
           "format": "table",
           "legendFormat": "{{pool}}",
@@ -268,7 +270,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_pool_readonly{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_readonly{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "READONLY",
           "format": "table",
           "legendFormat": "{{pool}}",
@@ -276,7 +278,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_pool_size_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_size_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "SIZE",
           "format": "table",
           "legendFormat": "{{pool}}",
@@ -453,7 +455,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_available_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_available_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "AVAILABLE",
           "format": "table",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -461,7 +463,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_dataset_logical_used_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_logical_used_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "LOGICAL_USED",
           "format": "table",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -469,7 +471,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_dataset_quota_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_quota_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "QUOTA",
           "format": "table",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -477,7 +479,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_dataset_referenced_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_referenced_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "REFERENCED",
           "format": "table",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -485,7 +487,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_dataset_used_by_dataset_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_used_by_dataset_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "USED_BY",
           "format": "table",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -493,7 +495,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_dataset_used_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_used_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "USED",
           "format": "table",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -501,7 +503,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_dataset_written_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_written_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "WRITTEN",
           "format": "table",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -509,7 +511,7 @@
           "range": false
         },
         {
-          "expr": "sum(zfs_dataset_used_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type) / sum(zfs_dataset_quota_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_used_bytes{instance=~\"$instance\",pool=~\"$pool\"}) / sum by(name, pool, type) (zfs_dataset_quota_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "PERCENTAGE_USED",
           "format": "table",
           "legendFormat": "Percentage Used",
@@ -738,7 +740,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_pool_capacity_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_capacity_ratio{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{pool}}",
@@ -812,7 +814,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_pool_deduplication_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_deduplication_ratio{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{pool}}",
@@ -885,7 +887,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_pool_fragmentation_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_fragmentation_ratio{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{pool}}",
@@ -958,7 +960,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_pool_health{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_health{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{pool}}",
@@ -1031,7 +1033,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_pool_leaked_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_leaked_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{pool}}",
@@ -1105,7 +1107,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_pool_readonly{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_readonly{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{pool}}",
@@ -1178,7 +1180,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_pool_size_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_size_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{pool}}",
@@ -1252,7 +1254,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_pool_free_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_free_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{pool}}",
@@ -1326,7 +1328,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_pool_freeing_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_freeing_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{pool}}",
@@ -1400,7 +1402,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_pool_expand_size_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_expand_size_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{pool}}",
@@ -1474,7 +1476,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_pool_allocated_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "expr": "sum by(pool) (zfs_pool_allocated_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{pool}}",
@@ -1561,7 +1563,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_used_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type) / sum(zfs_dataset_quota_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_used_bytes{instance=~\"$instance\",pool=~\"$pool\"}) / sum by(name, pool, type) (zfs_dataset_quota_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -1634,7 +1636,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_available_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_available_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -1708,7 +1710,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_logical_used_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_logical_used_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -1782,7 +1784,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_quota_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_quota_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -1856,7 +1858,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_used_by_dataset_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_used_by_dataset_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -1930,7 +1932,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_used_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_used_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2004,7 +2006,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_written_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_written_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2078,7 +2080,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_referenced_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_referenced_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2152,7 +2154,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_fragmentation_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_fragmentation_ratio{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2224,7 +2226,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_referenced_compression_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_referenced_compression_ratio{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2296,7 +2298,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_used_by_children_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_used_by_children_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2369,7 +2371,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_used_by_referenced_reservation_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_used_by_referenced_reservation_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2442,7 +2444,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_used_by_snapshot_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_used_by_snapshot_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2515,7 +2517,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_volume_size_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_volume_size_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2588,7 +2590,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_snapshot_count_total{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_snapshot_count_total{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2660,7 +2662,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_snapshot_limit_total{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_snapshot_limit_total{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2732,7 +2734,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_referenced_quota_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_referenced_quota_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2805,7 +2807,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_referenced_reservation_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_referenced_reservation_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2878,7 +2880,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_logical_referenced_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_logical_referenced_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -2951,7 +2953,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_allocated_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_allocated_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -3024,7 +3026,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_deduplication_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_deduplication_ratio{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -3097,7 +3099,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum(zfs_dataset_reservation_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "expr": "sum by(name, pool, type) (zfs_dataset_reservation_bytes{instance=~\"$instance\",pool=~\"$pool\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
@@ -3175,7 +3177,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_info{instance=~\"$instace\"}) by (version)",
+              "expr": "sum by(version) (go_info{instance=~\"$instace\"})",
               "refId": "A",
               "format": "table",
               "legendFormat": "{{version}}",
@@ -3416,7 +3418,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(process_open_fds{instance=~\"$instace\"}) by (instance)",
+              "expr": "sum by(instance) (process_open_fds{instance=~\"$instace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -3489,7 +3491,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_threads{instance=~\"$instace\"}) by (instance)",
+              "expr": "sum by(instance) (go_threads{instance=~\"$instace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -3561,7 +3563,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_goroutines{instance=~\"$instace\"}) by (instance)",
+              "expr": "sum by(instance) (go_goroutines{instance=~\"$instace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -3633,7 +3635,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(process_cpu_seconds_total{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "expr": "sum by(instance) (rate(process_cpu_seconds_total{instance=~\"$instace\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -3706,7 +3708,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(process_resident_memory_bytes{instance=~\"$instace\"}) by (instance)",
+              "expr": "sum by(instance) (process_resident_memory_bytes{instance=~\"$instace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -3779,7 +3781,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_alloc_bytes_total{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "expr": "sum by(instance) (rate(go_memstats_alloc_bytes_total{instance=~\"$instace\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -3852,7 +3854,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(go_memstats_alloc_bytes{instance=~\"$instace\"}) by (instance)",
+              "expr": "sum by(instance) (go_memstats_alloc_bytes{instance=~\"$instace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -4111,7 +4113,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "avg(go_memstats_heap_objects{instance=~\"$instace\"}) by (instance)",
+              "expr": "avg by(instance) (go_memstats_heap_objects{instance=~\"$instace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -4321,7 +4323,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(increase(go_gc_duration_seconds_count{instance=~\"$instace\"}[$__interval])) by (instance)",
+              "expr": "sum by(instance) (increase(go_gc_duration_seconds_count{instance=~\"$instace\"}[$__interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -4391,7 +4393,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_gc_duration_seconds_sum{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "expr": "sum by(instance) (rate(go_gc_duration_seconds_sum{instance=~\"$instace\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -4464,7 +4466,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_gc_duration_seconds_sum{instance=~\"$instace\"}[$__rate_interval])) by (instance) / sum(rate(go_gc_duration_seconds_count{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "expr": "(sum by(instance) (rate(go_gc_duration_seconds_sum{instance=~\"$instace\"}[$__rate_interval]))) / (sum by(instance) (rate(go_gc_duration_seconds_count{instance=~\"$instace\"}[$__rate_interval])))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -4537,7 +4539,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_lookups_total{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "expr": "sum by(instance) (rate(go_memstats_lookups_total{instance=~\"$instace\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -4610,7 +4612,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_mallocs_total{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "expr": "sum by(instance) (rate(go_memstats_mallocs_total{instance=~\"$instace\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -4683,7 +4685,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(rate(go_memstats_frees_total{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "expr": "sum by(instance) (rate(go_memstats_frees_total{instance=~\"$instace\"}[$__rate_interval]))",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
@@ -4756,7 +4758,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "sum(process_virtual_memory_bytes{instance=~\"$instace\"}) by (instance)",
+              "expr": "sum by(instance) (process_virtual_memory_bytes{instance=~\"$instace\"})",
               "refId": "A",
               "format": "time_series",
               "legendFormat": "{{instance}}",
