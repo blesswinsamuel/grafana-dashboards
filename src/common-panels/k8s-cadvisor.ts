@@ -1,6 +1,6 @@
-import { DataSourceRef, VizOrientation } from '@grafana/schema'
-import { NewPanelGroup, NewPanelRow, NewStatPanel, NewTimeSeriesPanel, PanelGroup, Unit } from './grafana-helpers'
-import { CounterMetric, GaugeMetric, SummaryMetric } from './promql-helpers'
+import { dashboard, NewPanelGroup, NewPanelRow, NewStatPanel, NewTimeSeriesPanel, PanelGroup } from '../grafana-helpers'
+import { CounterMetric, GaugeMetric, SummaryMetric } from '../helpers/promql'
+import * as units from '@grafana/grafana-foundation-sdk/units'
 
 // https://github.com/google/cadvisor/blob/master/docs/storage/prometheus.md
 
@@ -99,17 +99,17 @@ const machineNvmAvgPowerBudgetWatts = new GaugeMetric('machine_nvm_avg_power_bud
 const machineNvmCapacity = new GaugeMetric('machine_nvm_capacity', { description: 'NVM capacity value labeled by NVM mode (memory mode or app direct mode)' })
 const machineThreadSiblingsCount = new GaugeMetric('machine_thread_siblings_count', { description: 'Number of CPU thread siblings' })
 
-export function cadvisorMetricsPanels({ datasource, title, selectors = [], groupBy = ['pod', 'instance'], collapsed }: { datasource?: DataSourceRef; title?: string; groupBy?: string[]; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
+export function cadvisorMetricsPanels({ datasource, title, selectors = [], groupBy = ['pod', 'instance'], collapsed }: { datasource?: dashboard.DataSourceRef; title?: string; groupBy?: string[]; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
   return NewPanelGroup({ title: title ?? 'cAdvisor Metrics', collapsed }, [
     NewPanelRow({ datasource, height: 3 }, [
       //
-      NewStatPanel({ title: 'Container Start Time (max)', defaultUnit: Unit.DATE_TIME_FROM_NOW }, containerStartTimeSeconds.calc('max', { selectors, type: 'instant', append: ' * 1000' }).target()),
+      NewStatPanel({ title: 'Container Start Time (max)', unit: units.DateTimeFromNow }, containerStartTimeSeconds.calc('max', { selectors, type: 'instant', append: ' * 1000' }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'CPU Usage', defaultUnit: Unit.SHORT }, containerCpuUsageSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'CPU Usage', unit: units.Short }, containerCpuUsageSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
       NewTimeSeriesPanel({ title: 'Memory Usage' }, containerMemoryUsageBytes.calc('sum', { selectors, groupBy }).target()),
       NewTimeSeriesPanel({ title: 'Memory Working Set' }, containerMemoryWorkingSetBytes.calc('sum', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Memory Cache', defaultUnit: Unit.BYTES_SI }, containerMemoryCache.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Cache', unit: units.BytesSI }, containerMemoryCache.calc('sum', { selectors, groupBy }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //

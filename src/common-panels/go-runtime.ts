@@ -1,6 +1,6 @@
-import { DataSourceRef, VizOrientation } from '@grafana/schema'
-import { NewPanelGroup, NewPanelRow, NewStatPanel, NewTimeSeriesPanel, PanelGroup, Unit } from './grafana-helpers'
-import { CounterMetric, GaugeMetric, SummaryMetric } from './promql-helpers'
+import { common, dashboard, NewPanelGroup, NewPanelRow, NewStatPanel, NewTimeSeriesPanel, PanelGroup } from '../grafana-helpers'
+import { CounterMetric, GaugeMetric, SummaryMetric } from '../helpers/promql'
+import * as units from '@grafana/grafana-foundation-sdk/units'
 
 // https://github.com/mknyszek/client_golang/blob/master/prometheus/go_collector.go
 // https://github.com/mknyszek/client_golang/blob/master/prometheus/process_collector.go
@@ -44,32 +44,32 @@ const processVirtualMemoryMaxBytes = new GaugeMetric('process_virtual_memory_max
 const processResidentMemoryBytes = new GaugeMetric('process_resident_memory_bytes', { description: 'Resident memory size in bytes' })
 const processStartTimeSeconds = new GaugeMetric('process_start_time_seconds', { description: 'Start time of the process since unix epoch in seconds' })
 
-export function goRuntimeMetricsPanels({ datasource, title, buildInfoMetric, selectors = [], groupBy = ['pod', 'instance'], collapsed }: { datasource?: DataSourceRef; title?: string; buildInfoMetric?: string; groupBy?: string[]; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
+export function goRuntimeMetricsPanels({ datasource, title, buildInfoMetric, selectors = [], groupBy = ['pod', 'instance'], collapsed }: { datasource?: dashboard.DataSourceRef; title?: string; buildInfoMetric?: string; groupBy?: string[]; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
   return NewPanelGroup({ title: title ?? 'Go Runtime Metrics', collapsed }, [
     NewPanelRow({ datasource, height: 3 }, [
       //
-      NewStatPanel({ title: 'Go Version', options: { reduceOptions: { fields: '/^version$/' } } }, goInfo.calc('sum', { selectors, groupBy: ['version'], type: 'instant' }).target()),
-      NewStatPanel({ title: 'Process Start Time', defaultUnit: Unit.DATE_TIME_FROM_NOW }, processStartTimeSeconds.calc('max', { selectors, type: 'instant', append: ' * 1000' }).target()),
-      NewStatPanel({ title: 'Process Max File Descriptors', defaultUnit: Unit.SHORT }, processMaxFds.calc('min', { selectors, type: 'instant' }).target()),
-      NewStatPanel({ title: 'Process Virtual Memory Max', defaultUnit: Unit.BYTES_SI }, processVirtualMemoryMaxBytes.calc('min', { selectors, type: 'instant' }).target()),
+      NewStatPanel({ title: 'Go Version', reduceFields: '/^version$/' }, goInfo.calc('sum', { selectors, groupBy: ['version'], type: 'instant' }).target()),
+      NewStatPanel({ title: 'Process Start Time', unit: units.DateTimeFromNow }, processStartTimeSeconds.calc('max', { selectors, type: 'instant', append: ' * 1000' }).target()),
+      NewStatPanel({ title: 'Process Max File Descriptors', unit: units.Short }, processMaxFds.calc('min', { selectors, type: 'instant' }).target()),
+      NewStatPanel({ title: 'Process Virtual Memory Max', unit: units.BytesSI }, processVirtualMemoryMaxBytes.calc('min', { selectors, type: 'instant' }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      buildInfoMetric ? NewStatPanel({ width: 6, title: 'Go Build Info', options: { text: { titleSize: 12 }, orientation: VizOrientation.Horizontal, reduceOptions: { fields: '/^(branch|goarch|goos|goversion|revision|tags|version)$/' } } }, new GaugeMetric(buildInfoMetric).calc('sum', { selectors, groupBy: ['branch', 'goarch', 'goos', 'goversion', 'revision', 'tags', 'version'], type: 'instant' }).target()) : undefined,
-      NewTimeSeriesPanel({ title: 'Process Open File Descriptors', defaultUnit: Unit.SHORT }, processOpenFds.calc('sum', { selectors, groupBy }).target()),
+      buildInfoMetric ? NewStatPanel({ width: 6, title: 'Go Build Info', reduceFields: '/^(branch|goarch|goos|goversion|revision|tags|version)$/', orientation: common.VizOrientation.Horizontal, textTitleSize: 12 }, new GaugeMetric(buildInfoMetric).calc('sum', { selectors, groupBy: ['branch', 'goarch', 'goos', 'goversion', 'revision', 'tags', 'version'], type: 'instant' }).target()) : undefined,
+      NewTimeSeriesPanel({ title: 'Process Open File Descriptors', unit: units.Short }, processOpenFds.calc('sum', { selectors, groupBy }).target()),
       NewTimeSeriesPanel({ title: 'Threads' }, goThreads.calc('sum', { selectors, groupBy }).target()),
       NewTimeSeriesPanel({ title: 'Goroutines' }, goGoroutines.calc('sum', { selectors, groupBy }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'CPU Usage', defaultUnit: Unit.SHORT }, processCpuSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Memory Usage', defaultUnit: Unit.BYTES_SI }, processResidentMemoryBytes.calc('sum', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Go Alloc Rate', defaultUnit: Unit.BYTES_PER_SEC_SI }, goMemstatsAllocBytesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Go Alloc Bytes', defaultUnit: Unit.BYTES_SI }, goMemstatsAllocBytes.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'CPU Usage', unit: units.Short }, processCpuSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Usage', unit: units.BytesSI }, processResidentMemoryBytes.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Go Alloc Rate', unit: units.BytesPerSecondSI }, goMemstatsAllocBytesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Go Alloc Bytes', unit: units.BytesSI }, goMemstatsAllocBytes.calc('sum', { selectors, groupBy }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Stack Memory Usage (avg)', defaultUnit: Unit.BYTES_SI }, goMemstatsStackSysBytes.calc('avg', { selectors }).target({ legendFormat: 'sys' }), goMemstatsStackInuseBytes.calc('avg', { selectors }).target({ legendFormat: 'inuse' })),
+      NewTimeSeriesPanel({ title: 'Stack Memory Usage (avg)', unit: units.BytesSI }, goMemstatsStackSysBytes.calc('avg', { selectors }).target({ legendFormat: 'sys' }), goMemstatsStackInuseBytes.calc('avg', { selectors }).target({ legendFormat: 'inuse' })),
       NewTimeSeriesPanel(
-        { title: 'Heap Memory Usage (avg)', defaultUnit: Unit.BYTES_SI },
+        { title: 'Heap Memory Usage (avg)', unit: units.BytesSI },
         //
         goMemstatsHeapSysBytes.calc('avg', { selectors }).target({ legendFormat: 'sys' }),
         goMemstatsHeapIdleBytes.calc('avg', { selectors }).target({ legendFormat: 'idle' }),
@@ -77,9 +77,9 @@ export function goRuntimeMetricsPanels({ datasource, title, buildInfoMetric, sel
         goMemstatsHeapInuseBytes.calc('avg', { selectors }).target({ legendFormat: 'inuse' }),
         goMemstatsHeapAllocBytes.calc('avg', { selectors }).target({ legendFormat: 'alloc' })
       ),
-      NewTimeSeriesPanel({ title: 'Heap Objects', defaultUnit: Unit.SHORT }, goMemstatsHeapObjects.calc('avg', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Heap Objects', unit: units.Short }, goMemstatsHeapObjects.calc('avg', { selectors, groupBy }).target()),
       NewTimeSeriesPanel(
-        { title: 'Other Memory (avg)', defaultUnit: Unit.BYTES_SI },
+        { title: 'Other Memory (avg)', unit: units.BytesSI },
         goMemstatsMspanSysBytes.calc('avg', { selectors }).target({ legendFormat: 'mspan_sys' }),
         goMemstatsMspanInuseBytes.calc('avg', { selectors }).target({ legendFormat: 'mspan_inuse' }),
         goMemstatsMcacheSysBytes.calc('avg', { selectors }).target({ legendFormat: 'mcache_sys' }),
@@ -93,16 +93,16 @@ export function goRuntimeMetricsPanels({ datasource, title, buildInfoMetric, sel
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       NewTimeSeriesPanel({ title: 'Go GC count' }, goGcDurationSeconds.count().calc('sum', 'increase', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Go GC Duration Seconds (rate)', defaultUnit: Unit.SECONDS }, goGcDurationSeconds.sum().calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Go GC Duration Seconds (avg)', defaultUnit: Unit.SECONDS }, goGcDurationSeconds.avg({ selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Go GC Duration Seconds (rate)', unit: units.Seconds }, goGcDurationSeconds.sum().calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Go GC Duration Seconds (avg)', unit: units.Seconds }, goGcDurationSeconds.avg({ selectors, groupBy }).target()),
       // NewTimeSeriesPanel({ title: 'Go GC CPU Fraction' }, goMemstatsGcCpuFraction.calc('sum', { selectors, groupBy })),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'Lookups rate', defaultUnit: Unit.SHORT }, goMemstatsLookupsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Mallocs rate', defaultUnit: Unit.SHORT }, goMemstatsMallocsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Frees rate', defaultUnit: Unit.SHORT }, goMemstatsFreesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Process Virtual Memory', defaultUnit: Unit.BYTES_SI }, processVirtualMemoryBytes.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Lookups rate', unit: units.Short }, goMemstatsLookupsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Mallocs rate', unit: units.Short }, goMemstatsMallocsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Frees rate', unit: units.Short }, goMemstatsFreesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Process Virtual Memory', unit: units.BytesSI }, processVirtualMemoryBytes.calc('sum', { selectors, groupBy }).target()),
     ]),
   ])
 }

@@ -1,10 +1,9 @@
-import { Dashboard, DashboardCursorSync, DataSourceRef, ThresholdsConfig, ThresholdsMode, defaultDashboard } from '@grafana/schema'
-import { GaugeMetric, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, Unit, autoLayout, goRuntimeMetricsPanels, tableExcludeByName } from '../src/grafana-helpers'
+import { GaugeMetric, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, dashboard, goRuntimeMetricsPanels, newDashboard, tableExcludeByName, units } from '../src/grafana-helpers'
 
 // https://github.com/pdf/zfs_exporter
 // https://grafana.com/grafana/dashboards/10664-smart-disk-data/
 
-const datasource: DataSourceRef = {
+const datasource: dashboard.DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
 }
 
@@ -51,132 +50,110 @@ const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Overview' }, [
     NewPanelRow({ datasource, height: 3 }, [
       //
-      NewStatPanel({ title: 'Pools', defaultUnit: Unit.SHORT }, poolAllocated.calc('count', { selectors }).target()),
-      NewStatPanel({ title: 'Datasets', defaultUnit: Unit.SHORT }, datasetLogicalUsedBytes.calc('count', { selectors }).target()),
+      NewStatPanel({ title: 'Pools' }, poolAllocated.calc('count', { selectors }).target()),
+      NewStatPanel({ title: 'Datasets' }, datasetLogicalUsedBytes.calc('count', { selectors }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       NewTablePanel({
         title: 'ZFS Pools',
-        tableConfig: {
-          queries: {
-            pool: { name: 'Pool' },
-            ALLOCATED: { name: 'Allocated', unit: Unit.BYTES_SI, target: poolAllocated.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
-            DUPLICATION_RATIO: { name: 'Deduplication Ratio', unit: Unit.SHORT, target: poolDedupratio.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
-            FRAGMENTATION_RATIO: { name: 'Fragmentation Ratio', unit: Unit.SHORT, target: poolFragmentation.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
-            FREE: { name: 'Free', unit: Unit.BYTES_SI, target: poolFree.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
-            FREEING: { name: 'Freeing', unit: Unit.BYTES_SI, target: poolFreeing.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
-            HEALTH: { name: 'Health', unit: Unit.SHORT, target: poolHealth.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
-            LEAKED: { name: 'Leaked', unit: Unit.BYTES_SI, target: poolLeaked.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
-            READONLY: { name: 'Readonly', unit: Unit.SHORT, target: poolReadonly.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
-            SIZE: { name: 'Size', unit: Unit.BYTES_SI, target: poolSize.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
-          },
-          excludeColumns: ['Time'],
+        queries: {
+          pool: { name: 'Pool' },
+          ALLOCATED: { name: 'Allocated', unit: units.BytesSI, target: poolAllocated.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
+          DUPLICATION_RATIO: { name: 'Deduplication Ratio', target: poolDedupratio.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
+          FRAGMENTATION_RATIO: { name: 'Fragmentation Ratio', target: poolFragmentation.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
+          FREE: { name: 'Free', unit: units.BytesSI, target: poolFree.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
+          FREEING: { name: 'Freeing', unit: units.BytesSI, target: poolFreeing.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
+          HEALTH: { name: 'Health', target: poolHealth.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
+          LEAKED: { name: 'Leaked', unit: units.BytesSI, target: poolLeaked.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
+          READONLY: { name: 'Readonly', target: poolReadonly.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
+          SIZE: { name: 'Size', unit: units.BytesSI, target: poolSize.calc('sum', { selectors, groupBy: ['pool'], type: 'instant' }).target() },
         },
+        excludeColumns: ['Time'],
       }),
     ]),
     NewPanelRow({ datasource, height: 20 }, [
       NewTablePanel({
         title: 'ZFS Datasets',
-        tableConfig: {
-          queries: {
-            name: { name: 'Name', width: 400 },
-            pool: { name: 'Pool', width: 140 },
-            type: { name: 'Type', width: 100 },
-            AVAILABLE: { name: 'Available', unit: Unit.BYTES_SI, target: datasetAvailableBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
-            LOGICAL_USED: { name: 'Logical Used', unit: Unit.BYTES_SI, target: datasetLogicalUsedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
-            QUOTA: { name: 'Quota', unit: Unit.BYTES_SI, target: datasetQuotaBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
-            REFERENCED: { name: 'Referenced', unit: Unit.BYTES_SI, target: datasetReferencedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
-            USED_BY: { name: 'Used by', unit: Unit.BYTES_SI, target: datasetUsedByDatasetBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
-            USED: { name: 'Used', unit: Unit.BYTES_SI, target: datasetUsedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
-            WRITTEN: { name: 'Written', unit: Unit.BYTES_SI, target: datasetWrittenBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
-            PERCENTAGE_USED: { name: 'Percentage Used', unit: Unit.PERCENTUNIT, target: { expr: `${datasetUsedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' })} / ${datasetQuotaBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' })}`, legendFormat: 'Percentage Used', type: 'instant', format: 'table' } },
-          },
-          excludeColumns: ['Time'],
+        queries: {
+          name: { name: 'Name', width: 400 },
+          pool: { name: 'Pool', width: 140 },
+          type: { name: 'Type', width: 100 },
+          AVAILABLE: { name: 'Available', unit: units.BytesSI, target: datasetAvailableBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
+          LOGICAL_USED: { name: 'Logical Used', unit: units.BytesSI, target: datasetLogicalUsedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
+          QUOTA: { name: 'Quota', unit: units.BytesSI, target: datasetQuotaBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
+          REFERENCED: { name: 'Referenced', unit: units.BytesSI, target: datasetReferencedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
+          USED_BY: { name: 'Used by', unit: units.BytesSI, target: datasetUsedByDatasetBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
+          USED: { name: 'Used', unit: units.BytesSI, target: datasetUsedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
+          WRITTEN: { name: 'Written', unit: units.BytesSI, target: datasetWrittenBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' }).target() },
+          PERCENTAGE_USED: { name: 'Percentage Used', unit: units.PercentUnit, target: { expr: `${datasetUsedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' })} / ${datasetQuotaBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'], type: 'instant' })}`, legendFormat: 'Percentage Used', type: 'instant', format: 'table' } },
         },
+        excludeColumns: ['Time'],
       }),
     ]),
   ]),
   NewPanelGroup({ title: 'ZFS Pools' }, [
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Pool Capacity Ratio', defaultUnit: Unit.PERCENTUNIT, description: poolCapacityRatio.description() }, poolCapacityRatio.calc('sum', { selectors, groupBy: ['pool'] }).target()),
-      NewTimeSeriesPanel({ title: 'Pool Deduplication Ratio', defaultUnit: Unit.SHORT, description: poolDedupratio.description() }, poolDedupratio.calc('sum', { selectors, groupBy: ['pool'] }).target()),
-      NewTimeSeriesPanel({ title: 'Pool Fragmentation Ratio', defaultUnit: Unit.SHORT, description: poolFragmentation.description() }, poolFragmentation.calc('sum', { selectors, groupBy: ['pool'] }).target()),
-      NewTimeSeriesPanel({ title: 'Pool Health', defaultUnit: Unit.SHORT, description: poolHealth.description() }, poolHealth.calc('sum', { selectors, groupBy: ['pool'] }).target()),
+      NewTimeSeriesPanel({ title: 'Pool Capacity Ratio', unit: units.PercentUnit, description: poolCapacityRatio.description() }, poolCapacityRatio.calc('sum', { selectors, groupBy: ['pool'] }).target()),
+      NewTimeSeriesPanel({ title: 'Pool Deduplication Ratio', description: poolDedupratio.description() }, poolDedupratio.calc('sum', { selectors, groupBy: ['pool'] }).target()),
+      NewTimeSeriesPanel({ title: 'Pool Fragmentation Ratio', description: poolFragmentation.description() }, poolFragmentation.calc('sum', { selectors, groupBy: ['pool'] }).target()),
+      NewTimeSeriesPanel({ title: 'Pool Health', description: poolHealth.description() }, poolHealth.calc('sum', { selectors, groupBy: ['pool'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Pool Leaked', defaultUnit: Unit.BYTES_SI, description: poolLeaked.description() }, poolLeaked.calc('sum', { selectors, groupBy: ['pool'] }).target()),
-      NewTimeSeriesPanel({ title: 'Pool Readonly', defaultUnit: Unit.SHORT, description: poolReadonly.description() }, poolReadonly.calc('sum', { selectors, groupBy: ['pool'] }).target()),
-      NewTimeSeriesPanel({ title: 'Pool Size', defaultUnit: Unit.BYTES_SI, description: poolSize.description() }, poolSize.calc('sum', { selectors, groupBy: ['pool'] }).target()),
-      NewTimeSeriesPanel({ title: 'Pool Free', defaultUnit: Unit.BYTES_SI, description: poolFree.description() }, poolFree.calc('sum', { selectors, groupBy: ['pool'] }).target()),
+      NewTimeSeriesPanel({ title: 'Pool Leaked', unit: units.BytesSI, description: poolLeaked.description() }, poolLeaked.calc('sum', { selectors, groupBy: ['pool'] }).target()),
+      NewTimeSeriesPanel({ title: 'Pool Readonly', description: poolReadonly.description() }, poolReadonly.calc('sum', { selectors, groupBy: ['pool'] }).target()),
+      NewTimeSeriesPanel({ title: 'Pool Size', unit: units.BytesSI, description: poolSize.description() }, poolSize.calc('sum', { selectors, groupBy: ['pool'] }).target()),
+      NewTimeSeriesPanel({ title: 'Pool Free', unit: units.BytesSI, description: poolFree.description() }, poolFree.calc('sum', { selectors, groupBy: ['pool'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'Pool Freeing', defaultUnit: Unit.BYTES_SI, description: poolFreeing.description() }, poolFreeing.calc('sum', { selectors, groupBy: ['pool'] }).target()),
-      NewTimeSeriesPanel({ title: 'Pool Expand Size', defaultUnit: Unit.BYTES_SI, description: poolExpandsize.description() }, poolExpandsize.calc('sum', { selectors, groupBy: ['pool'] }).target()),
-      NewTimeSeriesPanel({ title: 'Pool Allocated', defaultUnit: Unit.BYTES_SI, description: poolAllocated.description() }, poolAllocated.calc('sum', { selectors, groupBy: ['pool'] }).target()),
+      NewTimeSeriesPanel({ title: 'Pool Freeing', unit: units.BytesSI, description: poolFreeing.description() }, poolFreeing.calc('sum', { selectors, groupBy: ['pool'] }).target()),
+      NewTimeSeriesPanel({ title: 'Pool Expand Size', unit: units.BytesSI, description: poolExpandsize.description() }, poolExpandsize.calc('sum', { selectors, groupBy: ['pool'] }).target()),
+      NewTimeSeriesPanel({ title: 'Pool Allocated', unit: units.BytesSI, description: poolAllocated.description() }, poolAllocated.calc('sum', { selectors, groupBy: ['pool'] }).target()),
     ]),
   ]),
   NewPanelGroup({ title: 'ZFS Datasets' }, [
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Dataset Percentage Used', defaultUnit: Unit.PERCENTUNIT }, { expr: `${datasetUsedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] })} / ${datasetQuotaBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] })}`, legendFormat: '{{name}} - {{pool}} - {{type}}', type: 'instant' }),
-      NewTimeSeriesPanel({ title: 'Dataset Available', defaultUnit: Unit.BYTES_SI, description: datasetAvailableBytes.description() }, datasetAvailableBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Logical Used', defaultUnit: Unit.BYTES_SI, description: datasetLogicalUsedBytes.description() }, datasetLogicalUsedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Quota', defaultUnit: Unit.BYTES_SI, description: datasetQuotaBytes.description() }, datasetQuotaBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Percentage Used', unit: units.PercentUnit }, { expr: `${datasetUsedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] })} / ${datasetQuotaBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] })}`, legendFormat: '{{name}} - {{pool}} - {{type}}', type: 'instant' }),
+      NewTimeSeriesPanel({ title: 'Dataset Available', unit: units.BytesSI, description: datasetAvailableBytes.description() }, datasetAvailableBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Logical Used', unit: units.BytesSI, description: datasetLogicalUsedBytes.description() }, datasetLogicalUsedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Quota', unit: units.BytesSI, description: datasetQuotaBytes.description() }, datasetQuotaBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Dataset Used By', defaultUnit: Unit.BYTES_SI, description: datasetUsedByDatasetBytes.description() }, datasetUsedByDatasetBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Used', defaultUnit: Unit.BYTES_SI, description: datasetUsedBytes.description() }, datasetUsedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Written', defaultUnit: Unit.BYTES_SI, description: datasetWrittenBytes.description() }, datasetWrittenBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Referenced', defaultUnit: Unit.BYTES_SI, description: datasetReferencedBytes.description() }, datasetReferencedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Used By', unit: units.BytesSI, description: datasetUsedByDatasetBytes.description() }, datasetUsedByDatasetBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Used', unit: units.BytesSI, description: datasetUsedBytes.description() }, datasetUsedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Written', unit: units.BytesSI, description: datasetWrittenBytes.description() }, datasetWrittenBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Referenced', unit: units.BytesSI, description: datasetReferencedBytes.description() }, datasetReferencedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Dataset Fragmentation Ratio', defaultUnit: Unit.SHORT }, datasetFragmentationRatio.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Referenced Compression Ratio', defaultUnit: Unit.SHORT }, datasetReferencedCompressionRatio.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Used By Children', defaultUnit: Unit.BYTES_SI }, datasetUsedByChildrenBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Fragmentation Ratio' }, datasetFragmentationRatio.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Referenced Compression Ratio' }, datasetReferencedCompressionRatio.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Used By Children', unit: units.BytesSI }, datasetUsedByChildrenBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Dataset Used By Referenced Reservation', defaultUnit: Unit.BYTES_SI }, datasetUsedByReferencedReservationBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Used By Snapshot', defaultUnit: Unit.BYTES_SI }, datasetUsedBySnapshotBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Volume Size', defaultUnit: Unit.BYTES_SI }, datasetVolumeSizeBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Used By Referenced Reservation', unit: units.BytesSI }, datasetUsedByReferencedReservationBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Used By Snapshot', unit: units.BytesSI }, datasetUsedBySnapshotBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Volume Size', unit: units.BytesSI }, datasetVolumeSizeBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Dataset Snapshot Count Total', defaultUnit: Unit.SHORT }, datasetSnapshotCountTotal.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Snapshot Limit Total', defaultUnit: Unit.SHORT }, datasetSnapshotLimitTotal.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Referenced Quota', defaultUnit: Unit.BYTES_SI }, datasetReferencedQuotaBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Snapshot Count Total' }, datasetSnapshotCountTotal.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Snapshot Limit Total' }, datasetSnapshotLimitTotal.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Referenced Quota', unit: units.BytesSI }, datasetReferencedQuotaBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Dataset Referenced Reservation', defaultUnit: Unit.BYTES_SI }, datasetReferencedReservationBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Logical Referenced', defaultUnit: Unit.BYTES_SI }, datasetLogicalReferencedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Allocation', defaultUnit: Unit.BYTES_SI }, datasetAllocatedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Referenced Reservation', unit: units.BytesSI }, datasetReferencedReservationBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Logical Referenced', unit: units.BytesSI }, datasetLogicalReferencedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Allocation', unit: units.BytesSI }, datasetAllocatedBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'Dataset Compression Ratio', defaultUnit: Unit.BYTES_SI }, datasetCompressionRatio.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
-      NewTimeSeriesPanel({ title: 'Dataset Reservation', defaultUnit: Unit.BYTES_SI }, datasetReservationBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Compression Ratio', unit: units.BytesSI }, datasetCompressionRatio.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
+      NewTimeSeriesPanel({ title: 'Dataset Reservation', unit: units.BytesSI }, datasetReservationBytes.calc('sum', { selectors, groupBy: ['name', 'pool', 'type'] }).target()),
     ]),
   ]),
   goRuntimeMetricsPanels({ datasource, selectors: `instance=~"$instace"`, groupBy: ['instance'], collapsed: true }),
 ]
 
-export const dashboard: Dashboard = {
-  ...defaultDashboard,
-  description: 'Dashboard for ZFS',
-  graphTooltip: DashboardCursorSync.Crosshair,
-  tags: ['zfs'],
-  time: {
-    from: 'now-6h',
-    to: 'now',
-  },
-  title: 'ZFS',
-  uid: 'zfs',
-  version: 1,
-  panels: autoLayout(panels),
-  templating: {
-    list: [
-      //
-      NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }),
-      NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(zfs_exporter_build_info, instance)', includeAll: true, multi: true }),
-      NewQueryVariable({ datasource, name: 'pool', label: 'Pool', query: 'label_values(zfs_pool_allocated_bytes, pool)', includeAll: true, multi: true }),
-    ],
-  },
-}
+export const zfsDashboard = newDashboard({
+  variables: [NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }), NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(zfs_exporter_build_info, instance)', includeAll: true, multi: true }), NewQueryVariable({ datasource, name: 'pool', label: 'Pool', query: 'label_values(zfs_pool_allocated_bytes, pool)', includeAll: true, multi: true })],
+  panels,
+})

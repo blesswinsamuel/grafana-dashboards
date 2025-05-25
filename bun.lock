@@ -5,7 +5,6 @@
       "name": "grafana-dashboard-helpers",
       "dependencies": {
         "@grafana/grafana-foundation-sdk": "^11.1.0-cogv0.0.x.1746458718",
-        "@grafana/schema": "11.5.0",
         "yaml": "^2.7.1",
       },
       "devDependencies": {
@@ -16,8 +15,6 @@
   },
   "packages": {
     "@grafana/grafana-foundation-sdk": ["@grafana/grafana-foundation-sdk@11.1.0-cogv0.0.x.1746458718", "", { "dependencies": { "tslib": "^2.6.2" } }, "sha512-cPP5li3vKoQ8ueQM2b9y+2DsqjVGqNq9O04+bLL9bhFwDC+6wlXQU2shW7ngfP7hyKW4bs04ldHXNr9qGcZZhg=="],
-
-    "@grafana/schema": ["@grafana/schema@11.5.0", "", { "dependencies": { "tslib": "2.8.1" } }, "sha512-LLyrZeTEDvggzgG+4aKELRE3fY/GVOaU+L9qnBU1jlqZTKo3KTJ5fpUswRz2D7Gxt9b6viPIXJspMtLT5yr3bA=="],
 
     "@types/node": ["@types/node@22.15.18", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-v1DKRfUdyW+jJhZNEI1PYy29S2YRxMV5AOO/x/SjKmW0acCIOqmbj6Haf9eHAhsPmrhlHSxEhv/1WszcLWV4cg=="],
 

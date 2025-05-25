@@ -29,6 +29,9 @@
         ]
     },
     "include": [
-        "src/*"
+        "src/*",
+        "src/common-panels/go-runtime.ts",
+        "src/common-panels/k8s-cadvisor.ts",
+        "src/helpers/promql.ts"
     ],
 }

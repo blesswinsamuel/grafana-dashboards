@@ -1,6 +1,4 @@
-import { DataSourceRef, VizOrientation } from '@grafana/schema'
-import { NewPanelGroup, NewPanelRow, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelGroup, Unit } from './grafana-helpers'
-import { CounterMetric, GaugeMetric, SummaryMetric } from './promql-helpers'
+import { CounterMetric, dashboard, GaugeMetric, NewPanelGroup, NewPanelRow, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelGroup } from '../grafana-helpers'
 
 // https://github.com/kubernetes/kube-state-metrics/tree/main/docs/metrics/workload
 
@@ -178,30 +176,28 @@ const statefulsetLabels = new GaugeMetric('kube_statefulset_labels', { descripti
 const statefulsetStatusCurrentRevision = new GaugeMetric('kube_statefulset_status_current_revision', { labels: ['statefulset', 'namespace', 'revision'] })
 const statefulsetStatusUpdateRevision = new GaugeMetric('kube_statefulset_status_update_revision', { labels: ['statefulset', 'namespace', 'revision'] })
 
-export function podMetricsPanels({ datasource, title, selectors = [], collapsed }: { datasource?: DataSourceRef; title?: string; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
+export function podMetricsPanels({ datasource, title, selectors = [], collapsed }: { datasource?: dashboard.DataSourceRef; title?: string; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
   const groupBy = ['namespace', 'pod']
   return NewPanelGroup({ title: title ?? 'Kubernetes Pod Metrics', collapsed }, [
     NewPanelRow({ datasource, height: 14 }, [
       NewTablePanel({
         title: 'Pod Info',
-        tableConfig: {
-          queries: {
-            created_by_kind: { name: 'Created By' },
-            created_by_name: { name: 'Created By Name' },
-            host_ip: { name: 'Host IP' },
-            host_network: { name: 'Host Network' },
-            namespace: { name: 'Namespace' },
-            node: { name: 'Node' },
-            pod: { name: 'Pod' },
-            pod_ip: { name: 'Pod IP' },
-            uid: { name: 'UID' },
+        queries: {
+          created_by_kind: { name: 'Created By' },
+          created_by_name: { name: 'Created By Name' },
+          host_ip: { name: 'Host IP' },
+          host_network: { name: 'Host Network' },
+          namespace: { name: 'Namespace' },
+          node: { name: 'Node' },
+          pod: { name: 'Pod' },
+          pod_ip: { name: 'Pod IP' },
+          uid: { name: 'UID' },
 
-            'Pod Info': { target: podInfo.calc('max', { selectors, groupBy: podInfo.labels(), type: 'instant' }).target() },
-            'Pod Start Time': { target: podStartTime.calc('max', { selectors, groupBy: podStartTime.labels(), type: 'instant' }).target() },
-            'Pod Completion Time': { target: podCompletionTime.calc('max', { selectors, groupBy: podCompletionTime.labels(), type: 'instant' }).target() },
-          },
-          excludeColumns: ['Time', 'Value #Pod Info'],
+          'Pod Info': { target: podInfo.calc('max', { selectors, groupBy: podInfo.labels(), type: 'instant' }).target() },
+          'Pod Start Time': { target: podStartTime.calc('max', { selectors, groupBy: podStartTime.labels(), type: 'instant' }).target() },
+          'Pod Completion Time': { target: podCompletionTime.calc('max', { selectors, groupBy: podCompletionTime.labels(), type: 'instant' }).target() },
         },
+        excludeColumns: ['Time', 'Value #Pod Info'],
       }),
     ]),
   ])

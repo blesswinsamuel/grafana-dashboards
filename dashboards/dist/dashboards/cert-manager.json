@@ -1,50 +1,88 @@
 {
+  "timezone": "browser",
   "editable": true,
-  "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "links": [],
+  "fiscalYearStartMonth": 0,
+  "schemaVersion": 39,
+  "templating": {
+    "list": [
+      {
+        "type": "datasource",
+        "name": "DS_PROMETHEUS",
+        "skipUrlSync": false,
+        "multi": false,
+        "includeAll": false,
+        "auto": false,
+        "auto_min": "10s",
+        "auto_count": 30,
+        "label": "Prometheus",
+        "query": "prometheus",
+        "hide": 0
+      }
+    ]
+  },
+  "annotations": {},
+  "title": "Cert Manager",
   "panels": [
     {
-      "type": "row",
-      "title": "Ready status",
-      "panels": [],
-      "collapsed": false,
+      "type": "text",
+      "transparent": true,
+      "repeatDirection": "h",
       "gridPos": {
-        "x": 0,
-        "y": 0,
+        "h": 3,
         "w": 24,
-        "h": 1
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "This is a generated dashboard. Any changes made here will be lost on the next generation."
       }
     },
     {
-      "links": [],
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Ready status",
+      "gridPos": {
+        "x": 0,
+        "y": 3,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "table",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(certmanager_certificate_ready_status{}) by (issuer_group, issuer_kind, issuer_name, name, namespace, condition) > 0",
-          "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}} - {{condition}}",
-          "range": false,
-          "instant": true,
+          "refId": "discard",
           "format": "table",
-          "refId": "discard"
+          "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}} - {{condition}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "max(certmanager_certificate_expiration_timestamp_seconds{}) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
-          "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
-          "range": false,
-          "instant": true,
+          "refId": "expiration_time",
           "format": "table",
-          "refId": "expiration_time"
+          "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "max(certmanager_certificate_renewal_timestamp_seconds{}) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
-          "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
-          "range": false,
-          "instant": true,
+          "refId": "renewal_time",
           "format": "table",
-          "refId": "renewal_time"
+          "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
+          "instant": true,
+          "range": false
         }
       ],
+      "title": "Ready status",
       "transformations": [
         {
           "id": "merge",
@@ -72,18 +110,6 @@
           }
         }
       ],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "table",
-      "title": "Ready status",
-      "gridPos": {
-        "x": 0,
-        "y": 1,
-        "w": 24,
-        "h": 24
-      },
       "fieldConfig": {
         "defaults": {},
         "overrides": [
@@ -148,43 +174,45 @@
         ]
       },
       "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "showTypeIcons": false,
+        "footer": {
+          "show": false,
+          "reducer": [],
+          "countRows": false
+        },
         "cellHeight": "md",
-        "frameIndex": -1,
-        "showHeader": true
+        "sortBy": []
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 24,
+        "h": 24
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(increase(certmanager_controller_sync_call_count{}[$__interval])) by (controller)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{controller}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "The number of sync() calls made by a controller",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 25,
-        "w": 12,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -195,39 +223,30 @@
             "drawStyle": "bars",
             "fillOpacity": 100,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "never",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "normal"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
-          "calcs": [
-            "sum"
-          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
+          "calcs": [
+            "sum"
+          ],
           "sortBy": "Total",
           "sortDesc": true
         },
@@ -235,40 +254,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(increase(certmanager_http_acme_client_request_count{}[$__interval])) by (host, method, path, scheme, status) > 0",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{host}} - {{method}} - {{path}} - {{scheme}} - {{status}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "The number of requests made by the ACME client",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 25,
-        "w": 12,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -279,39 +293,30 @@
             "drawStyle": "bars",
             "fillOpacity": 100,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "never",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "normal"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
-          "calcs": [
-            "sum"
-          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
+          "calcs": [
+            "sum"
+          ],
           "sortBy": "Total",
           "sortDesc": true
         },
@@ -319,40 +324,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 28,
+        "w": 12,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "max(certmanager_certificate_expiration_timestamp_seconds{}) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Expiration time",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 33,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "dateTimeFromNow",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -363,42 +363,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "dateTimeFromNow"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -406,40 +397,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "max(certmanager_certificate_renewal_timestamp_seconds{}) by (issuer_group, issuer_kind, issuer_name, name, namespace) * 1000",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Renewal time",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 8,
-        "y": 33,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "dateTimeFromNow",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -450,42 +436,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "dateTimeFromNow"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -493,40 +470,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 36,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(rate(certmanager_http_acme_client_request_duration_seconds_sum{}[$__rate_interval])) by (host, method, path, scheme, status) / sum(rate(certmanager_http_acme_client_request_duration_seconds_count{}[$__rate_interval])) by (host, method, path, scheme, status)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{host}} - {{method}} - {{path}} - {{scheme}} - {{status}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Avg HTTP request latencies for the ACME client",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 16,
-        "y": 33,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "s",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -537,42 +509,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "s"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -580,37 +543,24 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 36,
+        "w": 8,
+        "h": 8
       }
     }
   ],
-  "schemaVersion": 39,
   "tags": [
     "cert-manager"
   ],
-  "timezone": "browser",
-  "description": "Dashboard for cert-manager",
-  "time": {
-    "from": "now-6h",
-    "to": "now"
-  },
-  "title": "Cert Manager",
   "uid": "cert-manager",
-  "version": 1,
-  "templating": {
-    "list": [
-      {
-        "allowCustomValue": true,
-        "includeAll": false,
-        "multi": false,
-        "options": [],
-        "skipUrlSync": false,
-        "datasource": null,
-        "hide": 0,
-        "type": "datasource",
-        "label": "Prometheus",
-        "name": "DS_PROMETHEUS",
-        "query": "prometheus"
-      }
-    ]
+  "time": {
+    "from": "now-24h",
+    "to": "now"
   }
 }

@@ -1,49 +1,113 @@
 {
+  "timezone": "browser",
   "editable": true,
-  "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "links": [],
+  "fiscalYearStartMonth": 0,
+  "schemaVersion": 39,
+  "templating": {
+    "list": [
+      {
+        "type": "datasource",
+        "name": "DS_PROMETHEUS",
+        "skipUrlSync": false,
+        "multi": false,
+        "includeAll": false,
+        "auto": false,
+        "auto_min": "10s",
+        "auto_count": 30,
+        "label": "Prometheus",
+        "query": "prometheus",
+        "hide": 0
+      },
+      {
+        "type": "query",
+        "name": "instance",
+        "skipUrlSync": false,
+        "multi": true,
+        "includeAll": true,
+        "auto": false,
+        "auto_min": "10s",
+        "auto_count": 30,
+        "label": "Instance",
+        "query": "label_values(zfs_exporter_build_info, instance)",
+        "hide": 0,
+        "datasource": {
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1
+      },
+      {
+        "type": "query",
+        "name": "pool",
+        "skipUrlSync": false,
+        "multi": true,
+        "includeAll": true,
+        "auto": false,
+        "auto_min": "10s",
+        "auto_count": 30,
+        "label": "Pool",
+        "query": "label_values(zfs_pool_allocated_bytes, pool)",
+        "hide": 0,
+        "datasource": {
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1
+      }
+    ]
+  },
+  "annotations": {},
+  "title": "ZFS",
   "panels": [
     {
-      "type": "row",
-      "title": "Overview",
-      "panels": [],
-      "collapsed": false,
+      "type": "text",
+      "transparent": true,
+      "repeatDirection": "h",
       "gridPos": {
-        "x": 0,
-        "y": 0,
+        "h": 3,
         "w": 24,
-        "h": 1
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "This is a generated dashboard. Any changes made here will be lost on the next generation."
       }
     },
     {
-      "links": [],
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Overview",
+      "gridPos": {
+        "x": 0,
+        "y": 3,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "count(zfs_pool_allocated_bytes{instance=~\"$instance\", pool=~\"$pool\"})",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "value",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "stat",
       "title": "Pools",
-      "gridPos": {
-        "x": 0,
-        "y": 1,
-        "w": 12,
-        "h": 3
-      },
       "fieldConfig": {
         "defaults": {
+          "unit": "decbytes",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -53,58 +117,55 @@
                 "value": null
               }
             ]
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
       "options": {
+        "graphMode": "area",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
         "reduceOptions": {
-          "values": false,
-          "fields": "",
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "showPercentChange": false,
-        "wideLayout": true,
         "percentChangeColorMode": "standard",
-        "text": {}
+        "orientation": "auto"
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 3
       }
     },
     {
-      "links": [],
+      "type": "stat",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "count(zfs_dataset_logical_used_bytes{instance=~\"$instance\", pool=~\"$pool\"})",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "value",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "stat",
       "title": "Datasets",
-      "gridPos": {
-        "x": 12,
-        "y": 1,
-        "w": 12,
-        "h": 3
-      },
       "fieldConfig": {
         "defaults": {
+          "unit": "decbytes",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -114,107 +175,218 @@
                 "value": null
               }
             ]
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
       "options": {
+        "graphMode": "area",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
         "reduceOptions": {
-          "values": false,
-          "fields": "",
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "showPercentChange": false,
-        "wideLayout": true,
         "percentChangeColorMode": "standard",
-        "text": {}
+        "orientation": "auto"
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 3
       }
     },
     {
-      "links": [],
+      "type": "table",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_pool_allocated_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
-          "legendFormat": "{{pool}}",
-          "range": false,
-          "instant": true,
+          "refId": "ALLOCATED",
           "format": "table",
-          "refId": "ALLOCATED"
+          "legendFormat": "{{pool}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_pool_deduplication_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
-          "legendFormat": "{{pool}}",
-          "range": false,
-          "instant": true,
+          "refId": "DUPLICATION_RATIO",
           "format": "table",
-          "refId": "DUPLICATION_RATIO"
+          "legendFormat": "{{pool}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_pool_fragmentation_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
-          "legendFormat": "{{pool}}",
-          "range": false,
-          "instant": true,
+          "refId": "FRAGMENTATION_RATIO",
           "format": "table",
-          "refId": "FRAGMENTATION_RATIO"
+          "legendFormat": "{{pool}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_pool_free_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
-          "legendFormat": "{{pool}}",
-          "range": false,
-          "instant": true,
+          "refId": "FREE",
           "format": "table",
-          "refId": "FREE"
+          "legendFormat": "{{pool}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_pool_freeing_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
-          "legendFormat": "{{pool}}",
-          "range": false,
-          "instant": true,
+          "refId": "FREEING",
           "format": "table",
-          "refId": "FREEING"
+          "legendFormat": "{{pool}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_pool_health{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
-          "legendFormat": "{{pool}}",
-          "range": false,
-          "instant": true,
+          "refId": "HEALTH",
           "format": "table",
-          "refId": "HEALTH"
+          "legendFormat": "{{pool}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_pool_leaked_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
-          "legendFormat": "{{pool}}",
-          "range": false,
-          "instant": true,
+          "refId": "LEAKED",
           "format": "table",
-          "refId": "LEAKED"
+          "legendFormat": "{{pool}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_pool_readonly{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
-          "legendFormat": "{{pool}}",
-          "range": false,
-          "instant": true,
+          "refId": "READONLY",
           "format": "table",
-          "refId": "READONLY"
+          "legendFormat": "{{pool}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_pool_size_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
-          "legendFormat": "{{pool}}",
-          "range": false,
-          "instant": true,
+          "refId": "SIZE",
           "format": "table",
-          "refId": "SIZE"
+          "legendFormat": "{{pool}}",
+          "instant": true,
+          "range": false
         }
       ],
+      "title": "ZFS Pools",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decbytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pool"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #ALLOCATED"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #DUPLICATION_RATIO"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #FRAGMENTATION_RATIO"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #FREE"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #FREEING"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #HEALTH"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #LEAKED"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #READONLY"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #SIZE"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          }
+        ]
+      },
       "transformations": [
         {
           "id": "merge",
@@ -253,267 +425,103 @@
           }
         }
       ],
-      "transparent": false,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "showTypeIcons": false,
+        "footer": {
+          "show": false,
+          "reducer": [],
+          "countRows": false
+        },
+        "cellHeight": "md",
+        "sortBy": []
+      },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
       },
-      "type": "table",
-      "title": "ZFS Pools",
       "gridPos": {
         "x": 0,
-        "y": 4,
+        "y": 7,
         "w": 24,
         "h": 8
-      },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "pool"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #ALLOCATED"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "decbytes"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #DUPLICATION_RATIO"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #FRAGMENTATION_RATIO"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #FREE"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "decbytes"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #FREEING"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "decbytes"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #HEALTH"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #LEAKED"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "decbytes"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #READONLY"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #SIZE"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "decbytes"
-              }
-            ]
-          }
-        ]
-      },
-      "options": {
-        "cellHeight": "md",
-        "frameIndex": -1,
-        "showHeader": true
       }
     },
     {
-      "links": [],
+      "type": "table",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_available_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
-          "legendFormat": "{{name}} - {{pool}} - {{type}}",
-          "range": false,
-          "instant": true,
+          "refId": "AVAILABLE",
           "format": "table",
-          "refId": "AVAILABLE"
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_dataset_logical_used_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
-          "legendFormat": "{{name}} - {{pool}} - {{type}}",
-          "range": false,
-          "instant": true,
+          "refId": "LOGICAL_USED",
           "format": "table",
-          "refId": "LOGICAL_USED"
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_dataset_quota_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
-          "legendFormat": "{{name}} - {{pool}} - {{type}}",
-          "range": false,
-          "instant": true,
+          "refId": "QUOTA",
           "format": "table",
-          "refId": "QUOTA"
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_dataset_referenced_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
-          "legendFormat": "{{name}} - {{pool}} - {{type}}",
-          "range": false,
-          "instant": true,
+          "refId": "REFERENCED",
           "format": "table",
-          "refId": "REFERENCED"
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_dataset_used_by_dataset_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
-          "legendFormat": "{{name}} - {{pool}} - {{type}}",
-          "range": false,
-          "instant": true,
+          "refId": "USED_BY",
           "format": "table",
-          "refId": "USED_BY"
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_dataset_used_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
-          "legendFormat": "{{name}} - {{pool}} - {{type}}",
-          "range": false,
-          "instant": true,
+          "refId": "USED",
           "format": "table",
-          "refId": "USED"
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_dataset_written_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
-          "legendFormat": "{{name}} - {{pool}} - {{type}}",
-          "range": false,
-          "instant": true,
+          "refId": "WRITTEN",
           "format": "table",
-          "refId": "WRITTEN"
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(zfs_dataset_used_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type) / sum(zfs_dataset_quota_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
-          "legendFormat": "Percentage Used",
-          "range": false,
-          "instant": true,
+          "refId": "PERCENTAGE_USED",
           "format": "table",
-          "refId": "PERCENTAGE_USED"
+          "legendFormat": "Percentage Used",
+          "instant": true,
+          "range": false
         }
       ],
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "indexByName": {
-              "name": 0,
-              "pool": 1,
-              "type": 2,
-              "Value #AVAILABLE": 3,
-              "Value #LOGICAL_USED": 4,
-              "Value #QUOTA": 5,
-              "Value #REFERENCED": 6,
-              "Value #USED_BY": 7,
-              "Value #USED": 8,
-              "Value #WRITTEN": 9,
-              "Value #PERCENTAGE_USED": 10
-            },
-            "excludeByName": {
-              "Time": true
-            },
-            "renameByName": {
-              "name": "Name",
-              "pool": "Pool",
-              "type": "Type",
-              "Value #AVAILABLE": "Available",
-              "Value #LOGICAL_USED": "Logical Used",
-              "Value #QUOTA": "Quota",
-              "Value #REFERENCED": "Referenced",
-              "Value #USED_BY": "Used by",
-              "Value #USED": "Used",
-              "Value #WRITTEN": "Written",
-              "Value #PERCENTAGE_USED": "Percentage Used"
-            }
-          }
-        }
-      ],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "table",
       "title": "ZFS Datasets",
-      "gridPos": {
-        "x": 0,
-        "y": 12,
-        "w": 24,
-        "h": 20
-      },
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "unit": "decbytes"
+        },
         "overrides": [
           {
             "matcher": {
@@ -649,57 +657,100 @@
           }
         ]
       },
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "name": 0,
+              "pool": 1,
+              "type": 2,
+              "Value #AVAILABLE": 3,
+              "Value #LOGICAL_USED": 4,
+              "Value #QUOTA": 5,
+              "Value #REFERENCED": 6,
+              "Value #USED_BY": 7,
+              "Value #USED": 8,
+              "Value #WRITTEN": 9,
+              "Value #PERCENTAGE_USED": 10
+            },
+            "excludeByName": {
+              "Time": true
+            },
+            "renameByName": {
+              "name": "Name",
+              "pool": "Pool",
+              "type": "Type",
+              "Value #AVAILABLE": "Available",
+              "Value #LOGICAL_USED": "Logical Used",
+              "Value #QUOTA": "Quota",
+              "Value #REFERENCED": "Referenced",
+              "Value #USED_BY": "Used by",
+              "Value #USED": "Used",
+              "Value #WRITTEN": "Written",
+              "Value #PERCENTAGE_USED": "Percentage Used"
+            }
+          }
+        }
+      ],
       "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "showTypeIcons": false,
+        "footer": {
+          "show": false,
+          "reducer": [],
+          "countRows": false
+        },
         "cellHeight": "md",
-        "frameIndex": -1,
-        "showHeader": true
+        "sortBy": []
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 15,
+        "w": 24,
+        "h": 20
       }
     },
     {
       "type": "row",
-      "title": "ZFS Pools",
-      "panels": [],
       "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "ZFS Pools",
       "gridPos": {
         "x": 0,
-        "y": 32,
-        "w": 24,
-        "h": 1
+        "y": 35,
+        "h": 1,
+        "w": 24
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_pool_capacity_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{pool}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Pool Capacity Ratio",
       "description": "Ratio of pool space used.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 33,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "percentunit",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -710,42 +761,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "percentunit"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -753,41 +795,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_pool_deduplication_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{pool}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Pool Deduplication Ratio",
       "description": "The ratio of deduplicated size vs undeduplicated size for data in this pool.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 33,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -798,42 +834,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -841,41 +868,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 36,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_pool_fragmentation_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{pool}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Pool Fragmentation Ratio",
       "description": "The fragmentation ratio of the pool.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 33,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -886,42 +907,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -929,41 +941,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 36,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_pool_health{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{pool}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Pool Health",
       "description": "Health status code for the pool [0: online, 1: degraded, 2: faulted, 3: offline, 4: unavailable, 5: removed, 6: suspended].",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 18,
-        "y": 33,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -974,42 +980,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1017,41 +1014,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 36,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_pool_leaked_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{pool}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Pool Leaked",
       "description": "Number of leaked bytes in the pool.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 41,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1062,42 +1054,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1105,41 +1088,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 44,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_pool_readonly{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{pool}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Pool Readonly",
       "description": "Read-only status of the pool [0: read-write, 1: read-only].",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 41,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1150,42 +1127,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1193,41 +1161,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 44,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_pool_size_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{pool}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Pool Size",
       "description": "Total size in bytes of the storage pool.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 41,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1238,42 +1201,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1281,41 +1235,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 44,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_pool_free_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{pool}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Pool Free",
       "description": "The amount of free space in bytes available in the pool.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 18,
-        "y": 41,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1326,42 +1275,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1369,41 +1309,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 44,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_pool_freeing_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{pool}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Pool Freeing",
       "description": "The amount of space in bytes remaining to be freed following the destruction of a file system or snapshot.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 49,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1414,42 +1349,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1457,41 +1383,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 52,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_pool_expand_size_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{pool}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Pool Expand Size",
       "description": "Amount of uninitialized space within the pool or device that can be used to increase the total capacity of the pool.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 8,
-        "y": 49,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1502,42 +1423,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1545,41 +1457,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 52,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_pool_allocated_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (pool)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{pool}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Pool Allocated",
       "description": "Amount of storage in bytes used within the pool.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 16,
-        "y": 49,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1590,42 +1497,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1633,52 +1531,48 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 52,
+        "w": 8,
+        "h": 8
       }
     },
     {
       "type": "row",
-      "title": "ZFS Datasets",
-      "panels": [],
       "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "ZFS Datasets",
       "gridPos": {
         "x": 0,
-        "y": 57,
-        "w": 24,
-        "h": 1
+        "y": 60,
+        "h": 1,
+        "w": 24
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_used_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type) / sum(zfs_dataset_quota_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
-          "legendFormat": "{{name}} - {{pool}} - {{type}}",
-          "range": false,
-          "instant": true,
+          "refId": "A",
           "format": "time_series",
-          "refId": "A"
+          "legendFormat": "{{name}} - {{pool}} - {{type}}",
+          "instant": true,
+          "range": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Percentage Used",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 58,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "percentunit",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1689,42 +1583,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "percentunit"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1732,41 +1617,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 61,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_available_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Available",
       "description": "The amount of space in bytes available to the dataset and all its children.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 58,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1777,42 +1657,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1820,41 +1691,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 61,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_logical_used_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Logical Used",
       "description": "The amount of space in bytes that is \"logically\" consumed by this dataset and all its descendents. See the \"used_bytes\" property.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 58,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1865,42 +1731,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1908,41 +1765,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 61,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_quota_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Quota",
       "description": "The maximum amount of space in bytes this dataset and its descendents can consume.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 18,
-        "y": 58,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1953,42 +1805,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1996,41 +1839,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 61,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_used_by_dataset_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Used By",
       "description": "The amount of space in bytes used by this dataset itself, which would be freed if the dataset were destroyed.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 66,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2041,42 +1879,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -2084,41 +1913,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 69,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_used_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Used",
       "description": "The amount of space in bytes consumed by this dataset and all its descendents.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 6,
-        "y": 66,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2129,42 +1953,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -2172,41 +1987,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 69,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_written_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Written",
       "description": "The amount of referenced space in bytes written to this dataset since the previous snapshot.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 66,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2217,42 +2027,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -2260,41 +2061,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 69,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_referenced_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Referenced",
       "description": "The amount of data in bytes that is accessible by this dataset, which may or may not be shared with other datasets in the pool.",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 18,
-        "y": 66,
-        "w": 6,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2305,42 +2101,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -2348,40 +2135,34 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 69,
+        "w": 6,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_fragmentation_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Fragmentation Ratio",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 74,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2392,42 +2173,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -2435,40 +2207,34 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 77,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_referenced_compression_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Referenced Compression Ratio",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 8,
-        "y": 74,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2479,42 +2245,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -2522,40 +2279,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 77,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_used_by_children_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Used By Children",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 16,
-        "y": 74,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2566,42 +2318,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -2609,40 +2352,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 77,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_used_by_referenced_reservation_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Used By Referenced Reservation",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 82,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2653,42 +2391,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -2696,40 +2425,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 85,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_used_by_snapshot_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Used By Snapshot",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 8,
-        "y": 82,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2740,42 +2464,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -2783,40 +2498,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 85,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_volume_size_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Volume Size",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 16,
-        "y": 82,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2827,42 +2537,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -2870,40 +2571,34 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 85,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_snapshot_count_total{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Snapshot Count Total",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 90,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2914,42 +2609,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -2957,40 +2643,34 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 93,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_snapshot_limit_total{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Snapshot Limit Total",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 8,
-        "y": 90,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -3001,42 +2681,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -3044,40 +2715,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 93,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_referenced_quota_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Referenced Quota",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 16,
-        "y": 90,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -3088,42 +2754,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -3131,40 +2788,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 93,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_referenced_reservation_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Referenced Reservation",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 98,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -3175,42 +2827,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -3218,40 +2861,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 101,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_logical_referenced_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Logical Referenced",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 8,
-        "y": 98,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -3262,42 +2900,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -3305,40 +2934,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 101,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_allocated_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Allocation",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 16,
-        "y": 98,
-        "w": 8,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -3349,42 +2973,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -3392,40 +3007,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 101,
+        "w": 8,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_deduplication_ratio{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Compression Ratio",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 106,
-        "w": 12,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -3436,42 +3046,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -3479,40 +3080,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 109,
+        "w": 12,
+        "h": 8
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(zfs_dataset_reservation_bytes{instance=~\"$instance\", pool=~\"$pool\"}) by (name, pool, type)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{name}} - {{pool}} - {{type}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Dataset Reservation",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 106,
-        "w": 12,
-        "h": 8
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "decbytes",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -3523,42 +3119,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "decbytes"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -3566,38 +3153,37 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 109,
+        "w": 12,
+        "h": 8
       }
     },
     {
       "type": "row",
-      "title": "Go Runtime Metrics",
+      "collapsed": true,
+      "id": 0,
       "panels": [
         {
-          "links": [],
+          "type": "stat",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(go_info{instance=~\"$instace\"}) by (version)",
-              "legendFormat": "{{version}}",
-              "range": false,
-              "instant": true,
+              "refId": "A",
               "format": "table",
-              "refId": "A"
+              "legendFormat": "{{version}}",
+              "instant": true,
+              "range": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "stat",
           "title": "Go Version",
-          "gridPos": {
-            "x": 0,
-            "y": 115,
-            "w": 6,
-            "h": 3
-          },
           "fieldConfig": {
             "defaults": {
               "mappings": [],
@@ -3614,52 +3200,50 @@
             "overrides": []
           },
           "options": {
+            "graphMode": "area",
+            "colorMode": "background",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "wideLayout": true,
+            "showPercentChange": false,
             "reduceOptions": {
-              "values": false,
-              "fields": "/^version$/",
               "calcs": [
                 "lastNotNull"
-              ]
+              ],
+              "fields": "/^version$/",
+              "values": false
             },
-            "orientation": "auto",
-            "textMode": "auto",
-            "colorMode": "background",
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "showPercentChange": false,
-            "wideLayout": true,
             "percentChangeColorMode": "standard",
-            "text": {}
+            "orientation": "auto"
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 118,
+            "w": 6,
+            "h": 3
           }
         },
         {
-          "links": [],
+          "type": "stat",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "max(process_start_time_seconds{instance=~\"$instace\"}) * 1000",
-              "legendFormat": "value",
-              "range": false,
-              "instant": true,
+              "refId": "A",
               "format": "table",
-              "refId": "A"
+              "legendFormat": "value",
+              "instant": true,
+              "range": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "stat",
           "title": "Process Start Time",
-          "gridPos": {
-            "x": 6,
-            "y": 115,
-            "w": 6,
-            "h": 3
-          },
           "fieldConfig": {
             "defaults": {
+              "unit": "dateTimeFromNow",
               "mappings": [
                 {
                   "type": "value",
@@ -3679,58 +3263,55 @@
                     "value": null
                   }
                 ]
-              },
-              "unit": "dateTimeFromNow"
+              }
             },
             "overrides": []
           },
           "options": {
+            "graphMode": "area",
+            "colorMode": "background",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "wideLayout": true,
+            "showPercentChange": false,
             "reduceOptions": {
-              "values": false,
-              "fields": "",
               "calcs": [
                 "lastNotNull"
-              ]
+              ],
+              "fields": "",
+              "values": false
             },
-            "orientation": "auto",
-            "textMode": "auto",
-            "colorMode": "background",
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "showPercentChange": false,
-            "wideLayout": true,
             "percentChangeColorMode": "standard",
-            "text": {}
+            "orientation": "auto"
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 6,
+            "y": 118,
+            "w": 6,
+            "h": 3
           }
         },
         {
-          "links": [],
+          "type": "stat",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "min(process_max_fds{instance=~\"$instace\"})",
-              "legendFormat": "value",
-              "range": false,
-              "instant": true,
+              "refId": "A",
               "format": "table",
-              "refId": "A"
+              "legendFormat": "value",
+              "instant": true,
+              "range": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "stat",
           "title": "Process Max File Descriptors",
-          "gridPos": {
-            "x": 12,
-            "y": 115,
-            "w": 6,
-            "h": 3
-          },
           "fieldConfig": {
             "defaults": {
+              "unit": "short",
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
@@ -3740,58 +3321,55 @@
                     "value": null
                   }
                 ]
-              },
-              "unit": "short"
+              }
             },
             "overrides": []
           },
           "options": {
+            "graphMode": "area",
+            "colorMode": "background",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "wideLayout": true,
+            "showPercentChange": false,
             "reduceOptions": {
-              "values": false,
-              "fields": "",
               "calcs": [
                 "lastNotNull"
-              ]
+              ],
+              "fields": "",
+              "values": false
             },
-            "orientation": "auto",
-            "textMode": "auto",
-            "colorMode": "background",
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "showPercentChange": false,
-            "wideLayout": true,
             "percentChangeColorMode": "standard",
-            "text": {}
+            "orientation": "auto"
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 118,
+            "w": 6,
+            "h": 3
           }
         },
         {
-          "links": [],
+          "type": "stat",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "min(process_virtual_memory_max_bytes{instance=~\"$instace\"})",
-              "legendFormat": "value",
-              "range": false,
-              "instant": true,
+              "refId": "A",
               "format": "table",
-              "refId": "A"
+              "legendFormat": "value",
+              "instant": true,
+              "range": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "stat",
           "title": "Process Virtual Memory Max",
-          "gridPos": {
-            "x": 18,
-            "y": 115,
-            "w": 6,
-            "h": 3
-          },
           "fieldConfig": {
             "defaults": {
+              "unit": "decbytes",
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
@@ -3801,62 +3379,55 @@
                     "value": null
                   }
                 ]
-              },
-              "unit": "decbytes"
+              }
             },
             "overrides": []
           },
           "options": {
+            "graphMode": "area",
+            "colorMode": "background",
+            "justifyMode": "auto",
+            "textMode": "auto",
+            "wideLayout": true,
+            "showPercentChange": false,
             "reduceOptions": {
-              "values": false,
-              "fields": "",
               "calcs": [
                 "lastNotNull"
-              ]
+              ],
+              "fields": "",
+              "values": false
             },
-            "orientation": "auto",
-            "textMode": "auto",
-            "colorMode": "background",
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "showPercentChange": false,
-            "wideLayout": true,
             "percentChangeColorMode": "standard",
-            "text": {}
+            "orientation": "auto"
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 18,
+            "y": 118,
+            "w": 6,
+            "h": 3
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(process_open_fds{instance=~\"$instace\"}) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Process Open File Descriptors",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 0,
-            "y": 118,
-            "w": 8,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -3867,42 +3438,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "short"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -3910,40 +3472,34 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 121,
+            "w": 8,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(go_threads{instance=~\"$instace\"}) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Threads",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 8,
-            "y": 118,
-            "w": 8,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -3954,41 +3510,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
               }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -3996,40 +3544,34 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 8,
+            "y": 121,
+            "w": 8,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(go_goroutines{instance=~\"$instace\"}) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Goroutines",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 16,
-            "y": 118,
-            "w": 8,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -4040,41 +3582,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
               }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -4082,40 +3616,35 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 16,
+            "y": 121,
+            "w": 8,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(rate(process_cpu_seconds_total{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "CPU Usage",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 0,
-            "y": 126,
-            "w": 6,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -4126,42 +3655,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "short"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -4169,40 +3689,35 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 129,
+            "w": 6,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(process_resident_memory_bytes{instance=~\"$instace\"}) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Memory Usage",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 6,
-            "y": 126,
-            "w": 6,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "decbytes",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -4213,42 +3728,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "decbytes"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -4256,40 +3762,35 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 6,
+            "y": 129,
+            "w": 6,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(rate(go_memstats_alloc_bytes_total{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Go Alloc Rate",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 12,
-            "y": 126,
-            "w": 6,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "Bps",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -4300,42 +3801,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "Bps"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -4343,40 +3835,35 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 129,
+            "w": 6,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(go_memstats_alloc_bytes{instance=~\"$instace\"}) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Go Alloc Bytes",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 18,
-            "y": 126,
-            "w": 6,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "decbytes",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -4387,42 +3874,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "decbytes"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -4430,48 +3908,43 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 18,
+            "y": 129,
+            "w": 6,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "avg(go_memstats_stack_sys_bytes{instance=~\"$instace\"})",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "sys",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_stack_inuse_bytes{instance=~\"$instace\"})",
+              "refId": "B",
+              "format": "time_series",
               "legendFormat": "inuse",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "B"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Stack Memory Usage (avg)",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 0,
-            "y": 134,
-            "w": 6,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "decbytes",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -4482,42 +3955,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "decbytes"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -4525,72 +3989,67 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 137,
+            "w": 6,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "avg(go_memstats_heap_sys_bytes{instance=~\"$instace\"})",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "sys",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_heap_idle_bytes{instance=~\"$instace\"})",
+              "refId": "B",
+              "format": "time_series",
               "legendFormat": "idle",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "B"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_heap_released_bytes{instance=~\"$instace\"})",
+              "refId": "C",
+              "format": "time_series",
               "legendFormat": "released",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "C"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_heap_inuse_bytes{instance=~\"$instace\"})",
+              "refId": "D",
+              "format": "time_series",
               "legendFormat": "inuse",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "D"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_heap_alloc_bytes{instance=~\"$instace\"})",
+              "refId": "E",
+              "format": "time_series",
               "legendFormat": "alloc",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "E"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Heap Memory Usage (avg)",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 6,
-            "y": 134,
-            "w": 6,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "decbytes",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -4601,42 +4060,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "decbytes"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -4644,40 +4094,35 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 6,
+            "y": 137,
+            "w": 6,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "avg(go_memstats_heap_objects{instance=~\"$instace\"}) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Heap Objects",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 12,
-            "y": 134,
-            "w": 6,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -4688,42 +4133,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "short"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -4731,104 +4167,99 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 137,
+            "w": 6,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "avg(go_memstats_mspan_sys_bytes{instance=~\"$instace\"})",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "mspan_sys",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_mspan_inuse_bytes{instance=~\"$instace\"})",
+              "refId": "B",
+              "format": "time_series",
               "legendFormat": "mspan_inuse",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "B"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_mcache_sys_bytes{instance=~\"$instace\"})",
+              "refId": "C",
+              "format": "time_series",
               "legendFormat": "mcache_sys",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "C"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_mcache_inuse_bytes{instance=~\"$instace\"})",
+              "refId": "D",
+              "format": "time_series",
               "legendFormat": "mcache_inuse",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "D"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_buck_hash_sys_bytes{instance=~\"$instace\"})",
+              "refId": "E",
+              "format": "time_series",
               "legendFormat": "buck_hash_sys",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "E"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_other_sys_bytes{instance=~\"$instace\"})",
+              "refId": "F",
+              "format": "time_series",
               "legendFormat": "other_sys",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "F"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_gc_sys_bytes{instance=~\"$instace\"})",
+              "refId": "G",
+              "format": "time_series",
               "legendFormat": "gc_sys",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "G"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_next_gc_bytes{instance=~\"$instace\"})",
+              "refId": "H",
+              "format": "time_series",
               "legendFormat": "next_gc",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "H"
+              "instant": false
             },
             {
               "expr": "avg(go_memstats_sys_bytes{instance=~\"$instace\"})",
+              "refId": "I",
+              "format": "time_series",
               "legendFormat": "sys",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "I"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Other Memory (avg)",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 18,
-            "y": 134,
-            "w": 6,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "decbytes",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -4839,42 +4270,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "decbytes"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -4882,40 +4304,35 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 18,
+            "y": 137,
+            "w": 6,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(increase(go_gc_duration_seconds_count{instance=~\"$instace\"}[$__interval])) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Go GC count",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 0,
-            "y": 142,
-            "w": 8,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -4926,39 +4343,30 @@
                 "drawStyle": "bars",
                 "fillOpacity": 100,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "stepAfter",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "never",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "normal"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "normal"
                 }
-              },
-              "unit": "short"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
-              "calcs": [
-                "sum"
-              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true,
+              "calcs": [
+                "sum"
+              ],
               "sortBy": "Total",
               "sortDesc": true
             },
@@ -4966,40 +4374,35 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 145,
+            "w": 8,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(rate(go_gc_duration_seconds_sum{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Go GC Duration Seconds (rate)",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 8,
-            "y": 142,
-            "w": 8,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "s",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -5010,42 +4413,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "s"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -5053,40 +4447,35 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 8,
+            "y": 145,
+            "w": 8,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(rate(go_gc_duration_seconds_sum{instance=~\"$instace\"}[$__rate_interval])) by (instance) / sum(rate(go_gc_duration_seconds_count{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Go GC Duration Seconds (avg)",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 16,
-            "y": 142,
-            "w": 8,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "s",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -5097,42 +4486,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "s"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -5140,40 +4520,35 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 16,
+            "y": 145,
+            "w": 8,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(rate(go_memstats_lookups_total{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Lookups rate",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 0,
-            "y": 150,
-            "w": 6,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -5184,42 +4559,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "short"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -5227,40 +4593,35 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 153,
+            "w": 6,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(rate(go_memstats_mallocs_total{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Mallocs rate",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 6,
-            "y": 150,
-            "w": 6,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -5271,42 +4632,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "short"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -5314,40 +4666,35 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 6,
+            "y": 153,
+            "w": 6,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(rate(go_memstats_frees_total{instance=~\"$instace\"}[$__rate_interval])) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Frees rate",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 12,
-            "y": 150,
-            "w": 6,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -5358,42 +4705,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "short"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -5401,40 +4739,35 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 153,
+            "w": 6,
+            "h": 8
           }
         },
         {
-          "links": [],
+          "type": "timeseries",
+          "transparent": false,
           "repeatDirection": "h",
           "targets": [
             {
               "expr": "sum(process_virtual_memory_bytes{instance=~\"$instace\"}) by (instance)",
+              "refId": "A",
+              "format": "time_series",
               "legendFormat": "{{instance}}",
               "range": true,
-              "instant": false,
-              "format": "time_series",
-              "refId": "A"
+              "instant": false
             }
           ],
-          "transformations": [],
-          "transparent": false,
-          "datasource": {
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "type": "timeseries",
           "title": "Process Virtual Memory",
-          "maxDataPoints": 100,
-          "gridPos": {
-            "x": 18,
-            "y": 150,
-            "w": 6,
-            "h": 8
-          },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
+              "unit": "decbytes",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -5445,42 +4778,33 @@
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
                 "showPoints": "auto",
                 "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
                   "mode": "off"
+                },
+                "stacking": {
+                  "mode": "none"
                 }
-              },
-              "unit": "decbytes"
+              }
             },
             "overrides": []
           },
+          "maxDataPoints": 100,
           "options": {
             "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
               "calcs": [
                 "min",
                 "max",
                 "mean",
                 "lastNotNull"
               ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
               "sortBy": "Last *",
               "sortDesc": true
             },
@@ -5488,80 +4812,33 @@
               "mode": "multi",
               "sort": "desc"
             }
+          },
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "gridPos": {
+            "x": 18,
+            "y": 153,
+            "w": 6,
+            "h": 8
           }
         }
       ],
-      "collapsed": true,
+      "title": "Go Runtime Metrics",
       "gridPos": {
         "x": 0,
-        "y": 114,
-        "w": 24,
-        "h": 1
+        "y": 117,
+        "h": 1,
+        "w": 24
       }
     }
   ],
-  "schemaVersion": 39,
   "tags": [
     "zfs"
   ],
-  "timezone": "browser",
-  "description": "Dashboard for ZFS",
-  "time": {
-    "from": "now-6h",
-    "to": "now"
-  },
-  "title": "ZFS",
   "uid": "zfs",
-  "version": 1,
-  "templating": {
-    "list": [
-      {
-        "allowCustomValue": true,
-        "includeAll": false,
-        "multi": false,
-        "options": [],
-        "skipUrlSync": false,
-        "datasource": null,
-        "hide": 0,
-        "type": "datasource",
-        "label": "Prometheus",
-        "name": "DS_PROMETHEUS",
-        "query": "prometheus"
-      },
-      {
-        "allowCustomValue": true,
-        "includeAll": true,
-        "multi": true,
-        "options": [],
-        "skipUrlSync": false,
-        "datasource": {
-          "uid": "${DS_PROMETHEUS}"
-        },
-        "hide": 0,
-        "type": "query",
-        "label": "Instance",
-        "name": "instance",
-        "query": "label_values(zfs_exporter_build_info, instance)",
-        "sort": 1,
-        "refresh": 2
-      },
-      {
-        "allowCustomValue": true,
-        "includeAll": true,
-        "multi": true,
-        "options": [],
-        "skipUrlSync": false,
-        "datasource": {
-          "uid": "${DS_PROMETHEUS}"
-        },
-        "hide": 0,
-        "type": "query",
-        "label": "Pool",
-        "name": "pool",
-        "query": "label_values(zfs_pool_allocated_bytes, pool)",
-        "sort": 1,
-        "refresh": 2
-      }
-    ]
+  "time": {
+    "from": "now-24h",
+    "to": "now"
   }
 }

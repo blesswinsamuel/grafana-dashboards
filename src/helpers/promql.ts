@@ -1,5 +1,5 @@
-import { PrometheusTarget, Target } from './panels'
-import { Unit } from './units'
+import * as prometheus from '@grafana/grafana-foundation-sdk/prometheus'
+import { PrometheusTarget } from './panels/target'
 
 export function formatLegendFormat(legendFormat: string | undefined, groupBy: string[] | undefined) {
   if (!legendFormat) {
@@ -75,13 +75,38 @@ class PrometheusQueryRaw {
   ) {}
 
   public target(opts?: TargetOptions): PrometheusTarget {
-    const { legendFormat, groupBy = this.opts?.groupBy, type = this.opts?.type, refId, format } = opts ?? {}
+    // const { legendFormat, groupBy = this.opts?.groupBy, type = this.opts?.type, refId } = opts ?? {}
+    // const b = new prometheus.DataqueryBuilder()
+    // b.expr(this.expr)
+    // if (refId) {
+    //   b.refId(refId)
+    // }
+    // const format: prometheus.PromQueryFormat | undefined = opts?.format
+    //   ? {
+    //       time_series: prometheus.PromQueryFormat.TimeSeries,
+    //       table: prometheus.PromQueryFormat.Table,
+    //       heatmap: prometheus.PromQueryFormat.Heatmap,
+    //     }[opts.format]
+    //   : type === 'instant'
+    //     ? prometheus.PromQueryFormat.Table
+    //     : undefined
+    // if (format) {
+    //   b.format(format)
+    // }
+    // b.legendFormat(formatLegendFormat(legendFormat, groupBy))
+    // if (type === 'instant') {
+    //   b.instant()
+    // } else if (type === 'range') {
+    //   b.range()
+    // }
+    // return b.build()
+    const { legendFormat, groupBy = this.opts?.groupBy, type = this.opts?.type, refId } = opts ?? {}
     return {
       expr: this.expr,
-      refId,
-      type,
-      format: format ?? (type === 'instant' ? 'table' : undefined),
+      refId: refId,
+      format: type === 'instant' ? 'table' : 'time_series',
       legendFormat: formatLegendFormat(legendFormat, groupBy),
+      type: type ?? 'range',
     }
   }
 
@@ -396,3 +421,7 @@ export enum PromOperationId {
   GreaterOrEqual = '__greater_or_equal',
   LessOrEqual = '__less_or_equal',
 }
+
+// export function averageDurationQuery(histogram_metric: string, selector: string, grouping: string): string {
+//   return `sum(rate(${histogram_metric}_sum${selector}[$__rate_interval])) by (${grouping}) / sum(rate(${histogram_metric}_count${selector}[$__rate_interval])) by (${grouping})`
+// }

@@ -1,49 +1,113 @@
 {
+  "timezone": "browser",
   "editable": true,
-  "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "links": [],
+  "fiscalYearStartMonth": 0,
+  "schemaVersion": 39,
+  "templating": {
+    "list": [
+      {
+        "type": "datasource",
+        "name": "DS_PROMETHEUS",
+        "skipUrlSync": false,
+        "multi": false,
+        "includeAll": false,
+        "auto": false,
+        "auto_min": "10s",
+        "auto_count": 30,
+        "label": "Prometheus",
+        "query": "prometheus",
+        "hide": 0
+      },
+      {
+        "type": "query",
+        "name": "site",
+        "skipUrlSync": false,
+        "multi": true,
+        "includeAll": true,
+        "auto": false,
+        "auto_min": "10s",
+        "auto_count": 30,
+        "label": "Site",
+        "query": "label_values(omada_device_uptime_seconds, site)",
+        "hide": 0,
+        "datasource": {
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1
+      },
+      {
+        "type": "query",
+        "name": "device",
+        "skipUrlSync": false,
+        "multi": true,
+        "includeAll": true,
+        "auto": false,
+        "auto_min": "10s",
+        "auto_count": 30,
+        "label": "Device",
+        "query": "label_values(omada_device_uptime_seconds{site=\"$Site\"}, device)",
+        "hide": 2,
+        "datasource": {
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1
+      }
+    ]
+  },
+  "annotations": {},
+  "title": "Omada Controller",
   "panels": [
     {
-      "type": "row",
-      "title": "Omada Controller",
-      "panels": [],
-      "collapsed": false,
+      "type": "text",
+      "transparent": true,
+      "repeatDirection": "h",
       "gridPos": {
-        "x": 0,
-        "y": 0,
+        "h": 3,
         "w": 24,
-        "h": 1
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "This is a generated dashboard. Any changes made here will be lost on the next generation."
       }
     },
     {
-      "links": [],
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Omada Controller",
+      "gridPos": {
+        "x": 0,
+        "y": 3,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_port_power_watts{site=~\"$site\"})",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "value",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "stat",
       "title": "Total PoE Used",
-      "gridPos": {
-        "x": 0,
-        "y": 1,
-        "w": 6,
-        "h": 4
-      },
       "fieldConfig": {
         "defaults": {
+          "unit": "watt",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -53,58 +117,55 @@
                 "value": null
               }
             ]
-          },
-          "unit": "watt"
+          }
         },
         "overrides": []
       },
       "options": {
+        "graphMode": "area",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
         "reduceOptions": {
-          "values": false,
-          "fields": "",
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "showPercentChange": false,
-        "wideLayout": true,
         "percentChangeColorMode": "standard",
-        "text": {}
+        "orientation": "auto"
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 6,
+        "h": 4
       }
     },
     {
-      "links": [],
+      "type": "stat",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "max(omada_controller_uptime_seconds{site=~\"$site\"})",
-          "legendFormat": "value",
-          "range": false,
-          "instant": true,
+          "refId": "A",
           "format": "table",
-          "refId": "A"
+          "legendFormat": "value",
+          "instant": true,
+          "range": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "stat",
       "title": "Controller Uptime",
-      "gridPos": {
-        "x": 6,
-        "y": 1,
-        "w": 6,
-        "h": 4
-      },
       "fieldConfig": {
         "defaults": {
+          "unit": "s",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -114,56 +175,52 @@
                 "value": null
               }
             ]
-          },
-          "unit": "s"
+          }
         },
         "overrides": []
       },
       "options": {
+        "graphMode": "area",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
         "reduceOptions": {
-          "values": false,
-          "fields": "",
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "showPercentChange": false,
-        "wideLayout": true,
         "percentChangeColorMode": "standard",
-        "text": {}
+        "orientation": "auto"
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 4,
+        "w": 6,
+        "h": 4
       }
     },
     {
-      "links": [],
+      "type": "stat",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_port_link_status{site=~\"$site\"})",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "value",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "stat",
       "title": "Active Switch Ports",
-      "gridPos": {
-        "x": 12,
-        "y": 1,
-        "w": 6,
-        "h": 4
-      },
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -180,50 +237,47 @@
         "overrides": []
       },
       "options": {
+        "graphMode": "area",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
         "reduceOptions": {
-          "values": false,
-          "fields": "",
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "showPercentChange": false,
-        "wideLayout": true,
         "percentChangeColorMode": "standard",
-        "text": {}
+        "orientation": "auto"
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 6,
+        "h": 4
       }
     },
     {
-      "links": [],
+      "type": "stat",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_client_connected_total{site=~\"$site\"})",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "value",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "stat",
       "title": "Connected Clients",
-      "gridPos": {
-        "x": 18,
-        "y": 1,
-        "w": 6,
-        "h": 4
-      },
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -240,68 +294,64 @@
         "overrides": []
       },
       "options": {
+        "graphMode": "area",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
         "reduceOptions": {
-          "values": false,
-          "fields": "",
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "showPercentChange": false,
-        "wideLayout": true,
         "percentChangeColorMode": "standard",
-        "text": {}
+        "orientation": "auto"
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 4,
+        "w": 6,
+        "h": 4
       }
     },
     {
       "type": "row",
-      "title": "Omada Devices",
-      "panels": [],
       "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Omada Devices",
       "gridPos": {
         "x": 0,
-        "y": 5,
-        "w": 24,
-        "h": 1
+        "y": 8,
+        "h": 1,
+        "w": 24
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_device_cpu_percentage{site=~\"$site\"}) by (device, device_type, ip)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "CPU Usage %",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 6,
-        "w": 12,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "percent",
+          "max": 100,
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -312,43 +362,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "percent",
-          "max": 100
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -356,40 +396,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 9,
+        "w": 12,
+        "h": 10
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_device_mem_percentage{site=~\"$site\"}) by (device, device_type, ip)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Memory Usage %",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 6,
-        "w": 12,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "percent",
+          "max": 100,
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -400,43 +436,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "percent",
-          "max": 100
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -444,48 +470,43 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 9,
+        "w": 12,
+        "h": 10
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_device_rx_rate{site=~\"$site\"}) by (device, device_type, ip)",
+          "refId": "RX",
+          "format": "time_series",
           "legendFormat": "Rx - {{ device }} {{ device_type }} {{ ip }}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "RX"
+          "instant": false
         },
         {
           "expr": "-sum(omada_device_tx_rate{site=~\"$site\"}) by (device, device_type, ip)",
+          "refId": "TX",
+          "format": "time_series",
           "legendFormat": "Tx - {{ device }} {{ device_type }} {{ ip }}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "TX"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Rx/Tx Rate",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 16,
-        "w": 8,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "Bps",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -496,40 +517,31 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "Bps"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "mean",
             "last"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last",
           "sortDesc": true
         },
@@ -537,40 +549,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 19,
+        "w": 8,
+        "h": 10
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "max(omada_device_uptime_seconds{site=~\"$site\"}) by (device, device_type, ip)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Uptime",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 8,
-        "y": 16,
-        "w": 8,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "s",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -581,42 +588,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "s"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -624,40 +622,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 19,
+        "w": 8,
+        "h": 10
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "max(omada_device_poe_remain_watts{site=~\"$site\"}) by (device, device_type, ip)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{device}} - {{device_type}} - {{ip}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "PoE remaining",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 16,
-        "y": 16,
-        "w": 8,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "watt",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -668,42 +661,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "watt"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -711,52 +695,48 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 19,
+        "w": 8,
+        "h": 10
       }
     },
     {
       "type": "row",
-      "title": "Omada Clients",
-      "panels": [],
       "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Omada Clients",
       "gridPos": {
         "x": 0,
-        "y": 26,
-        "w": 24,
-        "h": 1
+        "y": 29,
+        "h": 1,
+        "w": 24
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_client_connected_total{site=~\"$site\"}) by (connection_mode, wifi_mode)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{connection_mode}} - {{wifi_mode}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Clients Connected",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 27,
-        "w": 12,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -767,42 +747,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -810,40 +781,36 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 30,
+        "w": 12,
+        "h": 10
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_client_signal_pct{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Signal Percentage",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 27,
-        "w": 12,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "percent",
+          "max": 100,
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -854,43 +821,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "percent",
-          "max": 100
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -898,40 +855,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 30,
+        "w": 12,
+        "h": 10
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_client_rssi_dbm{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "RSSI dBm",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 37,
-        "w": 12,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "dBm",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -942,41 +894,32 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "dBm"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "mean",
             "min",
             "last"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last",
           "sortDesc": true
         },
@@ -984,40 +927,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 40,
+        "w": 12,
+        "h": 10
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_client_snr_dbm{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "SNR dBm",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 37,
-        "w": 12,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "dBm",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1028,41 +966,32 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "dBm"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "mean",
             "min",
             "last"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last",
           "sortDesc": true
         },
@@ -1070,40 +999,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 40,
+        "w": 12,
+        "h": 10
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(rate(omada_client_traffic_up_bytes{site=~\"$site\", ip!=\"\"}[$__rate_interval])) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Upload Rate",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 47,
-        "w": 12,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "Bps",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1114,42 +1038,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "Bps"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1157,40 +1072,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 50,
+        "w": 12,
+        "h": 10
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(rate(omada_client_traffic_down_bytes{site=~\"$site\", ip!=\"\"}[$__rate_interval])) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Download Rate",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 47,
-        "w": 12,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "Bps",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1201,42 +1111,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "Bps"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1244,40 +1145,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 50,
+        "w": 12,
+        "h": 10
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_client_rx_rate{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Rx Rate",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 0,
-        "y": 57,
-        "w": 12,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "Bps",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1288,42 +1184,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "Bps"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1331,40 +1218,35 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 60,
+        "w": 12,
+        "h": 10
       }
     },
     {
-      "links": [],
+      "type": "timeseries",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_client_tx_rate{site=~\"$site\", ip!=\"\"}) by (client, ap_name, connection_mode, ssid, vlan_id, wifi_mode)",
+          "refId": "A",
+          "format": "time_series",
           "legendFormat": "{{client}} - {{ap_name}} - {{connection_mode}} - {{ssid}} - {{vlan_id}} - {{wifi_mode}}",
           "range": true,
-          "instant": false,
-          "format": "time_series",
-          "refId": "A"
+          "instant": false
         }
       ],
-      "transformations": [],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "timeseries",
       "title": "Tx Rate",
-      "maxDataPoints": 100,
-      "gridPos": {
-        "x": 12,
-        "y": 57,
-        "w": 12,
-        "h": 10
-      },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "unit": "Bps",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1375,42 +1257,33 @@
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
             "showPoints": "auto",
             "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
             "thresholdsStyle": {
               "mode": "off"
+            },
+            "stacking": {
+              "mode": "none"
             }
-          },
-          "unit": "Bps"
+          }
         },
         "overrides": []
       },
+      "maxDataPoints": 100,
       "options": {
         "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
           "calcs": [
             "min",
             "max",
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
           "sortBy": "Last *",
           "sortDesc": true
         },
@@ -1418,66 +1291,99 @@
           "mode": "multi",
           "sort": "desc"
         }
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 60,
+        "w": 12,
+        "h": 10
       }
     },
     {
       "type": "row",
-      "title": "Omada Ports",
-      "panels": [],
       "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Omada Ports",
       "gridPos": {
         "x": 0,
-        "y": 67,
-        "w": 24,
-        "h": 1
+        "y": 70,
+        "h": 1,
+        "w": 24
       }
     },
     {
-      "links": [],
+      "type": "table",
+      "transparent": false,
       "repeatDirection": "h",
       "targets": [
         {
           "expr": "sum(omada_port_link_status{site=~\"$site\"}) by (client, device, name, profile, site, switch_port, vlan_id)",
-          "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
-          "range": false,
-          "instant": true,
+          "refId": "STATUS",
           "format": "table",
-          "refId": "STATUS"
+          "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(omada_port_link_speed_mbps{site=~\"$site\"}) by (client, device, name, profile, site, switch_port, vlan_id)",
-          "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
-          "range": false,
-          "instant": true,
+          "refId": "SPEED",
           "format": "table",
-          "refId": "SPEED"
+          "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(increase(omada_port_link_rx{site=~\"$site\"}[$__range])) by (switch_port)",
-          "legendFormat": "{{switch_port}}",
-          "range": false,
-          "instant": true,
+          "refId": "RX",
           "format": "table",
-          "refId": "RX"
+          "legendFormat": "{{switch_port}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(increase(omada_port_link_tx{site=~\"$site\"}[$__range])) by (switch_port)",
-          "legendFormat": "{{switch_port}}",
-          "range": false,
-          "instant": true,
+          "refId": "TX",
           "format": "table",
-          "refId": "TX"
+          "legendFormat": "{{switch_port}}",
+          "instant": true,
+          "range": false
         },
         {
           "expr": "sum(omada_port_power_watts{site=~\"$site\"}) by (client, device, name, profile, site, switch_port, vlan_id)",
-          "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
-          "range": false,
-          "instant": true,
+          "refId": "POWER",
           "format": "table",
-          "refId": "POWER"
+          "legendFormat": "{{client}} - {{device}} - {{name}} - {{profile}} - {{site}} - {{switch_port}} - {{vlan_id}}",
+          "instant": true,
+          "range": false
         }
       ],
+      "title": "Port Link Status",
       "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "Switch Port",
+                "destinationType": "number"
+              }
+            ]
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "Switch Port"
+              }
+            ]
+          }
+        },
         {
           "id": "merge",
           "options": {}
@@ -1516,41 +1422,8 @@
               "Value #POWER": "Power"
             }
           }
-        },
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "targetField": "Switch Port",
-                "destinationType": "number"
-              }
-            ]
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "sort": [
-              {
-                "field": "Switch Port"
-              }
-            ]
-          }
         }
       ],
-      "transparent": false,
-      "datasource": {
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "type": "table",
-      "title": "Port Link Status",
-      "gridPos": {
-        "x": 0,
-        "y": 68,
-        "w": 24,
-        "h": 24
-      },
       "fieldConfig": {
         "defaults": {},
         "overrides": [
@@ -1684,74 +1557,39 @@
         ]
       },
       "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "showTypeIcons": false,
+        "footer": {
+          "show": false,
+          "reducer": [],
+          "countRows": false
+        },
         "cellHeight": "md",
-        "frameIndex": -1,
-        "showHeader": true
+        "sortBy": [
+          {
+            "displayName": "Switch Port",
+            "desc": false
+          }
+        ]
+      },
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 71,
+        "w": 24,
+        "h": 24
       }
     }
   ],
-  "schemaVersion": 39,
   "tags": [
     "omada-controller"
   ],
-  "timezone": "browser",
-  "description": "Dashboard for omada-controller",
-  "time": {
-    "from": "now-6h",
-    "to": "now"
-  },
-  "title": "Omada Controller",
   "uid": "omada-controller",
-  "version": 1,
-  "templating": {
-    "list": [
-      {
-        "allowCustomValue": true,
-        "includeAll": false,
-        "multi": false,
-        "options": [],
-        "skipUrlSync": false,
-        "datasource": null,
-        "hide": 0,
-        "type": "datasource",
-        "label": "Prometheus",
-        "name": "DS_PROMETHEUS",
-        "query": "prometheus"
-      },
-      {
-        "allowCustomValue": true,
-        "includeAll": true,
-        "multi": true,
-        "options": [],
-        "skipUrlSync": false,
-        "datasource": {
-          "uid": "${DS_PROMETHEUS}"
-        },
-        "hide": 0,
-        "type": "query",
-        "label": "Site",
-        "name": "site",
-        "query": "label_values(omada_device_uptime_seconds, site)",
-        "sort": 1,
-        "refresh": 2
-      },
-      {
-        "allowCustomValue": true,
-        "includeAll": true,
-        "multi": true,
-        "options": [],
-        "skipUrlSync": false,
-        "datasource": {
-          "uid": "${DS_PROMETHEUS}"
-        },
-        "hide": 2,
-        "type": "query",
-        "label": "Device",
-        "name": "device",
-        "query": "label_values(omada_device_uptime_seconds{site=\"$Site\"}, device)",
-        "sort": 1,
-        "refresh": 2
-      }
-    ]
+  "time": {
+    "from": "now-24h",
+    "to": "now"
   }
 }

@@ -1,7 +1,6 @@
-import { Dashboard, DashboardCursorSync, DataSourceRef, defaultDashboard } from '@grafana/schema'
-import { CounterMetric, GaugeMetric, NewPanelGroup, NewPanelRow, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, SummaryMetric, Unit, autoLayout, overridesMatchByName, tableIndexByName } from '../src/grafana-helpers'
+import { CounterMetric, GaugeMetric, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, SummaryMetric, units, overridesMatchByName, tableIndexByName, newDashboard, dashboard } from '../src/grafana-helpers'
 
-const datasource: DataSourceRef = {
+const datasource: dashboard.DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
 }
 const namespace = 'certmanager'
@@ -39,8 +38,8 @@ const panels: PanelRowAndGroups = [
             mappings: [{ options: { False: { color: 'red', index: 1, text: 'Not ready' }, True: { color: 'green', index: 0, text: 'Ready' } }, type: 'value' }],
             'custom.cellOptions': { type: 'color-background' },
           },
-          'Value #expiration_time': { unit: Unit.DATE_TIME_FROM_NOW },
-          'Value #renewal_time': { unit: Unit.DATE_TIME_FROM_NOW },
+          'Value #expiration_time': { unit: units.DateTimeFromNow },
+          'Value #renewal_time': { unit: units.DateTimeFromNow },
         }),
         transformations: [
           { id: 'merge', options: {} },
@@ -65,26 +64,13 @@ const panels: PanelRowAndGroups = [
     // TimeSeriesPanel("The clock time", [QueryExpr("max(certmanager_clock_time_seconds_gauge[$__interval]) * 1000", "")], unit=UNITS.DATE_TIME_FROM_NOW),
   ]),
   NewPanelRow({ datasource, height: 8 }, [
-    NewTimeSeriesPanel({ title: 'Expiration time', defaultUnit: Unit.DATE_TIME_FROM_NOW }, certificateExpiryTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], append: ' * 1000' }).target()),
-    NewTimeSeriesPanel({ title: 'Renewal time', defaultUnit: Unit.DATE_TIME_FROM_NOW }, certificateRenewalTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], append: ' * 1000' }).target()),
-    NewTimeSeriesPanel({ title: 'Avg HTTP request latencies for the ACME client', defaultUnit: Unit.SECONDS }, acmeClientRequestDurationSeconds.avg({ groupBy: ['host', 'method', 'path', 'scheme', 'status'] }).target()),
+    NewTimeSeriesPanel({ title: 'Expiration time', unit: units.DateTimeFromNow }, certificateExpiryTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], append: ' * 1000' }).target()),
+    NewTimeSeriesPanel({ title: 'Renewal time', unit: units.DateTimeFromNow }, certificateRenewalTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], append: ' * 1000' }).target()),
+    NewTimeSeriesPanel({ title: 'Avg HTTP request latencies for the ACME client', unit: units.Seconds }, acmeClientRequestDurationSeconds.avg({ groupBy: ['host', 'method', 'path', 'scheme', 'status'] }).target()),
   ]),
 ]
 
-export const dashboard: Dashboard = {
-  ...defaultDashboard,
-  description: 'Dashboard for cert-manager',
-  graphTooltip: DashboardCursorSync.Crosshair,
-  tags: ['cert-manager'],
-  time: {
-    from: 'now-6h',
-    to: 'now',
-  },
-  title: 'Cert Manager',
-  uid: 'cert-manager',
-  version: 1,
-  panels: autoLayout(panels),
-  templating: {
-    list: [NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' })],
-  },
-}
+export const certManagerDashboard = newDashboard({
+  variables: [NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' })],
+  panels: panels,
+})

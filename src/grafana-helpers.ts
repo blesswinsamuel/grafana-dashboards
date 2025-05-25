@@ -1,27 +1,40 @@
 // https://github.com/grafana/grafana/tree/main/packages/grafana-schema
-import { Dashboard, DataSourceRef, Panel, RowPanel, VariableModel, VariableRefresh, defaultVariableModel } from '@grafana/schema'
-import * as fs from 'fs/promises'
-import * as fsSync from 'fs'
-import * as yaml from 'yaml'
-import { RuleFile } from './alerts'
-export { goRuntimeMetricsPanels } from './go-runtime'
-export { NewBarGaugePanel, NewPieChartPanel, NewStatPanel, NewTablePanel, NewTimeSeriesPanel } from './panels'
-export type { BarGaugePanelOpts, PieChartPanelOpts, StatPanelOpts, TablePanelOpts, Target, TimeSeriesPanelOpts } from './panels'
-export { Unit } from './units'
-export { averageDurationQuery, overridesMatchByName, tableExcludeByName, tableIndexByName } from './utils'
-export type { CommonMetricOpts, CommonQueryOpts } from './promql-helpers'
-export { CounterMetric, GaugeMetric, HistogramMetric, SummaryMetric, formatLegendFormat, mergeSelectors } from './promql-helpers'
+import * as cog from '@grafana/grafana-foundation-sdk/cog'
+import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
+import * as text from '@grafana/grafana-foundation-sdk/text'
 
-export type DataSourceVariableOpts = {
-  name: string
-  label: string
-  regex?: string
-  query?: string
-}
+// Exports
+export { goRuntimeMetricsPanels } from './common-panels/go-runtime'
+export { NewPrometheusDatasourceVariable, NewLokiDatasourceVariable, NewTextboxVariable, NewQueryVariable } from './helpers/variables'
+
+export type { CommonMetricOpts, CommonQueryOpts } from './helpers/promql'
+export { CounterMetric, GaugeMetric, HistogramMetric, SummaryMetric, formatLegendFormat, mergeSelectors } from './helpers/promql'
+export { NewLokiLogsPanel, type LokiLogsPanelOpts } from './helpers/panels/loki'
+export { NewStatPanel, type StatPanelOpts } from './helpers/panels/stat'
+export { NewTimeSeriesPanel, type TimeSeriesPanelOpts } from './helpers/panels/timeseries'
+export { NewBarGaugePanel, type BarGaugePanelOpts } from './helpers/panels/barchart'
+export { NewPieChartPanel, type PieChartPanelOpts } from './helpers/panels/piechart'
+export { NewTablePanel, type TablePanelOpts } from './helpers/panels/table'
+export { overridesMatchByName, tableExcludeByName, tableIndexByName } from './helpers/panels/table'
+export { writeDashboardAndPostToGrafana } from './helpers/grafana'
+export { writePrometheusRules } from './helpers/alerting-rules'
+
+// Units
+export * as units from '@grafana/grafana-foundation-sdk/units'
+
+// Panels
+export * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
+export * as table from '@grafana/grafana-foundation-sdk/table'
+export * as piechart from '@grafana/grafana-foundation-sdk/piechart'
+export * as barchart from '@grafana/grafana-foundation-sdk/barchart'
+export * as timeseries from '@grafana/grafana-foundation-sdk/timeseries'
+export * as stat from '@grafana/grafana-foundation-sdk/stat'
+export * as logs from '@grafana/grafana-foundation-sdk/logs'
+export * as common from '@grafana/grafana-foundation-sdk/common'
 
 export type PanelRow = {
   type: 'panel-row'
-  panels: Array<Panel>
+  panels: Array<dashboard.Panel>
 }
 
 export type PanelGroup = {
@@ -34,28 +47,34 @@ export type PanelGroup = {
 export type PanelRowAndGroups = Array<PanelRow | PanelGroup>
 
 type PanelArrayOpts = {
-  datasource?: DataSourceRef
+  datasource?: dashboard.DataSourceRef
   height?: number
   width?: number
 }
 
-export function NewPanelRow(opts: PanelArrayOpts, panels: Array<Panel | undefined | false>): PanelRow {
-  const panelsFiltered = filterNonUndefined(panels)
-  for (const panel of panelsFiltered) {
+export function NewPanelRow(opts: PanelArrayOpts, panels: Array<cog.Builder<dashboard.Panel> | undefined | false>): PanelRow {
+  const panelsBuilt: Array<dashboard.Panel> = []
+  for (const panelBuilder of panels) {
+    if (!panelBuilder) continue
+    const panel = panelBuilder.build()
     if (opts.datasource && !panel.datasource) {
       panel.datasource = opts.datasource
     }
-    if (opts.height && !panel.gridPos!.h) {
-      panel.gridPos!.h = opts.height
+    if (!panel.gridPos) {
+      panel.gridPos = { x: 0, y: 0, w: 0, h: 0 }
     }
-    if (opts.width && !panel.gridPos!.w) {
-      panel.gridPos!.w = opts.width
+    if (opts.height) {
+      panel.gridPos.h = panel.gridPos.h || opts.height
     }
+    if (opts.width) {
+      panel.gridPos.w = panel.gridPos.w || opts.width
+    }
+    panelsBuilt.push(panel)
   }
 
   return {
     type: 'panel-row',
-    panels: panelsFiltered,
+    panels: panelsBuilt,
   }
 }
 
@@ -63,7 +82,9 @@ function filterNonUndefined<T>(array: Array<T | undefined | false>): Array<T> {
   return array.filter((item): item is T => item !== undefined && item !== false)
 }
 
-export function NewPanelGroup(opts: { title: string; collapsed?: boolean }, panelRows: Array<PanelRow | undefined | false>): PanelGroup {
+type PanelGroupOpts = { title: string; collapsed?: boolean }
+
+export function NewPanelGroup(opts: PanelGroupOpts, panelRows: Array<PanelRow | undefined | false>): PanelGroup {
   return {
     type: 'panel-group',
     title: opts.title,
@@ -72,228 +93,79 @@ export function NewPanelGroup(opts: { title: string; collapsed?: boolean }, pane
   }
 }
 
-export function NewPrometheusDatasource(opts: DataSourceVariableOpts): VariableModel {
-  return {
-    ...defaultVariableModel,
-    datasource: null,
-    hide: 0,
-    type: 'datasource',
-    label: opts.label,
-    name: opts.name,
-    regex: opts.regex,
-    query: 'prometheus',
+type DashboardOpts = {
+  title?: string
+  description?: string
+  uid?: string
+  tags?: string[]
+  time?: dashboard.Dashboard['time']
+  panels: PanelRowAndGroups
+  variables?: cog.Builder<dashboard.VariableModel>[]
+  includeGeneratedDashboardNote?: boolean
+}
+
+export function newDashboard(opts: DashboardOpts): dashboard.DashboardBuilder {
+  const { includeGeneratedDashboardNote = true } = opts
+  const db = new dashboard.DashboardBuilder(opts.title || '')
+  db.tooltip(dashboard.DashboardCursorSync.Crosshair)
+  if (opts.description) db.description(opts.description)
+  if (opts.uid) db.uid(opts.uid)
+  if (opts.time) db.time(opts.time)
+  if (opts.tags) db.tags(opts.tags)
+
+  for (const variableBuilder of opts.variables || []) {
+    db.withVariable(variableBuilder)
   }
-}
-
-export function NewLokiDatasource(opts: DataSourceVariableOpts): VariableModel {
-  return {
-    ...defaultVariableModel,
-    datasource: null,
-    hide: 0,
-    type: 'datasource',
-    label: opts.label,
-    name: opts.name,
-    regex: opts.regex,
-    query: 'loki',
+  if (includeGeneratedDashboardNote) {
+    db.withPanel(new text.PanelBuilder().transparent(true).span(24).content('This is a generated dashboard. Any changes made here will be lost on the next generation.').height(3))
   }
+  withPanels(db, opts.panels)
+  return db
 }
 
-export function NewDatasourceVariable(opts: DataSourceVariableOpts): VariableModel {
-  return {
-    ...defaultVariableModel,
-    datasource: null,
-    hide: 0,
-    type: 'datasource',
-    label: opts.label,
-    name: opts.name,
-    regex: opts.regex,
-    query: opts.query || 'prometheus',
-  }
-}
-
-export type QueryVariableOpts = {
-  label: string
-  name: string
-  datasource: DataSourceRef
-  query?: string | any
-  refresh?: VariableRefresh
-  multi?: boolean
-  includeAll?: boolean
-  regex?: string
-  hide?: boolean
-}
-
-export function NewQueryVariable(opts: QueryVariableOpts): VariableModel {
-  return {
-    ...defaultVariableModel,
-    datasource: opts.datasource,
-    hide: opts.hide ? 2 : 0,
-    type: 'query',
-    label: opts.label,
-    name: opts.name,
-    query: opts.query,
-    // regex: '',
-    multi: opts.multi,
-    // @ts-ignore
-    includeAll: opts.includeAll,
-    // @ts-ignore
-    sort: 1, // SORT_ALPHA_DESC
-    refresh: opts.refresh || VariableRefresh.onTimeRangeChanged,
-    options: [],
-    regex: opts.regex,
-  }
-}
-
-export type TextboxVariableOpts = {
-  label: string
-  name: string
-  hide?: boolean
-  default?: string
-}
-
-export function NewTextboxVariable(opts: TextboxVariableOpts): VariableModel {
-  return {
-    ...defaultVariableModel,
-    hide: opts.hide ? 2 : 0,
-    type: 'textbox',
-    label: opts.label,
-    name: opts.name,
-    query: opts.default,
-    options: [],
-  }
-}
-
-export function autoLayout(panelRows: PanelRowAndGroups): Array<Panel | RowPanel> {
-  function autoLayoutInner(panelRowsAndGroups: PanelRowAndGroups, y: number = 0): [Array<Panel | RowPanel>, number] {
-    const panels: Array<Panel | RowPanel> = []
+export function withPanels(db: dashboard.DashboardBuilder, panelRows: PanelRowAndGroups): dashboard.DashboardBuilder {
+  function autoLayoutInner(b: dashboard.DashboardBuilder | dashboard.RowBuilder, panelRowsAndGroups: PanelRowAndGroups) {
     for (const panelRowOrGroup of panelRowsAndGroups) {
-      const isPanelGroup = panelRowOrGroup.type === 'panel-group'
-      let groupHeader: RowPanel | undefined = isPanelGroup
-        ? {
-            id: 0,
-            type: 'row',
-            title: panelRowOrGroup.title,
-            panels: [],
-            collapsed: panelRowOrGroup.collapsed,
-            gridPos: { x: 0, y: 0, w: 24, h: 1 },
-          }
-        : undefined
-      let rowPanels: [RowPanel] | Panel[] = isPanelGroup ? (groupHeader ? [groupHeader] : []) : panelRowOrGroup.panels
+      if (panelRowOrGroup.type === 'panel-group') {
+        let b = new dashboard.RowBuilder(panelRowOrGroup.title).collapsed(panelRowOrGroup.collapsed)
 
-      let maxh = 0
-      let x = 0
-      const panelCountInThisRowWithoutW = rowPanels.filter((panel) => panel.gridPos!.w === 0).length
-      const availableRemainingWidth = 24 - rowPanels.map((panel: RowPanel | Panel) => panel.gridPos!.w || 0).reduce((a, b) => a + b, 0)
+        if (panelRowOrGroup.collapsed) {
+          autoLayoutInner(b, panelRowOrGroup.panelRows)
+          db.withRow(b)
+        } else {
+          db.withRow(b)
+          autoLayoutInner(db, panelRowOrGroup.panelRows)
+        }
+        continue
+      }
+      const rowPanels = panelRowOrGroup.panels
+      const panelCountInThisRowWithoutW = rowPanels.filter((panel) => !panel.gridPos?.w).length
+      const availableRemainingWidth = 24 - rowPanels.map((panel) => panel.gridPos?.w || 0).reduce((a, b) => a + b, 0)
+      // console.log(`Row with ${rowPanels.length} panels, available width: ${availableRemainingWidth}, panels without width: ${panelCountInThisRowWithoutW}`)
+      let maxHeight = 0
       for (const panel of rowPanels) {
-        if (panel.gridPos!.w === 0) {
+        if (!panel.gridPos?.w) {
           panel.gridPos!.w = Math.floor(availableRemainingWidth / panelCountInThisRowWithoutW)
         }
+        if (panel.gridPos?.h && panel.gridPos.h > maxHeight) {
+          maxHeight = panel.gridPos.h
+        }
       }
-      // let moreAvailableRemainingWidth = 24 - rowPanels.map((panel: RowPanel | Panel) => panel.gridPos!.w || 0).reduce((a, b) => a + b, 0)
-      // for (let i = 0; i < rowPanels.length; i++) {
-      //   if (moreAvailableRemainingWidth === 0) {
-      //     break
-      //   }
-      //   rowPanels[i].gridPos!.w += 1
-      //   moreAvailableRemainingWidth -= 1
-      //   if (moreAvailableRemainingWidth !== 0) {
-      //     rowPanels[rowPanels.length - i - 1].gridPos!.w += 1
-      //     moreAvailableRemainingWidth -= 1
-      //   }
-      // }
       for (const panel of rowPanels) {
-        if (x + 1 > 24) {
-          x = 0
-          y += maxh
-          maxh = 0
-        }
-
-        panel.gridPos!.x = x
-        panel.gridPos!.y = y
-
-        if (panel.gridPos!.h > maxh) {
-          maxh = panel.gridPos!.h
-        }
-
-        x += panel.gridPos!.w
-
-        panels.push(panel)
+        b.withPanel({ build: () => panel })
       }
-
-      y += maxh
-      if (isPanelGroup && groupHeader) {
-        let rowPanelsInGroup: Array<Panel> = []
-        ;[rowPanelsInGroup, y] = autoLayoutInner(panelRowOrGroup.panelRows, y)
-        groupHeader.panels = rowPanelsInGroup
-        if (!panelRowOrGroup.collapsed) {
-          panels.push(...rowPanelsInGroup)
-          groupHeader.panels = []
-        }
+      const totalWidth = rowPanels.map((panel) => panel.gridPos?.w || 0).reduce((a, b) => a + b, 0)
+      if (totalWidth < 24) {
+        b.withPanel(
+          new text.PanelBuilder()
+            .transparent(true)
+            .span(24 - totalWidth)
+            .content('')
+            .height(maxHeight)
+        )
       }
     }
-    // console.log(panels.map((panel) => panel.title));
-    return [panels, y]
   }
-  return autoLayoutInner(panelRows)[0]
-}
-
-export async function writeDashboardAndPostToGrafana(opts: { grafanaURL?: string; grafanaUsername?: string; grafanaPassword?: string; grafanaSession?: string; grafanaApiToken?: string; dashboard: Dashboard; folderUid?: string; addDebugNamePrefix?: boolean; filename: string }) {
-  const { grafanaURL = process.env.GRAFANA_URL, grafanaSession = process.env.GRAFANA_SESSION, grafanaApiToken = process.env.GRAFANA_API_TOKEN, grafanaUsername = process.env.GRAFANA_USERNAME, grafanaPassword = process.env.GRAFANA_PASSWORD, dashboard, addDebugNamePrefix = true } = opts
-  // create parent folder if it doesn't exist
-  if (opts.filename.includes('/')) {
-    const folder = opts.filename.split('/').slice(0, -1).join('/')
-    if (folder !== '' && !fsSync.existsSync(folder)) {
-      console.log('Creating parent folder', folder)
-      await fs.mkdir(folder, { recursive: true })
-    }
-  }
-  if (fsSync.existsSync(opts.filename)) {
-    const existingDashboard = JSON.parse(await fs.readFile(opts.filename, 'utf-8'))
-    if (JSON.stringify(existingDashboard) === JSON.stringify(dashboard)) {
-      // console.info(`Dashboard ${opts.filename} is already up to date`)
-      return
-    }
-  }
-  await fs.writeFile(opts.filename, JSON.stringify(dashboard, null, 2))
-  if (grafanaURL) {
-    console.info(`${new Date().toISOString()}: Writing dashboard ${opts.filename} to Grafana at ${grafanaURL}`)
-    dashboard['uid'] = `${addDebugNamePrefix ? 'debug-' : ''}${dashboard['uid']}`
-    dashboard['uid'] = dashboard['uid'].substring(0, 40)
-    dashboard['title'] = `${addDebugNamePrefix ? '[Debug] ' : ''}${dashboard['title']}`
-    // dashboard['version'] = Math.floor(Math.random() * 1000)
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    }
-    if (grafanaUsername && grafanaPassword) {
-      headers['Authorization'] = 'Basic ' + btoa(grafanaUsername + ':' + grafanaPassword)
-    }
-    if (grafanaApiToken) {
-      headers['Authorization'] = `Bearer ${grafanaApiToken}`
-    }
-    if (grafanaSession) {
-      headers['Cookie'] = `grafana_session=${grafanaSession}`
-    }
-    const fetchOpts: RequestInit = {
-      method: 'POST',
-      body: JSON.stringify({
-        dashboard: dashboard,
-        folderUid: opts.folderUid,
-        overwrite: true,
-        message: 'Updated by script',
-      }),
-      headers,
-    }
-    const response = await fetch(`${grafanaURL}/api/dashboards/db`, fetchOpts)
-
-    console.log(response.status, response.statusText)
-    const body = await response.json()
-    console.log(body)
-  }
-}
-
-export async function writePrometheusRules(opts: { checkRules?: boolean; ruleFile: RuleFile; filename: string }) {
-  await fs.writeFile(opts.filename, yaml.stringify(opts.ruleFile))
-  if (opts.checkRules) {
-    // TODO: Check the rules using promtool
-  }
+  autoLayoutInner(db, panelRows)
+  return db
 }

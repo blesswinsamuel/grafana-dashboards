@@ -1,3 +1,6 @@
+import * as fs from 'fs/promises'
+import * as yaml from 'yaml'
+
 // https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/
 
 export type RuleFile = {
@@ -50,4 +53,11 @@ export type AlertingRule = {
   labels: Record<string, string> // [ <labelname>: <tmpl_string> ]
   // Annotations to add to each alert.
   annotations: Record<string, string> // [ <labelname>: <tmpl_string> ]
+}
+
+export async function writePrometheusRules(opts: { checkRules?: boolean; ruleFile: RuleFile; filename: string }) {
+  await fs.writeFile(opts.filename, yaml.stringify(opts.ruleFile))
+  if (opts.checkRules) {
+    // TODO: Check the rules using promtool
+  }
 }

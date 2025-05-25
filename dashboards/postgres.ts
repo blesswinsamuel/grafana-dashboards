@@ -1,7 +1,7 @@
-import { Dashboard, DashboardCursorSync, DataSourceRef, defaultDashboard } from '@grafana/schema'
-import { autoLayout, CounterMetric, GaugeMetric, goRuntimeMetricsPanels, NewPanelGroup, NewPanelRow, NewPieChartPanel, NewPrometheusDatasource as NewPrometheusDatasourceVariable, NewQueryVariable, NewTimeSeriesPanel, PanelRowAndGroups, Unit } from '../src/grafana-helpers'
-import { cadvisorMetricsPanels } from '../src/k8s-cadvisor'
-import { podMetricsPanels } from '../src/k8s-kube-state-metrics'
+import { DataSourceRef } from '@grafana/grafana-foundation-sdk/dashboard'
+import { cadvisorMetricsPanels } from '../src/common-panels/k8s-cadvisor'
+import { podMetricsPanels } from '../src/common-panels/k8s-kube-state-metrics'
+import { CounterMetric, GaugeMetric, goRuntimeMetricsPanels, newDashboard, NewPanelGroup, NewPanelRow, NewPieChartPanel, NewPrometheusDatasourceVariable, NewQueryVariable, NewTimeSeriesPanel, PanelRowAndGroups, units } from '../src/grafana-helpers'
 
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -322,10 +322,10 @@ const selectors = `instance=~"$instance", namespace=~"$namespace"`
 const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Database Size' }, [
     NewPanelRow({ datasource, height: 8 }, [
-      NewPieChartPanel({ title: 'Database Size', defaultUnit: Unit.BYTES_SI }, pgDatabaseSizeBytes.calc('sum', { selectors, groupBy: ['datname'] }).target()),
-      NewTimeSeriesPanel({ title: 'Database Size', defaultUnit: Unit.BYTES_SI }, pgDatabaseSizeBytes.calc('sum', { selectors, groupBy: ['datname'] }).target()),
-      NewTimeSeriesPanel({ title: 'Locks Count', defaultUnit: Unit.SHORT }, pgLocksCount.calc('sum', { selectors, groupBy: ['datname', 'mode'], append: ' > 0' }).target()),
-      NewTimeSeriesPanel({ title: 'Number of backends connected', defaultUnit: Unit.SHORT }, statDatabaseNumbackends.calc('sum', { selectors: [selectors, `datname!=""`], groupBy: ['datname'] }).target()),
+      NewPieChartPanel({ title: 'Database Size', unit: units.BytesSI }, pgDatabaseSizeBytes.calc('sum', { selectors, groupBy: ['datname'] }).target()),
+      NewTimeSeriesPanel({ title: 'Database Size', unit: units.BytesSI }, pgDatabaseSizeBytes.calc('sum', { selectors, groupBy: ['datname'] }).target()),
+      NewTimeSeriesPanel({ title: 'Locks Count' }, pgLocksCount.calc('sum', { selectors, groupBy: ['datname', 'mode'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Number of backends connected' }, statDatabaseNumbackends.calc('sum', { selectors: [selectors, `datname!=""`], groupBy: ['datname'] }).target()),
     ]),
   ]),
   NewPanelGroup({ title: 'Activity count' }, [
@@ -346,26 +346,12 @@ const panels: PanelRowAndGroups = [
   goRuntimeMetricsPanels({ datasource, title: 'Resource Usage (postgres-exporter)', buildInfoMetric: 'postgres_exporter_build_info', selectors, collapsed: true }),
 ]
 
-export const dashboard: Dashboard = {
-  ...defaultDashboard,
-  description: 'Dashboard for postgres',
-  graphTooltip: DashboardCursorSync.Crosshair,
-  tags: ['postgres'],
-  time: {
-    from: 'now-6h',
-    to: 'now',
-  },
-  title: 'Postgres',
-  uid: 'postgres',
-  version: 1,
-  panels: autoLayout(panels),
-  templating: {
-    list: [
-      //
-      NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }),
-      NewQueryVariable({ datasource, name: 'namespace', label: 'Namespace', query: 'label_values(postgres_exporter_build_info, namespace)' }),
-      NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(postgres_exporter_build_info{namespace=~"$namespace"}, instance)', includeAll: true, multi: true }),
-      NewQueryVariable({ datasource, name: 'pod', label: 'Pod', query: 'label_values(postgres_exporter_build_info{namespace=~"$namespace", instance=~"$instance"}, pod)', includeAll: true, multi: true }),
-    ],
-  },
-}
+export const postgresDashboard = newDashboard({
+  variables: [
+    NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }),
+    NewQueryVariable({ datasource, name: 'namespace', label: 'Namespace', query: 'label_values(postgres_exporter_build_info, namespace)' }),
+    NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(postgres_exporter_build_info{namespace=~"$namespace"}, instance)', includeAll: true, multi: true }),
+    NewQueryVariable({ datasource, name: 'pod', label: 'Pod', query: 'label_values(postgres_exporter_build_info{namespace=~"$namespace", instance=~"$instance"}, pod)', includeAll: true, multi: true }),
+  ],
+  panels: panels,
+})
