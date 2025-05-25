@@ -1,5 +1,6 @@
 import * as common from '@grafana/grafana-foundation-sdk/common'
 import * as logs from '@grafana/grafana-foundation-sdk/logs'
+import * as loki from '@grafana/grafana-foundation-sdk/loki'
 import { CommonPanelOpts, withCommonOpts } from './commons'
 import { PrometheusTarget } from './target'
 

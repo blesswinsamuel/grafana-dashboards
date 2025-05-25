@@ -4,19 +4,19 @@
     "": {
       "name": "grafana-dashboard-helpers",
       "dependencies": {
-        "@grafana/grafana-foundation-sdk": "^11.1.0-cogv0.0.x.1746458718",
-        "yaml": "^2.7.1",
+        "@grafana/grafana-foundation-sdk": "latest",
+        "yaml": "latest",
       },
       "devDependencies": {
-        "@types/node": "^22.15.18",
-        "prettier": "^3.5.3",
+        "@types/node": "latest",
+        "prettier": "latest",
       },
     },
   },
   "packages": {
     "@grafana/grafana-foundation-sdk": ["@grafana/grafana-foundation-sdk@11.1.0-cogv0.0.x.1746458718", "", { "dependencies": { "tslib": "^2.6.2" } }, "sha512-cPP5li3vKoQ8ueQM2b9y+2DsqjVGqNq9O04+bLL9bhFwDC+6wlXQU2shW7ngfP7hyKW4bs04ldHXNr9qGcZZhg=="],
 
-    "@types/node": ["@types/node@22.15.18", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-v1DKRfUdyW+jJhZNEI1PYy29S2YRxMV5AOO/x/SjKmW0acCIOqmbj6Haf9eHAhsPmrhlHSxEhv/1WszcLWV4cg=="],
+    "@types/node": ["@types/node@22.15.21", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-EV/37Td6c+MgKAbkcLG6vqZ2zEYHD7bvSrzqqs2RIhbA6w3x+Dqz8MZM3sP6kGTeLrdoOgKZe+Xja7tUB2DNkQ=="],
 
     "prettier": ["prettier@3.5.3", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-QQtaxnoDJeAkDvDKWCLiwIXkTgRhwYDEQCghU9Z6q03iyek/rxRh/2lC3HB7P8sWT2xC/y5JDctPLBIGzHKbhw=="],
 
@@ -24,6 +24,6 @@
 
     "undici-types": ["undici-types@6.21.0", "", {}, "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="],
 
-    "yaml": ["yaml@2.7.1", "", { "bin": { "yaml": "bin.mjs" } }, "sha512-10ULxpnOCQXxJvBgxsn9ptjq6uviG/htZKk9veJGhlqn3w/DxQ631zFF+nlQXLwmImeS5amR2dl2U8sg6U9jsQ=="],
+    "yaml": ["yaml@2.8.0", "", { "bin": { "yaml": "bin.mjs" } }, "sha512-4lLa/EcQCB0cJkyts+FpIRx5G/llPxfP6VQU5KByHEhLxY3IJCH0f0Hy1MHI8sClTvsIb8qwRJ6R/ZdlDJ/leQ=="],
   }
 }

@@ -11,7 +11,7 @@ import { PrometheusTarget, Target } from './target'
 export type TimeSeriesPanelOpts = CommonPanelOpts<PrometheusTarget> & {
   type?: 'bar' | 'line'
   legendCalcs?: string[]
-  legendPlacement?: common.LegendPlacement
+  legendPlacement?: common.LegendPlacement | 'right' | 'bottom'
   stackingMode?: common.StackingMode
 }
 export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: PrometheusTarget[]): cog.Builder<dashboard.Panel> {
@@ -55,11 +55,12 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: Promet
       break
   }
 
-  const lb = new common.VizLegendOptionsBuilder()
-    .placement(opts.legendPlacement ?? common.LegendPlacement.Bottom)
-    .showLegend(true)
-    .calcs(legendCalcs)
-    .displayMode(common.LegendDisplayMode.Table)
+  const lb = new common.VizLegendOptionsBuilder().showLegend(true).calcs(legendCalcs).displayMode(common.LegendDisplayMode.Table)
+  if (opts.legendPlacement) {
+    if (opts.legendPlacement === 'right') lb.placement(common.LegendPlacement.Right)
+    else if (opts.legendPlacement === 'bottom') lb.placement(common.LegendPlacement.Bottom)
+    else lb.placement(opts.legendPlacement as common.LegendPlacement)
+  }
   if (legendCalcs.length == 0) {
     lb.displayMode(common.LegendDisplayMode.List)
   }

@@ -121,7 +121,20 @@ export function newDashboard(opts: DashboardOpts): dashboard.DashboardBuilder {
     db.withVariable(variableBuilder)
   }
   if (includeGeneratedDashboardNote) {
-    db.withPanel(new text.PanelBuilder().transparent(true).span(24).content('This is a generated dashboard. Any changes made here will be lost on the next generation.').height(3))
+    db.withPanel(
+      new text.PanelBuilder()
+        .transparent(true)
+        .span(24)
+        .mode(text.TextMode.HTML)
+        .content(
+          `<div style="background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;">
+<h4>This dashboard was generated from code</h4>
+
+<p>Any edits will be lost when the dashboard is regenerated.</p>
+</div>`
+        )
+        .height(3)
+    )
   }
   withPanels(db, opts.panels)
   return db
@@ -131,7 +144,10 @@ export function withPanels(db: dashboard.DashboardBuilder, panelRows: PanelRowAn
   function autoLayoutInner(b: dashboard.DashboardBuilder | dashboard.RowBuilder, panelRowsAndGroups: PanelRowAndGroups) {
     for (const panelRowOrGroup of panelRowsAndGroups) {
       if (panelRowOrGroup.type === 'panel-group') {
-        let b = new dashboard.RowBuilder(panelRowOrGroup.title).collapsed(panelRowOrGroup.collapsed).repeat(panelRowOrGroup.repeat)
+        let b = new dashboard.RowBuilder(panelRowOrGroup.title).collapsed(panelRowOrGroup.collapsed)
+        if (panelRowOrGroup.repeat) {
+          b.repeat(panelRowOrGroup.repeat)
+        }
 
         if (panelRowOrGroup.collapsed) {
           autoLayoutInner(b, panelRowOrGroup.panelRows)
