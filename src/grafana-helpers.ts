@@ -44,6 +44,7 @@ export type PanelGroup = {
   panelRows: Array<PanelRow>
   title: string
   collapsed: boolean
+  repeat?: string
 }
 
 export type PanelRowAndGroups = Array<PanelRow | PanelGroup>
@@ -84,7 +85,7 @@ function filterNonUndefined<T>(array: Array<T | undefined | false>): Array<T> {
   return array.filter((item): item is T => item !== undefined && item !== false)
 }
 
-type PanelGroupOpts = { title: string; collapsed?: boolean }
+type PanelGroupOpts = { title: string; collapsed?: boolean; repeat?: string }
 
 export function NewPanelGroup(opts: PanelGroupOpts, panelRows: Array<PanelRow | undefined | false>): PanelGroup {
   return {
@@ -92,6 +93,7 @@ export function NewPanelGroup(opts: PanelGroupOpts, panelRows: Array<PanelRow | 
     title: opts.title,
     panelRows: filterNonUndefined(panelRows),
     collapsed: opts.collapsed || false,
+    repeat: opts.repeat,
   }
 }
 
@@ -129,7 +131,7 @@ export function withPanels(db: dashboard.DashboardBuilder, panelRows: PanelRowAn
   function autoLayoutInner(b: dashboard.DashboardBuilder | dashboard.RowBuilder, panelRowsAndGroups: PanelRowAndGroups) {
     for (const panelRowOrGroup of panelRowsAndGroups) {
       if (panelRowOrGroup.type === 'panel-group') {
-        let b = new dashboard.RowBuilder(panelRowOrGroup.title).collapsed(panelRowOrGroup.collapsed)
+        let b = new dashboard.RowBuilder(panelRowOrGroup.title).collapsed(panelRowOrGroup.collapsed).repeat(panelRowOrGroup.repeat)
 
         if (panelRowOrGroup.collapsed) {
           autoLayoutInner(b, panelRowOrGroup.panelRows)
