@@ -86,10 +86,13 @@ const metricWriteErrorsCorrectedByEccDelayed = new GaugeMetric('smartctl_write_e
 // Write Total Uncorrected Errors
 const metricWriteTotalUncorrectedErrors = new GaugeMetric('smartctl_write_total_uncorrected_errors') // device
 
-const errorThresholds = new dashboard.ThresholdsConfigBuilder().mode(dashboard.ThresholdsMode.Absolute).steps([
-  { color: 'green', value: null },
-  { color: 'red', value: 1 },
-])
+const errorThresholds = {
+  mode: dashboard.ThresholdsMode.Absolute,
+  steps: [
+    { color: 'green', value: null },
+    { color: 'red', value: 1 },
+  ],
+}
 
 const overviewStats = NewPanelRow({ datasource, height: 3 }, [
   NewStatPanel({ title: 'Devices count', targets: [{ expr: `sum(${metricDeviceCount.metric}{instance=~"$instance", job="$job"})` }] }),

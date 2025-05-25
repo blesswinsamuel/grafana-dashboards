@@ -15,7 +15,8 @@ type GrafanaDashboardOpts = {
 }
 
 export async function writeDashboardAndPostToGrafana(opts: GrafanaDashboardOpts) {
-  const { grafanaURL = process.env.GRAFANA_URL, grafanaSession = process.env.GRAFANA_SESSION, grafanaApiToken = process.env.GRAFANA_API_TOKEN, grafanaUsername = process.env.GRAFANA_USERNAME, grafanaPassword = process.env.GRAFANA_PASSWORD, dashboard, prefix } = opts
+  const { grafanaURL = process.env.GRAFANA_URL, grafanaSession = process.env.GRAFANA_SESSION, grafanaApiToken = process.env.GRAFANA_API_TOKEN, grafanaUsername = process.env.GRAFANA_USERNAME, grafanaPassword = process.env.GRAFANA_PASSWORD, dashboard } = opts
+  const { prefix = grafanaURL !== undefined ? 'debug' : undefined } = opts
   // create parent folder if it doesn't exist
   if (opts.filename.includes('/')) {
     const folder = opts.filename.split('/').slice(0, -1).join('/')

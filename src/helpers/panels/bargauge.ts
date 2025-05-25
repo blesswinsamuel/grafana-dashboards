@@ -1,15 +1,15 @@
-import * as barchart from '@grafana/grafana-foundation-sdk/barchart'
+import * as bargauge from '@grafana/grafana-foundation-sdk/bargauge'
 import * as common from '@grafana/grafana-foundation-sdk/common'
 import { CommonPanelOpts, withCommonOpts } from './commons'
 import { PrometheusTarget, Target } from './target'
+import { dashboard } from '../../grafana-helpers'
 
-export type BarChartPanelOpts = CommonPanelOpts<PrometheusTarget> & Partial<Pick<barchart.Options, 'barRadius' | 'orientation'>> & {}
+export type BarGaugePanelOpts = CommonPanelOpts<PrometheusTarget> & Partial<Pick<bargauge.Options, 'orientation'>> & {}
 
-export function NewBarChartPanel(opts: BarChartPanelOpts, ...targets: PrometheusTarget[]): barchart.PanelBuilder {
-  const b = new barchart.PanelBuilder()
+export function NewBarGaugePanel(opts: BarGaugePanelOpts, ...targets: PrometheusTarget[]): bargauge.PanelBuilder {
+  const b = new bargauge.PanelBuilder()
   for (const t of targets) {
     t.type = t.type ?? 'instant'
-    t.format = t.format ?? 'table'
   }
   withCommonOpts(b, opts, ...targets)
 

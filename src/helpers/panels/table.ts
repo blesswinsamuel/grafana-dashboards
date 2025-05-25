@@ -5,7 +5,7 @@ import { CommonPanelOpts, Unit, withCommonOpts } from './commons'
 import { PrometheusTarget } from './target'
 
 export type TablePanelOpts = CommonPanelOpts<PrometheusTarget> &
-  Pick<Partial<table.Options>, 'footer'> & {
+  Partial<Pick<table.Options, 'footer' | 'cellHeight'>> & {
     queries?: Record<
       string,
       {
@@ -70,7 +70,7 @@ export function NewTablePanel(opts: TablePanelOpts): table.PanelBuilder {
         renameByName: colRenames,
       },
     })
-    opts.overrides = overridesMatchByName(tableOverrides)
+    opts.overridesByName = tableOverrides
   }
 
   const b = new table.PanelBuilder()
@@ -99,19 +99,6 @@ export function NewTablePanel(opts: TablePanelOpts): table.PanelBuilder {
   //   }
 
   return b
-}
-
-export function overridesMatchByName(overrides: Record<string, Record<string, any>>): dashboard.FieldConfigSource['overrides'] {
-  const result: dashboard.FieldConfigSource['overrides'] = []
-  for (const matcher of Object.keys(overrides)) {
-    result.push({
-      matcher: { id: 'byName', options: matcher },
-      properties: Object.entries(overrides[matcher]!).map(([key, value]) => {
-        return { id: key, value }
-      }),
-    })
-  }
-  return result
 }
 
 export const tableIndexByName = (columns: string[]): { [key: string]: number } => {

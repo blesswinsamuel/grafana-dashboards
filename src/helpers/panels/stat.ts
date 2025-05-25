@@ -17,7 +17,7 @@ export type StatPanelOpts = CommonPanelOpts<PrometheusTarget> &
 export function NewStatPanel(opts: StatPanelOpts, ...targets: PrometheusTarget[]): stat.PanelBuilder {
   opts.targets = [...(opts.targets || []), ...(targets || [])]
   opts.mappings = opts.mappings ?? (opts.unit === units.DateTimeFromNow ? [{ type: dashboard.MappingType.ValueToText, options: { '0': { text: '-', index: 0 } } }] : [])
-  opts.thresholds = opts.thresholds ?? new dashboard.ThresholdsConfigBuilder().mode(dashboard.ThresholdsMode.Absolute).steps([{ color: 'transparent', value: null }])
+  opts.thresholds = { mode: dashboard.ThresholdsMode.Absolute, steps: [{ color: 'transparent', value: null }] }
   const b = new stat.PanelBuilder()
   withCommonOpts(b, opts)
   b.graphMode(opts.graphMode ?? common.BigValueGraphMode.Area)

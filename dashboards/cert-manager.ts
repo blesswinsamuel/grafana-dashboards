@@ -1,4 +1,4 @@
-import { CounterMetric, GaugeMetric, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, SummaryMetric, units, overridesMatchByName, tableIndexByName, newDashboard, dashboard } from '../src/grafana-helpers'
+import { CounterMetric, GaugeMetric, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, SummaryMetric, units, tableIndexByName, newDashboard, dashboard } from '../src/grafana-helpers'
 
 const datasource: dashboard.DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -33,14 +33,14 @@ const panels: PanelRowAndGroups = [
           certificateExpiryTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], type: 'instant', append: ' * 1000' }).target({ refId: 'expiration_time' }),
           certificateRenewalTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], type: 'instant', append: ' * 1000' }).target({ refId: 'renewal_time' }),
         ],
-        overrides: overridesMatchByName({
+        overridesByName: {
           condition: {
             mappings: [{ options: { False: { color: 'red', index: 1, text: 'Not ready' }, True: { color: 'green', index: 0, text: 'Ready' } }, type: 'value' }],
             'custom.cellOptions': { type: 'color-background' },
           },
           'Value #expiration_time': { unit: units.DateTimeFromNow },
           'Value #renewal_time': { unit: units.DateTimeFromNow },
-        }),
+        },
         transformations: [
           { id: 'merge', options: {} },
           {

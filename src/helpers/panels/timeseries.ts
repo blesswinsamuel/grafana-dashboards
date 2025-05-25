@@ -10,6 +10,7 @@ import { PrometheusTarget, Target } from './target'
 
 export type TimeSeriesPanelOpts = CommonPanelOpts<PrometheusTarget> & {
   type?: 'bar' | 'line'
+  legendCalcs?: string[]
   legendPlacement?: common.LegendPlacement
   stackingMode?: common.StackingMode
 }
@@ -59,6 +60,9 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: Promet
     .showLegend(true)
     .calcs(legendCalcs)
     .displayMode(common.LegendDisplayMode.Table)
+  if (legendCalcs.length == 0) {
+    lb.displayMode(common.LegendDisplayMode.List)
+  }
   const legendSortBy = legendCalcs[legendCalcs.length - 1]
   const legendSortByName = legendSortBy
     ? {

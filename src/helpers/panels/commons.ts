@@ -7,6 +7,7 @@ import * as piechart from '@grafana/grafana-foundation-sdk/piechart'
 import * as stat from '@grafana/grafana-foundation-sdk/stat'
 import * as table from '@grafana/grafana-foundation-sdk/table'
 import * as timeseries from '@grafana/grafana-foundation-sdk/timeseries'
+import * as bargauge from '@grafana/grafana-foundation-sdk/bargauge'
 import * as units from '@grafana/grafana-foundation-sdk/units'
 import { fromTargets, Target } from './target'
 
@@ -76,9 +77,17 @@ export function inferUnit(targets: Target[], type?: 'line' | 'bar', fallback?: U
   return [fallback, type ?? 'line']
 }
 
-// https://stackoverflow.com/a/51365037/1421222
-type RecursivePartial<T> = {
-  [P in keyof T]?: T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends object | undefined ? RecursivePartial<T[P]> : T[P]
+export function overridesMatchByName(overrides: Record<string, Record<string, any>>): dashboard.FieldConfigSource['overrides'] {
+  const result: dashboard.FieldConfigSource['overrides'] = []
+  for (const matcher of Object.keys(overrides)) {
+    result.push({
+      matcher: { id: 'byName', options: matcher },
+      properties: Object.entries(overrides[matcher]!).map(([key, value]) => {
+        return { id: key, value }
+      }),
+    })
+  }
+  return result
 }
 
 export type CommonPanelOpts<T extends Target> = {
@@ -93,8 +102,6 @@ export type CommonPanelOpts<T extends Target> = {
 
   transformations?: dashboard.DataTransformerConfig[]
 
-  legendCalcs?: string[]
-
   width?: number
   height?: number
   maxDataPoints?: number
@@ -103,13 +110,14 @@ export type CommonPanelOpts<T extends Target> = {
 
   thresholdsStyleMode?: common.GraphThresholdsStyleMode
   mappings?: dashboard.ValueMapping[]
-  thresholds?: cog.Builder<dashboard.ThresholdsConfig>
+  thresholds?: dashboard.ThresholdsConfig
 
   overrides?: dashboard.FieldConfigSource['overrides']
+  overridesByName?: Record<string, Record<string, any>>
   //   fieldConfigDefaults?: dashboard.FieldConfig
 }
 
-type GenericPanelBuilder = timeseries.PanelBuilder | stat.PanelBuilder | logs.PanelBuilder | barchart.PanelBuilder | piechart.PanelBuilder | table.PanelBuilder
+type GenericPanelBuilder = timeseries.PanelBuilder | stat.PanelBuilder | logs.PanelBuilder | barchart.PanelBuilder | piechart.PanelBuilder | table.PanelBuilder | bargauge.PanelBuilder
 
 export function withCommonOpts<PT extends GenericPanelBuilder, T extends Target>(b: PT, opts: CommonPanelOpts<T>, ...extraTargets: T[]): PT {
   const targets = [...(opts.targets || []), ...(extraTargets || [])]
@@ -131,8 +139,21 @@ export function withCommonOpts<PT extends GenericPanelBuilder, T extends Target>
   if (opts.transformations != undefined) b.transformations(opts.transformations)
 
   if (opts.mappings !== undefined) b.mappings(opts.mappings)
-  if (opts.thresholds !== undefined) b.thresholds(opts.thresholds)
+  if (opts.thresholds !== undefined) {
+    const tb = new dashboard.ThresholdsConfigBuilder()
+    tb.mode(opts.thresholds.mode)
+    tb.steps(opts.thresholds.steps)
+    b.thresholds(tb)
+  }
   if (opts.overrides !== undefined) b.overrides(opts.overrides)
+  if (opts.overridesByName !== undefined) {
+    for (const [name, properties] of Object.entries(opts.overridesByName)) {
+      b.overrideByName(
+        name,
+        Object.entries(properties).map(([key, value]) => ({ id: key, value }))
+      )
+    }
+  }
 
   b.transparent(false)
 
