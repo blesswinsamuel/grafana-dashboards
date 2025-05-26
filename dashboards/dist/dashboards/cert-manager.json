@@ -60,7 +60,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by(issuer_group, issuer_kind, issuer_name, name, namespace, condition) (certmanager_certificate_ready_status) > 0",
+          "expr": "(sum by(issuer_group, issuer_kind, issuer_name, name, namespace, condition) (certmanager_certificate_ready_status)) > (0)",
           "refId": "discard",
           "format": "table",
           "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}} - {{condition}}",
@@ -68,7 +68,7 @@
           "range": false
         },
         {
-          "expr": "max by(issuer_group, issuer_kind, issuer_name, name, namespace) (certmanager_certificate_expiration_timestamp_seconds) * 1000",
+          "expr": "(max by(issuer_group, issuer_kind, issuer_name, name, namespace) (certmanager_certificate_expiration_timestamp_seconds)) * (1000)",
           "refId": "expiration_time",
           "format": "table",
           "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
@@ -76,7 +76,7 @@
           "range": false
         },
         {
-          "expr": "max by(issuer_group, issuer_kind, issuer_name, name, namespace) (certmanager_certificate_renewal_timestamp_seconds) * 1000",
+          "expr": "(max by(issuer_group, issuer_kind, issuer_name, name, namespace) (certmanager_certificate_renewal_timestamp_seconds)) * (1000)",
           "refId": "renewal_time",
           "format": "table",
           "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
@@ -273,7 +273,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by(host, method, path, scheme, status) (increase(certmanager_http_acme_client_request_count[$__interval])) > 0",
+          "expr": "(sum by(host, method, path, scheme, status) (increase(certmanager_http_acme_client_request_count[$__interval]))) > (0)",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{host}} - {{method}} - {{path}} - {{scheme}} - {{status}}",
@@ -343,7 +343,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "max by(issuer_group, issuer_kind, issuer_name, name, namespace) (certmanager_certificate_expiration_timestamp_seconds) * 1000",
+          "expr": "(max by(issuer_group, issuer_kind, issuer_name, name, namespace) (certmanager_certificate_expiration_timestamp_seconds)) * (1000)",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",
@@ -416,7 +416,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "max by(issuer_group, issuer_kind, issuer_name, name, namespace) (certmanager_certificate_renewal_timestamp_seconds) * 1000",
+          "expr": "(max by(issuer_group, issuer_kind, issuer_name, name, namespace) (certmanager_certificate_renewal_timestamp_seconds)) * (1000)",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{issuer_group}} - {{issuer_kind}} - {{issuer_name}} - {{name}} - {{namespace}}",

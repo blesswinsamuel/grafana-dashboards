@@ -1,6 +1,7 @@
 import { CounterMetric, GaugeMetric, goRuntimeMetricsPanels, newDashboard, NewLokiDatasourceVariable, NewLokiLogsPanel, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTimeSeriesPanel, PanelRowAndGroups, SummaryMetric, units } from '../src/grafana-helpers'
 import { cadvisorMetricsPanels } from '../src/common-panels/k8s-cadvisor'
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
+import { wrapConditional, WrapFn, wrapMultiply } from '../src/helpers/promql'
 
 const datasource: dashboard.DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -64,16 +65,40 @@ const serviceRespsBytesTotal = new CounterMetric('traefik_service_responses_byte
 
 const selectors = `namespace=~"$namespace", instance=~"$instance"`
 
-const serviceMetricsPanels = (opts: { title?: string; groupBy: string[]; extraSelectors?: string[]; append?: string }) => {
-  const { title = 'Service Metrics', extraSelectors = [], append, groupBy } = opts
+const serviceMetricsPanels = (opts: { title?: string; groupBy: string[]; extraSelectors?: string[]; wrap?: WrapFn }) => {
+  const { title = 'Service Metrics', extraSelectors = [], wrap, groupBy } = opts
   return NewPanelGroup({ title: `${title} (by ${opts.groupBy.join(', ')})` }, [
     // available labels: service, code, method, protocol
     NewPanelRow({ datasource, height: 8 }, [
       // by service
-      NewTimeSeriesPanel({ title: `Request Count by ${opts.groupBy.join(', ')}` }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"', ...extraSelectors], groupBy, append }).target()),
-      NewTimeSeriesPanel({ title: `Request Bytes by ${opts.groupBy.join(', ')}` }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"', ...extraSelectors], groupBy, append }).target()),
-      NewTimeSeriesPanel({ title: `Response Bytes by ${opts.groupBy.join(', ')}` }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"', ...extraSelectors], groupBy, append }).target()),
-      NewTimeSeriesPanel({ title: `Avg request duration by ${opts.groupBy.join(', ')}` }, serviceReqDurations.avg({ selectors: [selectors, 'service=~"$service"', ...extraSelectors], groupBy, append }).target()),
+      NewTimeSeriesPanel(
+        { title: `Request Count by ${opts.groupBy.join(', ')}` },
+        serviceReqs
+          .calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"', ...extraSelectors], groupBy })
+          .wrap(wrap)
+          .target()
+      ),
+      NewTimeSeriesPanel(
+        { title: `Request Bytes by ${opts.groupBy.join(', ')}` },
+        serviceReqsBytesTotal
+          .calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"', ...extraSelectors], groupBy })
+          .wrap(wrap)
+          .target()
+      ),
+      NewTimeSeriesPanel(
+        { title: `Response Bytes by ${opts.groupBy.join(', ')}` },
+        serviceRespsBytesTotal
+          .calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"', ...extraSelectors], groupBy })
+          .wrap(wrap)
+          .target()
+      ),
+      NewTimeSeriesPanel(
+        { title: `Avg request duration by ${opts.groupBy.join(', ')}` },
+        serviceReqDurations
+          .avg({ selectors: [selectors, 'service=~"$service"', ...extraSelectors], groupBy })
+          .wrap(wrap)
+          .target()
+      ),
     ]),
   ])
 }
@@ -85,7 +110,7 @@ const panels: PanelRowAndGroups = [
       NewStatPanel({ title: 'Request Bytes' }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], interval: '$__range' }).target()),
       NewStatPanel({ title: 'Response Bytes' }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], interval: '$__range' }).target()),
       NewStatPanel({ title: 'Config reloads' }, configReloads.calc('sum', 'increase', { selectors, interval: '$__range' }).target()),
-      NewStatPanel({ title: 'Last successful config reload', unit: units.DateTimeFromNow }, lastConfigReloadSuccess.calc('max', { selectors, append: '* 1000' }).target()),
+      NewStatPanel({ title: 'Last successful config reload', unit: units.DateTimeFromNow }, lastConfigReloadSuccess.calc('max', { selectors }).wrap(wrapMultiply(1000)).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
@@ -106,7 +131,7 @@ const panels: PanelRowAndGroups = [
   serviceMetricsPanels({ groupBy: ['protocol'] }),
   serviceMetricsPanels({ groupBy: ['method'] }),
   serviceMetricsPanels({ groupBy: ['code'] }),
-  serviceMetricsPanels({ title: 'Service Metrics (errors)', groupBy: ['code', 'protocol', 'method', 'service'], extraSelectors: ['code=~"(4|5).."'], append: ' > 0' }),
+  serviceMetricsPanels({ title: 'Service Metrics (errors)', groupBy: ['code', 'protocol', 'method', 'service'], extraSelectors: ['code=~"(4|5).."'], wrap: wrapConditional('>', 0) }),
   // NewPanelGroup({ title: 'Service Metrics (by code) (errors)' }, [
   //   // NewPanelRow({ datasource, height: 8 }, [
   //   //   //
@@ -119,7 +144,13 @@ const panels: PanelRowAndGroups = [
       //
       NewTimeSeriesPanel({ title: 'TLS requests by entrypoint' }, entryPointReqsTLS.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint', 'tls_cipher', 'version'] }).target()),
       NewTimeSeriesPanel({ title: 'TLS requests by service' }, serviceReqsTLS.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service', 'tls_cipher', 'version'] }).target()),
-      NewTimeSeriesPanel({ title: 'TLS certs expiration timestamp', unit: units.DateTimeFromNow }, tlsCertsNotAfterTimestamp.calc('max', { selectors: [selectors], groupBy: ['cn', 'sans', 'serial'], append: ' * 1000' }).target()),
+      NewTimeSeriesPanel(
+        { title: 'TLS certs expiration timestamp', unit: units.DateTimeFromNow },
+        tlsCertsNotAfterTimestamp
+          .calc('max', { selectors: [selectors], groupBy: ['cn', 'sans', 'serial'] })
+          .wrap(wrapMultiply(1000))
+          .target()
+      ),
     ]),
   ]),
   NewPanelGroup({ title: 'Logs' }, [

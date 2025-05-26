@@ -3234,7 +3234,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "max(process_start_time_seconds{instance=~\"$instace\"}) * 1000",
+              "expr": "(max(process_start_time_seconds{instance=~\"$instace\"})) * (1000)",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",

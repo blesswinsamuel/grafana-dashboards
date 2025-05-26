@@ -1,5 +1,5 @@
 import { common, dashboard, NewPanelGroup, NewPanelRow, NewStatPanel, NewTimeSeriesPanel, PanelGroup } from '../grafana-helpers'
-import { CounterMetric, GaugeMetric, SummaryMetric } from '../helpers/promql'
+import { CounterMetric, GaugeMetric, SummaryMetric, wrapMultiply } from '../helpers/promql'
 import * as units from '@grafana/grafana-foundation-sdk/units'
 
 // https://github.com/mknyszek/client_golang/blob/master/prometheus/go_collector.go
@@ -49,7 +49,7 @@ export function goRuntimeMetricsPanels({ datasource, title, buildInfoMetric, sel
     NewPanelRow({ datasource, height: 3 }, [
       //
       NewStatPanel({ title: 'Go Version', reduceFields: '/^version$/' }, goInfo.calc('sum', { selectors, groupBy: ['version'], type: 'instant' }).target()),
-      NewStatPanel({ title: 'Process Start Time', unit: units.DateTimeFromNow }, processStartTimeSeconds.calc('max', { selectors, type: 'instant', append: ' * 1000' }).target()),
+      NewStatPanel({ title: 'Process Start Time', unit: units.DateTimeFromNow }, processStartTimeSeconds.calc('max', { selectors, type: 'instant' }).wrap(wrapMultiply(1000)).target()),
       NewStatPanel({ title: 'Process Max File Descriptors', unit: units.Short }, processMaxFds.calc('min', { selectors, type: 'instant' }).target()),
       NewStatPanel({ title: 'Process Virtual Memory Max', unit: units.BytesSI }, processVirtualMemoryMaxBytes.calc('min', { selectors, type: 'instant' }).target()),
     ]),

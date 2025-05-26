@@ -15,7 +15,7 @@ type UnitKeys = keyof typeof units
 export type Unit = (typeof units)[UnitKeys]
 
 export function inferUnit(targets: Target[], type?: 'line' | 'bar', fallback?: Unit): [Unit | undefined, 'line' | 'bar'] {
-  const expr = targets.length > 0 && targets[0] && 'expr' in targets[0] ? targets[0].expr : ''
+  const expr = targets.length > 0 && targets[0] && 'expr' in targets[0] ? targets[0].expr.toString() : ''
   if (!type) {
     if (expr.includes('$__interval')) {
       // interval (bar chart)

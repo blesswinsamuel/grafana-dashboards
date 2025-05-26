@@ -398,7 +398,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "max(traefik_config_last_reload_success{namespace=~\"$namespace\",instance=~\"$instance\"})* 1000",
+          "expr": "(max(traefik_config_last_reload_success{namespace=~\"$namespace\",instance=~\"$instance\"})) * (1000)",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "value",
@@ -2046,7 +2046,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by(code, protocol, method, service) (increase(traefik_service_requests_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__interval])) > 0",
+          "expr": "(sum by(code, protocol, method, service) (increase(traefik_service_requests_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__interval]))) > (0)",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{code}} - {{protocol}} - {{method}} - {{service}}",
@@ -2116,7 +2116,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by(code, protocol, method, service) (increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__interval])) > 0",
+          "expr": "(sum by(code, protocol, method, service) (increase(traefik_service_requests_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__interval]))) > (0)",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{code}} - {{protocol}} - {{method}} - {{service}}",
@@ -2186,7 +2186,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by(code, protocol, method, service) (increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__interval])) > 0",
+          "expr": "(sum by(code, protocol, method, service) (increase(traefik_service_responses_bytes_total{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__interval]))) > (0)",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{code}} - {{protocol}} - {{method}} - {{service}}",
@@ -2256,7 +2256,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "(sum by(code, protocol, method, service) (rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__rate_interval]))) / (sum by(code, protocol, method, service) (rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__rate_interval]))) > 0",
+          "expr": "((sum by(code, protocol, method, service) (rate(traefik_service_request_duration_seconds_sum{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__rate_interval]))) / (sum by(code, protocol, method, service) (rate(traefik_service_request_duration_seconds_count{namespace=~\"$namespace\",instance=~\"$instance\",service=~\"$service\",code=~\"(4|5)..\"}[$__rate_interval])))) > (0)",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{code}} - {{protocol}} - {{method}} - {{service}}",
@@ -2482,7 +2482,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "max by(cn, sans, serial) (traefik_tls_certs_not_after_timestamp{namespace=~\"$namespace\",instance=~\"$instance\"}) * 1000",
+          "expr": "(max by(cn, sans, serial) (traefik_tls_certs_not_after_timestamp{namespace=~\"$namespace\",instance=~\"$instance\"})) * (1000)",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{cn}} - {{sans}} - {{serial}}",
@@ -2700,7 +2700,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "max(process_start_time_seconds{namespace=~\"$namespace\",instance=~\"$instance\"}) * 1000",
+              "expr": "(max(process_start_time_seconds{namespace=~\"$namespace\",instance=~\"$instance\"})) * (1000)",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",
@@ -4311,7 +4311,7 @@
           "repeatDirection": "h",
           "targets": [
             {
-              "expr": "max(container_start_time_seconds{namespace=~\"$namespace\",pod=~\"$pod\"}) * 1000",
+              "expr": "(max(container_start_time_seconds{namespace=~\"$namespace\",pod=~\"$pod\"})) * (1000)",
               "refId": "A",
               "format": "table",
               "legendFormat": "value",

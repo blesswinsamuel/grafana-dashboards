@@ -1,4 +1,5 @@
-import { CounterMetric, GaugeMetric, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, SummaryMetric, units, tableIndexByName, newDashboard, dashboard } from '../src/grafana-helpers'
+import { CounterMetric, dashboard, GaugeMetric, newDashboard, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, SummaryMetric, tableIndexByName, units } from '../src/grafana-helpers'
+import { wrapConditional, wrapMultiply } from '../src/helpers/promql'
 
 const datasource: dashboard.DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -29,9 +30,9 @@ const panels: PanelRowAndGroups = [
       NewTablePanel({
         title: 'Ready status',
         targets: [
-          certificateReadyStatus.calc('sum', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace', 'condition'], type: 'instant', append: ' > 0' }).target({ refId: 'discard' }),
-          certificateExpiryTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], type: 'instant', append: ' * 1000' }).target({ refId: 'expiration_time' }),
-          certificateRenewalTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], type: 'instant', append: ' * 1000' }).target({ refId: 'renewal_time' }),
+          certificateReadyStatus.calc('sum', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace', 'condition'], type: 'instant' }).wrap(wrapConditional('>', 0)).target({ refId: 'discard' }),
+          certificateExpiryTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], type: 'instant' }).wrap(wrapMultiply(1000)).target({ refId: 'expiration_time' }),
+          certificateRenewalTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], type: 'instant' }).wrap(wrapMultiply(1000)).target({ refId: 'renewal_time' }),
         ],
         overridesByName: {
           condition: {
@@ -60,12 +61,12 @@ const panels: PanelRowAndGroups = [
   ]),
   NewPanelRow({ datasource, height: 8 }, [
     NewTimeSeriesPanel({ title: 'The number of sync() calls made by a controller' }, controllerSyncCallCount.calc('sum', 'increase', { groupBy: ['controller'] }).target()),
-    NewTimeSeriesPanel({ title: 'The number of requests made by the ACME client' }, acmeClientRequestCount.calc('sum', 'increase', { groupBy: ['host', 'method', 'path', 'scheme', 'status'], append: ' > 0' }).target()),
+    NewTimeSeriesPanel({ title: 'The number of requests made by the ACME client' }, acmeClientRequestCount.calc('sum', 'increase', { groupBy: ['host', 'method', 'path', 'scheme', 'status'] }).wrap(wrapConditional('>', 0)).target()),
     // TimeSeriesPanel("The clock time", [QueryExpr("max(certmanager_clock_time_seconds_gauge[$__interval]) * 1000", "")], unit=UNITS.DATE_TIME_FROM_NOW),
   ]),
   NewPanelRow({ datasource, height: 8 }, [
-    NewTimeSeriesPanel({ title: 'Expiration time', unit: units.DateTimeFromNow }, certificateExpiryTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], append: ' * 1000' }).target()),
-    NewTimeSeriesPanel({ title: 'Renewal time', unit: units.DateTimeFromNow }, certificateRenewalTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'], append: ' * 1000' }).target()),
+    NewTimeSeriesPanel({ title: 'Expiration time', unit: units.DateTimeFromNow }, certificateExpiryTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'] }).wrap(wrapMultiply(1000)).target()),
+    NewTimeSeriesPanel({ title: 'Renewal time', unit: units.DateTimeFromNow }, certificateRenewalTimeSeconds.calc('max', { groupBy: ['issuer_group', 'issuer_kind', 'issuer_name', 'name', 'namespace'] }).wrap(wrapMultiply(1000)).target()),
     NewTimeSeriesPanel({ title: 'Avg HTTP request latencies for the ACME client', unit: units.Seconds }, acmeClientRequestDurationSeconds.avg({ groupBy: ['host', 'method', 'path', 'scheme', 'status'] }).target()),
   ]),
 ]

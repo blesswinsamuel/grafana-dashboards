@@ -1,5 +1,5 @@
 import { dashboard, NewPanelGroup, NewPanelRow, NewStatPanel, NewTimeSeriesPanel, PanelGroup } from '../grafana-helpers'
-import { CounterMetric, GaugeMetric, SummaryMetric } from '../helpers/promql'
+import { CounterMetric, GaugeMetric, SummaryMetric, wrapMultiply } from '../helpers/promql'
 import * as units from '@grafana/grafana-foundation-sdk/units'
 
 // https://github.com/google/cadvisor/blob/master/docs/storage/prometheus.md
@@ -103,7 +103,7 @@ export function cadvisorMetricsPanels({ datasource, title, selectors = [], group
   return NewPanelGroup({ title: title ?? 'cAdvisor Metrics', collapsed }, [
     NewPanelRow({ datasource, height: 3 }, [
       //
-      NewStatPanel({ title: 'Container Start Time (max)', unit: units.DateTimeFromNow }, containerStartTimeSeconds.calc('max', { selectors, type: 'instant', append: ' * 1000' }).target()),
+      NewStatPanel({ title: 'Container Start Time (max)', unit: units.DateTimeFromNow }, containerStartTimeSeconds.calc('max', { selectors, type: 'instant' }).wrap(wrapMultiply(1000)).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       NewTimeSeriesPanel({ title: 'CPU Usage', unit: units.Short }, containerCpuUsageSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),

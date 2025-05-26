@@ -2,6 +2,7 @@ import { DataSourceRef } from '@grafana/grafana-foundation-sdk/dashboard'
 import { cadvisorMetricsPanels } from '../src/common-panels/k8s-cadvisor'
 import { podMetricsPanels } from '../src/common-panels/k8s-kube-state-metrics'
 import { CounterMetric, GaugeMetric, goRuntimeMetricsPanels, newDashboard, NewPanelGroup, NewPanelRow, NewPieChartPanel, NewPrometheusDatasourceVariable, NewQueryVariable, NewTimeSeriesPanel, PanelRowAndGroups, units } from '../src/grafana-helpers'
+import { wrapConditional } from '../src/helpers/promql'
 
 const datasource: DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -324,21 +325,21 @@ const panels: PanelRowAndGroups = [
     NewPanelRow({ datasource, height: 8 }, [
       NewPieChartPanel({ title: 'Database Size', unit: units.BytesSI }, pgDatabaseSizeBytes.calc('sum', { selectors, groupBy: ['datname'] }).target()),
       NewTimeSeriesPanel({ title: 'Database Size', unit: units.BytesSI }, pgDatabaseSizeBytes.calc('sum', { selectors, groupBy: ['datname'] }).target()),
-      NewTimeSeriesPanel({ title: 'Locks Count' }, pgLocksCount.calc('sum', { selectors, groupBy: ['datname', 'mode'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Locks Count' }, pgLocksCount.calc('sum', { selectors, groupBy: ['datname', 'mode'] }).wrap(wrapConditional('>', 0)).target()),
       NewTimeSeriesPanel({ title: 'Number of backends connected' }, statDatabaseNumbackends.calc('sum', { selectors: [selectors, `datname!=""`], groupBy: ['datname'] }).target()),
     ]),
   ]),
   NewPanelGroup({ title: 'Activity count' }, [
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Active' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="active"`], groupBy: ['datname'], append: ' > 0' }).target()),
-      NewTimeSeriesPanel({ title: 'Disabled' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="disabled"`], groupBy: ['datname'], append: ' > 0' }).target()),
-      NewTimeSeriesPanel({ title: 'Fastpath function call' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="fastpath function call"`], groupBy: ['datname'], append: ' > 0' }).target()),
-      NewTimeSeriesPanel({ title: 'Idle' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle"`], groupBy: ['datname'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Active' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="active"`], groupBy: ['datname'] }).wrap(wrapConditional('>', 0)).target()),
+      NewTimeSeriesPanel({ title: 'Disabled' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="disabled"`], groupBy: ['datname'] }).wrap(wrapConditional('>', 0)).target()),
+      NewTimeSeriesPanel({ title: 'Fastpath function call' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="fastpath function call"`], groupBy: ['datname'] }).wrap(wrapConditional('>', 0)).target()),
+      NewTimeSeriesPanel({ title: 'Idle' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle"`], groupBy: ['datname'] }).wrap(wrapConditional('>', 0)).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'Idle in transaction' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle in transaction"`], groupBy: ['datname'], append: ' > 0' }).target()),
-      NewTimeSeriesPanel({ title: 'Idle in transaction (aborted)' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle in transaction (aborted)"`], groupBy: ['datname'], append: ' > 0' }).target()),
+      NewTimeSeriesPanel({ title: 'Idle in transaction' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle in transaction"`], groupBy: ['datname'] }).wrap(wrapConditional('>', 0)).target()),
+      NewTimeSeriesPanel({ title: 'Idle in transaction (aborted)' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle in transaction (aborted)"`], groupBy: ['datname'] }).wrap(wrapConditional('>', 0)).target()),
     ]),
   ]),
   cadvisorMetricsPanels({ datasource, selectors: [`namespace=~"$namespace"`, `pod=~"$pod"`], collapsed: true }),

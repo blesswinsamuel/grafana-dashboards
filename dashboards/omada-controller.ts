@@ -1,5 +1,6 @@
-import { CounterMetric, GaugeMetric, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, dashboard, newDashboard, units } from '../src/grafana-helpers'
+import { CounterMetric, dashboard, GaugeMetric, newDashboard, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, units } from '../src/grafana-helpers'
 import { RuleGroup } from '../src/helpers/alerting-rules'
+import { wrapMultiply } from '../src/helpers/promql'
 
 const datasource: dashboard.DataSourceRef = {
   uid: '${DS_PROMETHEUS}',
@@ -83,7 +84,7 @@ const panels: PanelRowAndGroups = [
         targets: [
           //
           deviceRxRate.calc('sum', { selectors, groupBy: ['device', 'device_type', 'ip'] }).target({ refId: 'RX', legendFormat: 'Rx - {{ device }} {{ device_type }} {{ ip }}' }),
-          deviceTxRate.calc('sum', { selectors, prepend: '-', groupBy: ['device', 'device_type', 'ip'] }).target({ refId: 'TX', legendFormat: 'Tx - {{ device }} {{ device_type }} {{ ip }}' }),
+          deviceTxRate.calc('sum', { selectors, groupBy: ['device', 'device_type', 'ip'] }).wrap(wrapMultiply(-1)).target({ refId: 'TX', legendFormat: 'Tx - {{ device }} {{ device_type }} {{ ip }}' }),
         ],
         unit: units.BytesPerSecondSI,
         legendCalcs: ['mean', 'last'],
@@ -150,7 +151,11 @@ const panels: PanelRowAndGroups = [
 ]
 
 export const omadaControllerDashboard = newDashboard({
-  variables: [NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }), NewQueryVariable({ datasource, name: 'site', label: 'Site', query: 'label_values(omada_device_uptime_seconds, site)', includeAll: true, multi: true }), NewQueryVariable({ datasource, name: 'device', label: 'Device', query: 'label_values(omada_device_uptime_seconds{site="$Site"}, device)', includeAll: true, multi: true, hide: true })],
+  variables: [
+    NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }),
+    NewQueryVariable({ datasource, name: 'site', label: 'Site', query: 'label_values(omada_device_uptime_seconds, site)', includeAll: true, multi: true }),
+    NewQueryVariable({ datasource, name: 'device', label: 'Device', query: 'label_values(omada_device_uptime_seconds{site="$Site"}, device)', includeAll: true, multi: true, hide: true }),
+  ],
   panels: panels,
 })
 

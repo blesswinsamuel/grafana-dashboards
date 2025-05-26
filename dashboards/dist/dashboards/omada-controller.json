@@ -497,7 +497,7 @@
           "instant": false
         },
         {
-          "expr": "-sum by(device, device_type, ip) (omada_device_tx_rate{site=~\"$site\"})",
+          "expr": "(sum by(device, device_type, ip) (omada_device_tx_rate{site=~\"$site\"})) * (-1)",
           "refId": "TX",
           "format": "time_series",
           "legendFormat": "Tx - {{ device }} {{ device_type }} {{ ip }}",

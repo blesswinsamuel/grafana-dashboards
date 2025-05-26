@@ -15,12 +15,5 @@
   "devDependencies": {
     "@types/node": "^22.15.21",
     "prettier": "^3.5.3"
-  },
-  "prettier": {
-    "trailingComma": "es5",
-    "tabWidth": 2,
-    "semi": false,
-    "singleQuote": true,
-    "printWidth": 500
   }
 }

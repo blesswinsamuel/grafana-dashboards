@@ -2,9 +2,10 @@ import * as cog from '@grafana/grafana-foundation-sdk/cog'
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
 import * as expr from '@grafana/grafana-foundation-sdk/expr'
 import * as prometheus from '@grafana/grafana-foundation-sdk/prometheus'
+import { promql } from '../../grafana-helpers'
 
 export type PrometheusTarget = { datasource?: dashboard.DataSourceRef } & {
-  expr: string
+  expr: string | cog.Builder<promql.Expr>
   // interval?: string
   legendFormat?: string
   refId?: string
@@ -61,7 +62,7 @@ export function fromTargets<T extends Target>(targets: T[], datasource?: dashboa
     }
     target.type = target.type ?? 'range'
     const b = new prometheus.DataqueryBuilder()
-      .expr(target.expr)
+      .expr(target.expr.toString())
       .format(
         target.format
           ? {
@@ -72,7 +73,6 @@ export function fromTargets<T extends Target>(targets: T[], datasource?: dashboa
           : prometheus.PromQueryFormat.TimeSeries
       )
       .refId(target.refId ?? String.fromCharCode('A'.charCodeAt(0) + i))
-      .expr(target.expr)
     // .interval('$__interval')
     if (ds) b.datasource(ds)
     if (target.legendFormat) b.legendFormat(target.legendFormat)
