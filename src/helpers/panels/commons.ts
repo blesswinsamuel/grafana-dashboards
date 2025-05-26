@@ -114,6 +114,8 @@ export type CommonPanelOpts<T extends Target> = {
 
   overrides?: dashboard.FieldConfigSource['overrides']
   overridesByName?: Record<string, Record<string, any>>
+
+  links?: (Partial<dashboard.DashboardLink> & Pick<dashboard.DashboardLink, 'title'>)[]
   //   fieldConfigDefaults?: dashboard.FieldConfig
 }
 
@@ -156,6 +158,21 @@ export function withCommonOpts<PT extends GenericPanelBuilder, T extends Target>
   }
 
   b.transparent(false)
+
+  if (opts.links !== undefined) {
+    const bls: dashboard.DashboardLinkBuilder[] = []
+    for (const link of opts.links) {
+      const bl = new dashboard.DashboardLinkBuilder(link.title)
+      bl.title(link.title)
+      if (link.url !== undefined) bl.url(link.url)
+      if (link.tags !== undefined) bl.tags(link.tags)
+      if (link.icon !== undefined) bl.icon(link.icon)
+      if (link.keepTime !== undefined) bl.keepTime(link.keepTime)
+      if (link.asDropdown !== undefined) bl.asDropdown(link.asDropdown)
+      bls.push(bl)
+    }
+    b.links(bls)
+  }
 
   return b
 }

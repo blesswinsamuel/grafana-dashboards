@@ -3,9 +3,9 @@ import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
 import * as stat from '@grafana/grafana-foundation-sdk/stat'
 import * as units from '@grafana/grafana-foundation-sdk/units'
 import { CommonPanelOpts, withCommonOpts } from './commons'
-import { PrometheusTarget } from './target'
+import { PrometheusTarget, Target } from './target'
 
-export type StatPanelOpts = CommonPanelOpts<PrometheusTarget> &
+export type StatPanelOpts = CommonPanelOpts<Target> &
   Partial<stat.Options> & {
     reduceCalc?: 'lastNotNull' | 'last' | 'first' | 'mean' | 'min' | 'max' | 'sum' | 'count' | 'median' | 'diff' | 'range'
     reduceFields?: string
@@ -14,7 +14,7 @@ export type StatPanelOpts = CommonPanelOpts<PrometheusTarget> &
     textValueSize?: number
   }
 
-export function NewStatPanel(opts: StatPanelOpts, ...targets: PrometheusTarget[]): stat.PanelBuilder {
+export function NewStatPanel(opts: StatPanelOpts, ...targets: Target[]): stat.PanelBuilder {
   opts.targets = [...(opts.targets || []), ...(targets || [])]
   opts.mappings = opts.mappings ?? (opts.unit === units.DateTimeFromNow ? [{ type: dashboard.MappingType.ValueToText, options: { '0': { text: '-', index: 0 } } }] : [])
   opts.thresholds = { mode: dashboard.ThresholdsMode.Absolute, steps: [{ color: 'transparent', value: null }] }

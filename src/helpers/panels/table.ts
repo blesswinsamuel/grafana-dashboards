@@ -2,14 +2,14 @@ import * as common from '@grafana/grafana-foundation-sdk/common'
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
 import * as table from '@grafana/grafana-foundation-sdk/table'
 import { CommonPanelOpts, Unit, withCommonOpts } from './commons'
-import { PrometheusTarget } from './target'
+import { PrometheusTarget, SQLTarget, Target } from './target'
 
-export type TablePanelOpts = CommonPanelOpts<PrometheusTarget> &
+export type TablePanelOpts = CommonPanelOpts<Target> &
   Partial<Pick<table.Options, 'footer' | 'cellHeight'>> & {
     queries?: Record<
       string,
       {
-        target?: PrometheusTarget
+        target?: Target
         name?: string
         width?: number
         unit?: Unit
@@ -25,7 +25,7 @@ export function NewTablePanel(opts: TablePanelOpts): table.PanelBuilder {
   const tableOverrides: Record<string, Record<string, any>> = {}
   const tableIndexOrder: string[] = []
   const colRenames: Record<string, string> = {}
-  const targets: PrometheusTarget[] = []
+  const targets: Target[] = []
 
   if (opts.queries) {
     opts.transformations = opts.transformations ?? []
@@ -85,6 +85,16 @@ export function NewTablePanel(opts: TablePanelOpts): table.PanelBuilder {
     sortByBuilders.push(sb)
   }
   b.sortBy(sortByBuilders)
+
+  if (opts.footer) {
+    const fb = new common.TableFooterOptionsBuilder()
+    if (opts.footer.countRows) fb.countRows(true)
+    if (opts.footer.reducer) fb.reducer(opts.footer.reducer)
+    if (opts.footer.show) fb.show(true)
+    if (opts.footer.countRows) fb.countRows(opts.footer.countRows)
+    if (opts.footer.enablePagination) fb.enablePagination(opts.footer.enablePagination)
+    b.footer(fb)
+  }
 
   //   const panel: Panel<Record<string, unknown>, GraphFieldConfig> = {
   //     ...defaultPanel,

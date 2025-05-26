@@ -5,7 +5,8 @@ import * as text from '@grafana/grafana-foundation-sdk/text'
 
 // Exports
 export { goRuntimeMetricsPanels } from './common-panels/go-runtime'
-export { NewPrometheusDatasourceVariable, NewLokiDatasourceVariable, NewTextboxVariable, NewQueryVariable } from './helpers/variables'
+export { NewPrometheusDatasourceVariable, NewLokiDatasourceVariable, NewTextboxVariable, NewQueryVariable, NewDatasourceVariable } from './helpers/variables'
+export { NewGrafanaAnnotation, NewLogAnnotation, type GrafanaAnnotationOpts, type LogAnnotationOpts } from './helpers/annotations'
 
 export type { CommonMetricOpts, CommonQueryOpts } from './helpers/promql'
 export { CounterMetric, GaugeMetric, HistogramMetric, SummaryMetric, formatLegendFormat, mergeSelectors } from './helpers/promql'
@@ -105,6 +106,7 @@ type DashboardOpts = {
   time?: dashboard.Dashboard['time']
   panels: PanelRowAndGroups
   variables?: cog.Builder<dashboard.VariableModel>[]
+  annotations?: cog.Builder<dashboard.AnnotationQuery>[]
   includeGeneratedDashboardNote?: boolean
 }
 
@@ -120,11 +122,13 @@ export function newDashboard(opts: DashboardOpts): dashboard.DashboardBuilder {
   for (const variableBuilder of opts.variables || []) {
     db.withVariable(variableBuilder)
   }
+  db.annotations(opts.annotations || [])
   if (includeGeneratedDashboardNote) {
     db.withPanel(
       new text.PanelBuilder()
         .transparent(true)
         .span(24)
+        .height(3)
         .mode(text.TextMode.HTML)
         .content(
           `<div style="background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;">
@@ -162,6 +166,7 @@ export function withPanels(db: dashboard.DashboardBuilder, panelRows: PanelRowAn
       const panelCountInThisRowWithoutW = rowPanels.filter((panel) => !panel.gridPos?.w).length
       const availableRemainingWidth = 24 - rowPanels.map((panel) => panel.gridPos?.w || 0).reduce((a, b) => a + b, 0)
       // console.log(`Row with ${rowPanels.length} panels, available width: ${availableRemainingWidth}, panels without width: ${panelCountInThisRowWithoutW}`)
+
       let maxHeight = 0
       for (const panel of rowPanels) {
         if (!panel.gridPos?.w) {
@@ -175,7 +180,7 @@ export function withPanels(db: dashboard.DashboardBuilder, panelRows: PanelRowAn
         b.withPanel({ build: () => panel })
       }
       const totalWidth = rowPanels.map((panel) => panel.gridPos?.w || 0).reduce((a, b) => a + b, 0)
-      if (totalWidth < 24) {
+      if (totalWidth > 0 && totalWidth < 24) {
         b.withPanel(
           new text.PanelBuilder()
             .transparent(true)

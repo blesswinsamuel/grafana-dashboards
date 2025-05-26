@@ -4,7 +4,14 @@ export type DataSourceVariableOpts = {
   name: string
   label: string
   regex?: string
-  query?: string
+}
+
+export function NewDatasourceVariable(opts: DataSourceVariableOpts & { type: 'mysql' | 'prometheus' | 'loki' }): dashboard.DatasourceVariableBuilder {
+  const b = new dashboard.DatasourceVariableBuilder(opts.name).label(opts.label).type(opts.type).hide(dashboard.VariableHide.DontHide)
+  if (opts.regex) {
+    b.regex(opts.regex)
+  }
+  return b
 }
 
 export function NewPrometheusDatasourceVariable(opts: DataSourceVariableOpts): dashboard.DatasourceVariableBuilder {

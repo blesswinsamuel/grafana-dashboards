@@ -6,15 +6,15 @@ import * as prometheus from '@grafana/grafana-foundation-sdk/prometheus'
 import * as timeseries from '@grafana/grafana-foundation-sdk/timeseries'
 import * as cog from '@grafana/grafana-foundation-sdk/cog'
 import { CommonPanelOpts, inferUnit, withCommonOpts } from './commons'
-import { PrometheusTarget, Target } from './target'
+import { Target } from './target'
 
-export type TimeSeriesPanelOpts = CommonPanelOpts<PrometheusTarget> & {
+export type TimeSeriesPanelOpts = CommonPanelOpts<Target> & {
   type?: 'bar' | 'line'
   legendCalcs?: string[]
   legendPlacement?: common.LegendPlacement | 'right' | 'bottom'
   stackingMode?: common.StackingMode
 }
-export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: PrometheusTarget[]): cog.Builder<dashboard.Panel> {
+export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: Target[]): timeseries.PanelBuilder {
   ;[opts.unit, opts.type] = inferUnit(targets, opts.type, opts.unit)
   opts.targets = [...(opts.targets || []), ...(targets || [])]
   const legendCalcs = opts.legendCalcs ?? { bar: ['sum'], line: ['min', 'max', 'mean', 'lastNotNull'] }[opts.type]

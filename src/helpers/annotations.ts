@@ -9,7 +9,7 @@ export type LogAnnotationOpts = {
   textField?: string
 }
 
-export function newLogAnnotation(opts: LogAnnotationOpts): dashboard.AnnotationQuery {
+export function NewLogAnnotation(opts: LogAnnotationOpts): dashboard.AnnotationQueryBuilder {
   const b = new dashboard.AnnotationQueryBuilder()
   b.datasource(opts.datasource)
   b.enable(true)
@@ -26,7 +26,7 @@ export function newLogAnnotation(opts: LogAnnotationOpts): dashboard.AnnotationQ
   r.tagsField = opts.tagsField
   //@ts-ignore
   r.textField = opts.textField
-  return r
+  return b
 }
 
 export type GrafanaAnnotationOpts = {
@@ -35,7 +35,7 @@ export type GrafanaAnnotationOpts = {
   tags: string[]
 }
 
-export function newGrafanaAnnotation(opts: GrafanaAnnotationOpts): dashboard.AnnotationQuery {
+export function NewGrafanaAnnotation(opts: GrafanaAnnotationOpts): dashboard.AnnotationQueryBuilder {
   const b = new dashboard.AnnotationQueryBuilder()
   b.datasource({ type: 'datasource', uid: 'grafana' })
   b.enable(true)
@@ -46,5 +46,5 @@ export function newGrafanaAnnotation(opts: GrafanaAnnotationOpts): dashboard.Ann
     b.name(opts.name)
   }
   b.target(new dashboard.AnnotationTargetBuilder().limit(100).matchAny(true).tags(opts.tags).type('tags'))
-  return b.build()
+  return b
 }
