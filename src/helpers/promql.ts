@@ -1,7 +1,7 @@
-import * as prometheus from '@grafana/grafana-foundation-sdk/prometheus'
-import { PrometheusTarget } from './panels/target'
-import * as promql from '@grafana/promql-builder'
 import * as cog from '@grafana/grafana-foundation-sdk/cog'
+import * as prometheus from '@grafana/grafana-foundation-sdk/prometheus'
+import * as promql from '@grafana/promql-builder'
+import { PrometheusTarget } from './panels/target'
 
 export function formatLegendFormat(legendFormat: string | undefined, groupBy: string[] | undefined) {
   if (!legendFormat) {
@@ -49,7 +49,7 @@ type PrometheusQueryRawOpts = { type?: 'range' | 'instant' | 'both'; groupBy?: s
 class PrometheusQueryRaw<T extends promql.Expr> implements cog.Builder<T> {
   constructor(
     private readonly expr: cog.Builder<T>,
-    readonly opts?: PrometheusQueryRawOpts
+    readonly opts?: PrometheusQueryRawOpts,
   ) {}
 
   public target(opts?: TargetOptions): PrometheusTarget {
@@ -133,7 +133,7 @@ export function newPrometheusQueryRaw<T extends promql.Expr>(expr: cog.Builder<T
 class PrometheusMetricBase {
   constructor(
     public readonly metric: string,
-    protected opts: CommonMetricOpts = {}
+    protected opts: CommonMetricOpts = {},
   ) {}
   public labels() {
     return this.opts.labels
@@ -216,7 +216,7 @@ function getRangeString(opts: CommonQueryOpts & { interval?: string }, functionV
   if (opts.type === 'instant') {
     return '$__range'
   }
-  if (functionVal === 'rate' || functionVal === 'irate') {
+  if (functionVal === 'rate' || functionVal === 'irate' || functionVal === 'histogram_quantile' || functionVal === 'histogram_share') {
     return '$__rate_interval'
   }
   if (functionVal === 'increase') {
@@ -229,7 +229,7 @@ function getRangeString(opts: CommonQueryOpts & { interval?: string }, functionV
 export class CounterMetric extends PrometheusMetricBase {
   constructor(
     public override readonly metric: string,
-    protected override opts: CommonMetricOpts = {}
+    protected override opts: CommonMetricOpts = {},
   ) {
     super(metric, opts)
   }
@@ -250,7 +250,7 @@ export class CounterMetric extends PrometheusMetricBase {
     let qb = promql.div(
       //
       applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric), numeratorSelectors).range(range))).by(opts.groupBy ?? []),
-      applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric), denominatorSelectors).range(range))).by(opts.groupBy ?? [])
+      applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric), denominatorSelectors).range(range))).by(opts.groupBy ?? []),
     )
     return newPrometheusQueryRaw(qb, { ...this.opts, ...opts })
   }
@@ -259,7 +259,7 @@ export class CounterMetric extends PrometheusMetricBase {
 export class GaugeMetric extends PrometheusMetricBase {
   constructor(
     public override readonly metric: string,
-    protected override opts: CommonMetricOpts = {}
+    protected override opts: CommonMetricOpts = {},
   ) {
     super(metric, opts)
   }
@@ -285,7 +285,7 @@ export class GaugeMetric extends PrometheusMetricBase {
 class HistogramSummaryCommon extends PrometheusMetricBase {
   constructor(
     public override readonly metric: string,
-    protected override opts: CommonMetricOpts = {}
+    protected override opts: CommonMetricOpts = {},
   ) {
     super(metric, opts)
   }
@@ -303,7 +303,7 @@ class HistogramSummaryCommon extends PrometheusMetricBase {
     const qb = promql.div(
       //
       applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric + '_sum'), selectors).range(range))).by(opts.groupBy ?? []),
-      applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric + '_count'), selectors).range(range))).by(opts.groupBy ?? [])
+      applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric + '_count'), selectors).range(range))).by(opts.groupBy ?? []),
     )
     return newPrometheusQueryRaw(qb, { ...this.opts, ...opts })
   }
@@ -312,7 +312,7 @@ class HistogramSummaryCommon extends PrometheusMetricBase {
 export class HistogramMetric extends HistogramSummaryCommon {
   constructor(
     public override readonly metric: string,
-    protected override opts: CommonMetricOpts = {}
+    protected override opts: CommonMetricOpts = {},
   ) {
     super(metric, opts)
   }
@@ -320,7 +320,7 @@ export class HistogramMetric extends HistogramSummaryCommon {
     const metric = this.metric + '_bucket'
     const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
     const groupBy = ['le', ...(opts.groupBy || [])]
-    const iqb = promql.sum(promql.rate(applyLabels(promql.vector(metric), selectors).range(getRangeString(opts)))).by(groupBy)
+    const iqb = promql.sum(promql.rate(applyLabels(promql.vector(metric), selectors).range(getRangeString(opts, func)))).by(groupBy)
     const qb = applyFunc(func, promql.n(parseFloat(value)), iqb)
     return newPrometheusQueryRaw(qb, { ...this.opts, ...opts })
   }
@@ -335,7 +335,7 @@ export class HistogramMetric extends HistogramSummaryCommon {
 export class SummaryMetric extends HistogramSummaryCommon {
   constructor(
     public override readonly metric: string,
-    protected override opts: CommonMetricOpts = {}
+    protected override opts: CommonMetricOpts = {},
   ) {
     super(metric, opts)
   }
@@ -352,7 +352,7 @@ export function wrapMultiply(n: number): WrapFn<promql.BinaryExpr> {
   }
 }
 
-export function wrapConditional(op: '>' | '<' | '==' | '!=' | '>=' | '<=', value: number): WrapFn<promql.BinaryExpr> {
+export function wrapConditional(op: '>' | '<' | '==' | '!=' | '>=' | '<=' | 'default' | '*', value: number): WrapFn<promql.BinaryExpr> {
   return (expr: cog.Builder<promql.Expr>) => {
     return applyBinaryOp(expr, op, promql.n(value))
   }

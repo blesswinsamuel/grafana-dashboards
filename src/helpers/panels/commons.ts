@@ -1,4 +1,5 @@
 import * as barchart from '@grafana/grafana-foundation-sdk/barchart'
+import * as bargauge from '@grafana/grafana-foundation-sdk/bargauge'
 import * as cog from '@grafana/grafana-foundation-sdk/cog'
 import * as common from '@grafana/grafana-foundation-sdk/common'
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
@@ -7,7 +8,6 @@ import * as piechart from '@grafana/grafana-foundation-sdk/piechart'
 import * as stat from '@grafana/grafana-foundation-sdk/stat'
 import * as table from '@grafana/grafana-foundation-sdk/table'
 import * as timeseries from '@grafana/grafana-foundation-sdk/timeseries'
-import * as bargauge from '@grafana/grafana-foundation-sdk/bargauge'
 import * as units from '@grafana/grafana-foundation-sdk/units'
 import { fromTargets, Target } from './target'
 
@@ -152,7 +152,7 @@ export function withCommonOpts<PT extends GenericPanelBuilder, T extends Target>
     for (const [name, properties] of Object.entries(opts.overridesByName)) {
       b.overrideByName(
         name,
-        Object.entries(properties).map(([key, value]) => ({ id: key, value }))
+        Object.entries(properties).map(([key, value]) => ({ id: key, value })),
       )
     }
   }
@@ -174,5 +174,14 @@ export function withCommonOpts<PT extends GenericPanelBuilder, T extends Target>
     b.links(bls)
   }
 
+  return b
+}
+
+export function dangerouslyAddCustomValues<T extends object>(b: cog.Builder<T>, customValues: Partial<T>): cog.Builder<T> {
+  const o = b.build()
+  for (const [key, value] of Object.entries(customValues)) {
+    // @ts-ignore
+    o[key] = value
+  }
   return b
 }

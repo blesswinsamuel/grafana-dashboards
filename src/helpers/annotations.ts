@@ -1,4 +1,6 @@
+import * as cog from '@grafana/grafana-foundation-sdk/cog'
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
+import { dangerouslyAddCustomValues } from './panels/commons'
 
 export type LogAnnotationOpts = {
   datasource: dashboard.DataSourceRef
@@ -9,7 +11,7 @@ export type LogAnnotationOpts = {
   textField?: string
 }
 
-export function NewLogAnnotation(opts: LogAnnotationOpts): dashboard.AnnotationQueryBuilder {
+export function NewElasticsearchAnnotation(opts: LogAnnotationOpts): dashboard.AnnotationQueryBuilder {
   const b = new dashboard.AnnotationQueryBuilder()
   b.datasource(opts.datasource)
   b.enable(true)
@@ -19,13 +21,13 @@ export function NewLogAnnotation(opts: LogAnnotationOpts): dashboard.AnnotationQ
   if (opts.name) {
     b.name(opts.name)
   }
-  b.expr(opts.logQuery)
-  b.target(new dashboard.AnnotationTargetBuilder().limit(100).matchAny(false).tags([]).type('dashboard'))
-  const r = b.build()
-  //@ts-ignore
-  r.tagsField = opts.tagsField
-  //@ts-ignore
-  r.textField = opts.textField
+  b.target(dangerouslyAddCustomValues(new dashboard.AnnotationTargetBuilder().limit(100).matchAny(false).tags([]).type('dashboard'), {
+    query: opts.logQuery,
+  } as any))
+  dangerouslyAddCustomValues(b, {
+    tagsField: opts.tagsField,
+    textField: opts.textField,
+  } as any)
   return b
 }
 

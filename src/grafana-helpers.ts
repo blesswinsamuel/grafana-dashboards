@@ -5,22 +5,22 @@ import * as text from '@grafana/grafana-foundation-sdk/text'
 
 // Exports
 export { goRuntimeMetricsPanels } from './common-panels/go-runtime'
-export { NewPrometheusDatasourceVariable, NewLokiDatasourceVariable, NewTextboxVariable, NewQueryVariable, NewDatasourceVariable } from './helpers/variables'
-export { NewGrafanaAnnotation, NewLogAnnotation, type GrafanaAnnotationOpts, type LogAnnotationOpts } from './helpers/annotations'
+export { type GrafanaAnnotationOpts, type LogAnnotationOpts, NewElasticsearchAnnotation as NewLogAnnotation, NewGrafanaAnnotation } from './helpers/annotations'
+export { NewDatasourceVariable, NewLokiDatasourceVariable, NewPrometheusDatasourceVariable, NewQueryVariable, NewTextboxVariable } from './helpers/variables'
 
-export type { CommonMetricOpts, CommonQueryOpts } from './helpers/promql'
-export { CounterMetric, GaugeMetric, HistogramMetric, SummaryMetric, formatLegendFormat, mergeSelectors } from './helpers/promql'
-export { NewLokiLogsPanel, type LokiLogsPanelOpts } from './helpers/panels/loki'
-export { NewStatPanel, type StatPanelOpts } from './helpers/panels/stat'
-export { NewTimeSeriesPanel, type TimeSeriesPanelOpts } from './helpers/panels/timeseries'
-export { NewBarGaugePanel, type BarGaugePanelOpts } from './helpers/panels/bargauge'
-export { NewBarChartPanel, type BarChartPanelOpts } from './helpers/panels/barchart'
+export { writePrometheusRules } from './helpers/alerting-rules'
+export { writeDashboardAndPostToGrafana } from './helpers/grafana'
+export { type BarChartPanelOpts, NewBarChartPanel } from './helpers/panels/barchart'
+export { type BarGaugePanelOpts, NewBarGaugePanel } from './helpers/panels/bargauge'
+export { overridesMatchByName } from './helpers/panels/commons'
+export { type LokiLogsPanelOpts, NewLokiLogsPanel } from './helpers/panels/loki'
 export { NewPieChartPanel, type PieChartPanelOpts } from './helpers/panels/piechart'
+export { NewStatPanel, type StatPanelOpts } from './helpers/panels/stat'
 export { NewTablePanel, type TablePanelOpts } from './helpers/panels/table'
 export { tableExcludeByName, tableIndexByName } from './helpers/panels/table'
-export { overridesMatchByName } from './helpers/panels/commons'
-export { writeDashboardAndPostToGrafana } from './helpers/grafana'
-export { writePrometheusRules } from './helpers/alerting-rules'
+export { NewTimeSeriesPanel, type TimeSeriesPanelOpts } from './helpers/panels/timeseries'
+export type { CommonMetricOpts, CommonQueryOpts } from './helpers/promql'
+export { CounterMetric, formatLegendFormat, GaugeMetric, HistogramMetric, mergeSelectors, SummaryMetric } from './helpers/promql'
 
 // PromQL
 export * as promql from '@grafana/promql-builder'
@@ -29,14 +29,14 @@ export * as promql from '@grafana/promql-builder'
 export * as units from '@grafana/grafana-foundation-sdk/units'
 
 // Panels
-export * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
-export * as table from '@grafana/grafana-foundation-sdk/table'
-export * as piechart from '@grafana/grafana-foundation-sdk/piechart'
 export * as barchart from '@grafana/grafana-foundation-sdk/barchart'
-export * as timeseries from '@grafana/grafana-foundation-sdk/timeseries'
-export * as stat from '@grafana/grafana-foundation-sdk/stat'
-export * as logs from '@grafana/grafana-foundation-sdk/logs'
 export * as common from '@grafana/grafana-foundation-sdk/common'
+export * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
+export * as logs from '@grafana/grafana-foundation-sdk/logs'
+export * as piechart from '@grafana/grafana-foundation-sdk/piechart'
+export * as stat from '@grafana/grafana-foundation-sdk/stat'
+export * as table from '@grafana/grafana-foundation-sdk/table'
+export * as timeseries from '@grafana/grafana-foundation-sdk/timeseries'
 
 export type PanelRow = {
   type: 'panel-row'
@@ -138,9 +138,9 @@ export function newDashboard(opts: DashboardOpts): dashboard.DashboardBuilder {
 <h4>This dashboard was generated from code</h4>
 
 <p>Any edits will be lost when the dashboard is regenerated.</p>
-</div>`
+</div>`,
         )
-        .height(3)
+        .height(3),
     )
   }
   withPanels(db, opts.panels)
@@ -189,7 +189,7 @@ export function withPanels(db: dashboard.DashboardBuilder, panelRows: PanelRowAn
             .transparent(true)
             .span(24 - totalWidth)
             .content('')
-            .height(maxHeight)
+            .height(maxHeight),
         )
       }
     }
