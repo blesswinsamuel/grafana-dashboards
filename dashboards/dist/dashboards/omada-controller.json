@@ -107,6 +107,12 @@
         }
       ],
       "title": "Total PoE Used",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 4
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "watt",
@@ -142,12 +148,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 4,
-        "w": 6,
-        "h": 4
       }
     },
     {
@@ -165,6 +165,12 @@
         }
       ],
       "title": "Controller Uptime",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 4
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "s",
@@ -200,12 +206,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 6,
-        "y": 4,
-        "w": 6,
-        "h": 4
       }
     },
     {
@@ -223,6 +223,12 @@
         }
       ],
       "title": "Active Switch Ports",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 4
+      },
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -257,12 +263,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 4,
-        "w": 6,
-        "h": 4
       }
     },
     {
@@ -280,6 +280,12 @@
         }
       ],
       "title": "Connected Clients",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 4
+      },
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -314,12 +320,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 18,
-        "y": 4,
-        "w": 6,
-        "h": 4
       }
     },
     {
@@ -350,6 +350,12 @@
         }
       ],
       "title": "CPU Usage %",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -401,12 +407,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 9,
-        "w": 12,
-        "h": 10
       }
     },
     {
@@ -424,6 +424,12 @@
         }
       ],
       "title": "Memory Usage %",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -475,12 +481,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 9,
-        "w": 12,
-        "h": 10
       }
     },
     {
@@ -506,6 +506,12 @@
         }
       ],
       "title": "Rx/Tx Rate",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 0,
+        "y": 19
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "Bps",
@@ -554,12 +560,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 19,
-        "w": 8,
-        "h": 10
       }
     },
     {
@@ -577,6 +577,12 @@
         }
       ],
       "title": "Uptime",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 8,
+        "y": 19
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "s",
@@ -627,12 +633,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 8,
-        "y": 19,
-        "w": 8,
-        "h": 10
       }
     },
     {
@@ -650,6 +650,12 @@
         }
       ],
       "title": "PoE remaining",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 16,
+        "y": 19
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "watt",
@@ -700,12 +706,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 16,
-        "y": 19,
-        "w": 8,
-        "h": 10
       }
     },
     {
@@ -736,6 +736,12 @@
         }
       ],
       "title": "Clients Connected",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -786,12 +792,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 30,
-        "w": 12,
-        "h": 10
       }
     },
     {
@@ -809,6 +809,12 @@
         }
       ],
       "title": "Signal Percentage",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 30
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -860,12 +866,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 30,
-        "w": 12,
-        "h": 10
       }
     },
     {
@@ -883,6 +883,12 @@
         }
       ],
       "title": "RSSI dBm",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 40
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "dBm",
@@ -932,12 +938,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 40,
-        "w": 12,
-        "h": 10
       }
     },
     {
@@ -955,6 +955,12 @@
         }
       ],
       "title": "SNR dBm",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 40
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "dBm",
@@ -1004,12 +1010,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 40,
-        "w": 12,
-        "h": 10
       }
     },
     {
@@ -1027,6 +1027,12 @@
         }
       ],
       "title": "Upload Rate",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 50
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "Bps",
@@ -1077,12 +1083,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 50,
-        "w": 12,
-        "h": 10
       }
     },
     {
@@ -1100,6 +1100,12 @@
         }
       ],
       "title": "Download Rate",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 50
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "Bps",
@@ -1150,12 +1156,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 50,
-        "w": 12,
-        "h": 10
       }
     },
     {
@@ -1173,6 +1173,12 @@
         }
       ],
       "title": "Rx Rate",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 60
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "Bps",
@@ -1223,12 +1229,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 60,
-        "w": 12,
-        "h": 10
       }
     },
     {
@@ -1246,6 +1246,12 @@
         }
       ],
       "title": "Tx Rate",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 60
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "Bps",
@@ -1296,12 +1302,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 60,
-        "w": 12,
-        "h": 10
       }
     },
     {
@@ -1364,6 +1364,12 @@
         }
       ],
       "title": "Port Link Status",
+      "gridPos": {
+        "h": 24,
+        "w": 24,
+        "x": 0,
+        "y": 71
+      },
       "transformations": [
         {
           "id": "convertFieldType",
@@ -1577,12 +1583,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 71,
-        "w": 24,
-        "h": 24
       }
     }
   ],

@@ -107,6 +107,12 @@
         }
       ],
       "title": "Pools",
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -142,12 +148,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 4,
-        "w": 12,
-        "h": 3
       }
     },
     {
@@ -165,6 +165,12 @@
         }
       ],
       "title": "Datasets",
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -200,12 +206,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 4,
-        "w": 12,
-        "h": 3
       }
     },
     {
@@ -287,6 +287,12 @@
         }
       ],
       "title": "ZFS Pools",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes"
@@ -441,12 +447,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 7,
-        "w": 24,
-        "h": 8
       }
     },
     {
@@ -520,6 +520,12 @@
         }
       ],
       "title": "ZFS Datasets",
+      "gridPos": {
+        "h": 20,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes"
@@ -713,12 +719,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 15,
-        "w": 24,
-        "h": 20
       }
     },
     {
@@ -750,6 +750,12 @@
       ],
       "title": "Pool Capacity Ratio",
       "description": "Ratio of pool space used.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 36
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "percentunit",
@@ -800,12 +806,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 36,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -824,6 +824,12 @@
       ],
       "title": "Pool Deduplication Ratio",
       "description": "The ratio of deduplicated size vs undeduplicated size for data in this pool.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 36
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -873,12 +879,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 6,
-        "y": 36,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -897,6 +897,12 @@
       ],
       "title": "Pool Fragmentation Ratio",
       "description": "The fragmentation ratio of the pool.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 36
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -946,12 +952,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 36,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -970,6 +970,12 @@
       ],
       "title": "Pool Health",
       "description": "Health status code for the pool [0: online, 1: degraded, 2: faulted, 3: offline, 4: unavailable, 5: removed, 6: suspended].",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 36
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1019,12 +1025,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 18,
-        "y": 36,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -1043,6 +1043,12 @@
       ],
       "title": "Pool Leaked",
       "description": "Number of leaked bytes in the pool.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 44
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -1093,12 +1099,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 44,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -1117,6 +1117,12 @@
       ],
       "title": "Pool Readonly",
       "description": "Read-only status of the pool [0: read-write, 1: read-only].",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 44
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1166,12 +1172,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 6,
-        "y": 44,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -1190,6 +1190,12 @@
       ],
       "title": "Pool Size",
       "description": "Total size in bytes of the storage pool.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 44
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -1240,12 +1246,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 44,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -1264,6 +1264,12 @@
       ],
       "title": "Pool Free",
       "description": "The amount of free space in bytes available in the pool.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 44
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -1314,12 +1320,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 18,
-        "y": 44,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -1338,6 +1338,12 @@
       ],
       "title": "Pool Freeing",
       "description": "The amount of space in bytes remaining to be freed following the destruction of a file system or snapshot.",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 52
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -1388,12 +1394,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 52,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -1412,6 +1412,12 @@
       ],
       "title": "Pool Expand Size",
       "description": "Amount of uninitialized space within the pool or device that can be used to increase the total capacity of the pool.",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 52
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -1462,12 +1468,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 8,
-        "y": 52,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -1486,6 +1486,12 @@
       ],
       "title": "Pool Allocated",
       "description": "Amount of storage in bytes used within the pool.",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 52
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -1536,12 +1542,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 16,
-        "y": 52,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -1572,6 +1572,12 @@
         }
       ],
       "title": "Dataset Percentage Used",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 61
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "percentunit",
@@ -1622,12 +1628,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 61,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -1646,6 +1646,12 @@
       ],
       "title": "Dataset Available",
       "description": "The amount of space in bytes available to the dataset and all its children.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 61
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -1696,12 +1702,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 6,
-        "y": 61,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -1720,6 +1720,12 @@
       ],
       "title": "Dataset Logical Used",
       "description": "The amount of space in bytes that is \"logically\" consumed by this dataset and all its descendents. See the \"used_bytes\" property.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 61
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -1770,12 +1776,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 61,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -1794,6 +1794,12 @@
       ],
       "title": "Dataset Quota",
       "description": "The maximum amount of space in bytes this dataset and its descendents can consume.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 61
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -1844,12 +1850,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 18,
-        "y": 61,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -1868,6 +1868,12 @@
       ],
       "title": "Dataset Used By",
       "description": "The amount of space in bytes used by this dataset itself, which would be freed if the dataset were destroyed.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 69
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -1918,12 +1924,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 69,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -1942,6 +1942,12 @@
       ],
       "title": "Dataset Used",
       "description": "The amount of space in bytes consumed by this dataset and all its descendents.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 69
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -1992,12 +1998,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 6,
-        "y": 69,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -2016,6 +2016,12 @@
       ],
       "title": "Dataset Written",
       "description": "The amount of referenced space in bytes written to this dataset since the previous snapshot.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 69
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -2066,12 +2072,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 69,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -2090,6 +2090,12 @@
       ],
       "title": "Dataset Referenced",
       "description": "The amount of data in bytes that is accessible by this dataset, which may or may not be shared with other datasets in the pool.",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 69
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -2140,12 +2146,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 18,
-        "y": 69,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -2163,6 +2163,12 @@
         }
       ],
       "title": "Dataset Fragmentation Ratio",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 77
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2212,12 +2218,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 77,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -2235,6 +2235,12 @@
         }
       ],
       "title": "Dataset Referenced Compression Ratio",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 77
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2284,12 +2290,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 8,
-        "y": 77,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -2307,6 +2307,12 @@
         }
       ],
       "title": "Dataset Used By Children",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 77
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -2357,12 +2363,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 16,
-        "y": 77,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -2380,6 +2380,12 @@
         }
       ],
       "title": "Dataset Used By Referenced Reservation",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 85
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -2430,12 +2436,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 85,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -2453,6 +2453,12 @@
         }
       ],
       "title": "Dataset Used By Snapshot",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 85
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -2503,12 +2509,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 8,
-        "y": 85,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -2526,6 +2526,12 @@
         }
       ],
       "title": "Dataset Volume Size",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 85
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -2576,12 +2582,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 16,
-        "y": 85,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -2599,6 +2599,12 @@
         }
       ],
       "title": "Dataset Snapshot Count Total",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 93
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2648,12 +2654,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 93,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -2671,6 +2671,12 @@
         }
       ],
       "title": "Dataset Snapshot Limit Total",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 93
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2720,12 +2726,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 8,
-        "y": 93,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -2743,6 +2743,12 @@
         }
       ],
       "title": "Dataset Referenced Quota",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 93
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -2793,12 +2799,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 16,
-        "y": 93,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -2816,6 +2816,12 @@
         }
       ],
       "title": "Dataset Referenced Reservation",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 101
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -2866,12 +2872,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 101,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -2889,6 +2889,12 @@
         }
       ],
       "title": "Dataset Logical Referenced",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 101
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -2939,12 +2945,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 8,
-        "y": 101,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -2962,6 +2962,12 @@
         }
       ],
       "title": "Dataset Allocation",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 101
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -3012,12 +3018,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 16,
-        "y": 101,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -3035,6 +3035,12 @@
         }
       ],
       "title": "Dataset Compression Ratio",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 109
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -3085,12 +3091,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 109,
-        "w": 12,
-        "h": 8
       }
     },
     {
@@ -3108,6 +3108,12 @@
         }
       ],
       "title": "Dataset Reservation",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 109
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -3158,12 +3164,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 109,
-        "w": 12,
-        "h": 8
       }
     },
     {
@@ -3186,6 +3186,12 @@
             }
           ],
           "title": "Go Version",
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 0,
+            "y": 118
+          },
           "fieldConfig": {
             "defaults": {
               "mappings": [],
@@ -3220,12 +3226,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 118,
-            "w": 6,
-            "h": 3
           }
         },
         {
@@ -3243,6 +3243,12 @@
             }
           ],
           "title": "Process Start Time",
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 6,
+            "y": 118
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "dateTimeFromNow",
@@ -3288,12 +3294,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 118,
-            "w": 6,
-            "h": 3
           }
         },
         {
@@ -3311,6 +3311,12 @@
             }
           ],
           "title": "Process Max File Descriptors",
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 12,
+            "y": 118
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -3346,12 +3352,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 118,
-            "w": 6,
-            "h": 3
           }
         },
         {
@@ -3369,6 +3369,12 @@
             }
           ],
           "title": "Process Virtual Memory Max",
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 18,
+            "y": 118
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -3404,12 +3410,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 118,
-            "w": 6,
-            "h": 3
           }
         },
         {
@@ -3427,6 +3427,12 @@
             }
           ],
           "title": "Process Open File Descriptors",
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 0,
+            "y": 121
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -3477,12 +3483,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 121,
-            "w": 8,
-            "h": 8
           }
         },
         {
@@ -3500,6 +3500,12 @@
             }
           ],
           "title": "Threads",
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 8,
+            "y": 121
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -3549,12 +3555,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 8,
-            "y": 121,
-            "w": 8,
-            "h": 8
           }
         },
         {
@@ -3572,6 +3572,12 @@
             }
           ],
           "title": "Goroutines",
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 16,
+            "y": 121
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -3621,12 +3627,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 16,
-            "y": 121,
-            "w": 8,
-            "h": 8
           }
         },
         {
@@ -3644,6 +3644,12 @@
             }
           ],
           "title": "CPU Usage",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 129
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -3694,12 +3700,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 129,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -3717,6 +3717,12 @@
             }
           ],
           "title": "Memory Usage",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 129
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -3767,12 +3773,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 129,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -3790,6 +3790,12 @@
             }
           ],
           "title": "Go Alloc Rate",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 129
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "Bps",
@@ -3840,12 +3846,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 129,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -3863,6 +3863,12 @@
             }
           ],
           "title": "Go Alloc Bytes",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 129
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -3913,12 +3919,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 129,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -3944,6 +3944,12 @@
             }
           ],
           "title": "Stack Memory Usage (avg)",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 137
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -3994,12 +4000,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 137,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4049,6 +4049,12 @@
             }
           ],
           "title": "Heap Memory Usage (avg)",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 137
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -4099,12 +4105,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 137,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4122,6 +4122,12 @@
             }
           ],
           "title": "Heap Objects",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 137
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -4172,12 +4178,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 137,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4259,6 +4259,12 @@
             }
           ],
           "title": "Other Memory (avg)",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 137
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -4309,12 +4315,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 137,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4332,6 +4332,12 @@
             }
           ],
           "title": "Go GC count",
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 0,
+            "y": 145
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -4379,12 +4385,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 145,
-            "w": 8,
-            "h": 8
           }
         },
         {
@@ -4402,6 +4402,12 @@
             }
           ],
           "title": "Go GC Duration Seconds (rate)",
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 8,
+            "y": 145
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "s",
@@ -4452,12 +4458,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 8,
-            "y": 145,
-            "w": 8,
-            "h": 8
           }
         },
         {
@@ -4475,6 +4475,12 @@
             }
           ],
           "title": "Go GC Duration Seconds (avg)",
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 16,
+            "y": 145
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "s",
@@ -4525,12 +4531,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 16,
-            "y": 145,
-            "w": 8,
-            "h": 8
           }
         },
         {
@@ -4548,6 +4548,12 @@
             }
           ],
           "title": "Lookups rate",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 153
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -4598,12 +4604,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 153,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4621,6 +4621,12 @@
             }
           ],
           "title": "Mallocs rate",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 153
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -4671,12 +4677,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 153,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4694,6 +4694,12 @@
             }
           ],
           "title": "Frees rate",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 153
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -4744,12 +4750,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 153,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4767,6 +4767,12 @@
             }
           ],
           "title": "Process Virtual Memory",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 153
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -4817,12 +4823,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 153,
-            "w": 6,
-            "h": 8
           }
         }
       ],

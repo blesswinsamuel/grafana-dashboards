@@ -85,6 +85,12 @@
         }
       ],
       "title": "Ready status",
+      "gridPos": {
+        "h": 24,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
       "transformations": [
         {
           "id": "merge",
@@ -189,12 +195,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 4,
-        "w": 24,
-        "h": 24
       }
     },
     {
@@ -212,6 +212,12 @@
         }
       ],
       "title": "The number of sync() calls made by a controller",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 28
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -259,12 +265,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 28,
-        "w": 12,
-        "h": 8
       }
     },
     {
@@ -282,6 +282,12 @@
         }
       ],
       "title": "The number of requests made by the ACME client",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 28
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -329,12 +335,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 28,
-        "w": 12,
-        "h": 8
       }
     },
     {
@@ -352,6 +352,12 @@
         }
       ],
       "title": "Expiration time",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 36
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "dateTimeFromNow",
@@ -402,12 +408,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 36,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -425,6 +425,12 @@
         }
       ],
       "title": "Renewal time",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 36
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "dateTimeFromNow",
@@ -475,12 +481,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 8,
-        "y": 36,
-        "w": 8,
-        "h": 8
       }
     },
     {
@@ -498,6 +498,12 @@
         }
       ],
       "title": "Avg HTTP request latencies for the ACME client",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 36
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "s",
@@ -548,12 +554,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 16,
-        "y": 36,
-        "w": 8,
-        "h": 8
       }
     }
   ],

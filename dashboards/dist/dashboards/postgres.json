@@ -126,6 +126,12 @@
         }
       ],
       "title": "Database Size",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 4
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes"
@@ -160,12 +166,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 4,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -183,6 +183,12 @@
         }
       ],
       "title": "Database Size",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 4
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "decbytes",
@@ -233,12 +239,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 6,
-        "y": 4,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -256,6 +256,12 @@
         }
       ],
       "title": "Locks Count",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 4
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -305,12 +311,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 4,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -328,6 +328,12 @@
         }
       ],
       "title": "Number of backends connected",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 4
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -377,12 +383,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 18,
-        "y": 4,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -413,6 +413,12 @@
         }
       ],
       "title": "Active",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 13
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -462,12 +468,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 13,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -485,6 +485,12 @@
         }
       ],
       "title": "Disabled",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 13
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -534,12 +540,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 6,
-        "y": 13,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -557,6 +557,12 @@
         }
       ],
       "title": "Fastpath function call",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 13
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -606,12 +612,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 13,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -629,6 +629,12 @@
         }
       ],
       "title": "Idle",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 13
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -678,12 +684,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 18,
-        "y": 13,
-        "w": 6,
-        "h": 8
       }
     },
     {
@@ -701,6 +701,12 @@
         }
       ],
       "title": "Idle in transaction",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -750,12 +756,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 21,
-        "w": 12,
-        "h": 8
       }
     },
     {
@@ -773,6 +773,12 @@
         }
       ],
       "title": "Idle in transaction (aborted)",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -822,12 +828,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 21,
-        "w": 12,
-        "h": 8
       }
     },
     {
@@ -850,6 +850,12 @@
             }
           ],
           "title": "Container Start Time (max)",
+          "gridPos": {
+            "h": 3,
+            "w": 24,
+            "x": 0,
+            "y": 30
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "dateTimeFromNow",
@@ -895,12 +901,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 30,
-            "w": 24,
-            "h": 3
           }
         },
         {
@@ -918,6 +918,12 @@
             }
           ],
           "title": "CPU Usage",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 33
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -968,12 +974,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 33,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -991,6 +991,12 @@
             }
           ],
           "title": "Memory Usage",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 33
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -1041,12 +1047,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 33,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1064,6 +1064,12 @@
             }
           ],
           "title": "Memory Working Set",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 33
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -1114,12 +1120,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 33,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1137,6 +1137,12 @@
             }
           ],
           "title": "Memory Cache",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 33
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -1187,12 +1193,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 33,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1210,6 +1210,12 @@
             }
           ],
           "title": "Threads",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 41
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -1259,12 +1265,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 41,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1282,6 +1282,12 @@
             }
           ],
           "title": "Processes",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 41
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -1331,12 +1337,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 41,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1354,6 +1354,12 @@
             }
           ],
           "title": "File Descriptors",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 41
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -1403,12 +1409,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 41,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1426,6 +1426,12 @@
             }
           ],
           "title": "Sockets",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 41
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -1475,12 +1481,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 41,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1498,6 +1498,12 @@
             }
           ],
           "title": "CPU Load Average 10s",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 49
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -1547,12 +1553,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 49,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1570,6 +1570,12 @@
             }
           ],
           "title": "CPU Usage User",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 49
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -1619,12 +1625,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 49,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1642,6 +1642,12 @@
             }
           ],
           "title": "CPU Usage System",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 49
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -1691,12 +1697,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 49,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1714,6 +1714,12 @@
             }
           ],
           "title": "CPU Usage Throttled",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 49
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -1763,12 +1769,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 49,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1786,6 +1786,12 @@
             }
           ],
           "title": "Memory Failures",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 57
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -1833,12 +1839,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 57,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1856,6 +1856,12 @@
             }
           ],
           "title": "OOM Events",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 57
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -1903,12 +1909,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 57,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1926,6 +1926,12 @@
             }
           ],
           "title": "Memory Swap",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 57
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -1975,12 +1981,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 57,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -1998,6 +1998,12 @@
             }
           ],
           "title": "Memory Failcnt",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 57
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -2045,12 +2051,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 57,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -2068,6 +2068,12 @@
             }
           ],
           "title": "Network Receive Bytes",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 65
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "Bps",
@@ -2118,12 +2124,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 65,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -2141,6 +2141,12 @@
             }
           ],
           "title": "Network Transmit Bytes",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 65
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "Bps",
@@ -2191,12 +2197,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 65,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -2214,6 +2214,12 @@
             }
           ],
           "title": "Network Receive Errors",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 65
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -2261,12 +2267,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 65,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -2284,6 +2284,12 @@
             }
           ],
           "title": "Network Transmit Errors",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 65
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -2331,12 +2337,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 65,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -2354,6 +2354,12 @@
             }
           ],
           "title": "Network Receive Packets",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 73
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "pps",
@@ -2404,12 +2410,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 73,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -2427,6 +2427,12 @@
             }
           ],
           "title": "Network Transmit Packets",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 73
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "pps",
@@ -2477,12 +2483,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 73,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -2500,6 +2500,12 @@
             }
           ],
           "title": "Network Receive Packets Dropped",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 73
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -2547,12 +2553,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 73,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -2570,6 +2570,12 @@
             }
           ],
           "title": "Network Transmit Packets Dropped",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 73
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -2617,12 +2623,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 73,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -2640,6 +2640,12 @@
             }
           ],
           "title": "FS Reads Bytes",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 81
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "Bps",
@@ -2690,12 +2696,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 81,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -2713,6 +2713,12 @@
             }
           ],
           "title": "FS Writes Bytes",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 81
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "Bps",
@@ -2763,12 +2769,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 81,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -2786,6 +2786,12 @@
             }
           ],
           "title": "FS Read rate",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 81
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "rps",
@@ -2836,12 +2842,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 81,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -2859,6 +2859,12 @@
             }
           ],
           "title": "FS Write rate",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 81
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "wps",
@@ -2909,12 +2915,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 81,
-            "w": 6,
-            "h": 8
           }
         }
       ],
@@ -2970,6 +2970,12 @@
         }
       ],
       "title": "Pod Info",
+      "gridPos": {
+        "h": 14,
+        "w": 24,
+        "x": 0,
+        "y": 90
+      },
       "transformations": [
         {
           "id": "merge",
@@ -3116,12 +3122,6 @@
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 90,
-        "w": 24,
-        "h": 14
       }
     },
     {
@@ -3144,6 +3144,12 @@
             }
           ],
           "title": "Go Version",
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 0,
+            "y": 105
+          },
           "fieldConfig": {
             "defaults": {
               "mappings": [],
@@ -3178,12 +3184,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 105,
-            "w": 6,
-            "h": 3
           }
         },
         {
@@ -3201,6 +3201,12 @@
             }
           ],
           "title": "Process Start Time",
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 6,
+            "y": 105
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "dateTimeFromNow",
@@ -3246,12 +3252,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 105,
-            "w": 6,
-            "h": 3
           }
         },
         {
@@ -3269,6 +3269,12 @@
             }
           ],
           "title": "Process Max File Descriptors",
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 12,
+            "y": 105
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -3304,12 +3310,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 105,
-            "w": 6,
-            "h": 3
           }
         },
         {
@@ -3327,6 +3327,12 @@
             }
           ],
           "title": "Process Virtual Memory Max",
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 18,
+            "y": 105
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -3362,12 +3368,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 105,
-            "w": 6,
-            "h": 3
           }
         },
         {
@@ -3386,7 +3386,7 @@
           ],
           "title": "Go Build Info",
           "gridPos": {
-            "h": 9,
+            "h": 8,
             "w": 6,
             "x": 0,
             "y": 108
@@ -3442,6 +3442,12 @@
             }
           ],
           "title": "Process Open File Descriptors",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 108
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -3492,12 +3498,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 108,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -3515,6 +3515,12 @@
             }
           ],
           "title": "Threads",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 108
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -3564,12 +3570,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 108,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -3587,6 +3587,12 @@
             }
           ],
           "title": "Goroutines",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 108
+          },
           "fieldConfig": {
             "defaults": {
               "custom": {
@@ -3636,12 +3642,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 108,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -3659,6 +3659,12 @@
             }
           ],
           "title": "CPU Usage",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 116
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -3709,12 +3715,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 117,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -3732,6 +3732,12 @@
             }
           ],
           "title": "Memory Usage",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 116
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -3782,12 +3788,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 117,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -3805,6 +3805,12 @@
             }
           ],
           "title": "Go Alloc Rate",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 116
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "Bps",
@@ -3855,12 +3861,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 117,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -3878,6 +3878,12 @@
             }
           ],
           "title": "Go Alloc Bytes",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 116
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -3928,12 +3934,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 117,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -3959,6 +3959,12 @@
             }
           ],
           "title": "Stack Memory Usage (avg)",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 124
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -4009,12 +4015,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 125,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4064,6 +4064,12 @@
             }
           ],
           "title": "Heap Memory Usage (avg)",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 124
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -4114,12 +4120,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 125,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4137,6 +4137,12 @@
             }
           ],
           "title": "Heap Objects",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 124
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -4187,12 +4193,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 125,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4274,6 +4274,12 @@
             }
           ],
           "title": "Other Memory (avg)",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 124
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -4324,12 +4330,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 125,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4347,6 +4347,12 @@
             }
           ],
           "title": "Go GC count",
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 0,
+            "y": 132
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -4394,12 +4400,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 133,
-            "w": 8,
-            "h": 8
           }
         },
         {
@@ -4417,6 +4417,12 @@
             }
           ],
           "title": "Go GC Duration Seconds (rate)",
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 8,
+            "y": 132
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "s",
@@ -4467,12 +4473,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 8,
-            "y": 133,
-            "w": 8,
-            "h": 8
           }
         },
         {
@@ -4490,6 +4490,12 @@
             }
           ],
           "title": "Go GC Duration Seconds (avg)",
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 16,
+            "y": 132
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "s",
@@ -4540,12 +4546,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 16,
-            "y": 133,
-            "w": 8,
-            "h": 8
           }
         },
         {
@@ -4563,6 +4563,12 @@
             }
           ],
           "title": "Lookups rate",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 140
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -4613,12 +4619,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 141,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4636,6 +4636,12 @@
             }
           ],
           "title": "Mallocs rate",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 140
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -4686,12 +4692,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 6,
-            "y": 141,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4709,6 +4709,12 @@
             }
           ],
           "title": "Frees rate",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 140
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
@@ -4759,12 +4765,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 141,
-            "w": 6,
-            "h": 8
           }
         },
         {
@@ -4782,6 +4782,12 @@
             }
           ],
           "title": "Process Virtual Memory",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 140
+          },
           "fieldConfig": {
             "defaults": {
               "unit": "decbytes",
@@ -4832,12 +4838,6 @@
           },
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 141,
-            "w": 6,
-            "h": 8
           }
         }
       ],
