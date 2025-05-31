@@ -70,10 +70,10 @@ export function NewPanelRow(opts: PanelArrayOpts, panels: Array<cog.Builder<dash
     if (!panel.gridPos) {
       panel.gridPos = { x: 0, y: 0, w: 0, h: 0 }
     }
-    if (opts.height) {
+    if (opts.height !== undefined) {
       panel.gridPos.h = panel.gridPos.h || opts.height
     }
-    if (opts.width) {
+    if (opts.width !== undefined) {
       panel.gridPos.w = panel.gridPos.w || opts.width
     }
     panelsBuilt.push(panel)

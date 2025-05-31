@@ -82,7 +82,7 @@ class PrometheusQueryRaw<T extends promql.Expr> implements cog.Builder<T> {
     return {
       expr: this.expr,
       refId: refId,
-      format: type === 'instant' ? 'table' : 'time_series',
+      format: opts?.format ?? (type === 'instant' ? 'table' : 'time_series'),
       legendFormat: formatLegendFormat(legendFormat, groupBy),
       type: type ?? 'range',
     }

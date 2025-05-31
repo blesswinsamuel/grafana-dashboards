@@ -3,6 +3,7 @@ import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
 import * as expr from '@grafana/grafana-foundation-sdk/expr'
 import * as prometheus from '@grafana/grafana-foundation-sdk/prometheus'
 import { promql } from '../../grafana-helpers'
+import { dangerouslyAddCustomValues } from './commons'
 
 export type PrometheusTarget = { datasource?: dashboard.DataSourceRef } & {
   expr: string | cog.Builder<promql.Expr>
@@ -56,8 +57,11 @@ export function fromTargets<T extends Target>(targets: T[], datasource?: dashboa
         .format('table')
         .queryType('table')
         .refId(target.refId ?? String.fromCharCode('A'.charCodeAt(0) + i))
-      b.expression(target.rawSql)
       if (ds) b.datasource(ds)
+      dangerouslyAddCustomValues(b, {
+        rawSql: target.rawSql,
+        rawQuery: true,
+      } as any)
       return b
     }
     target.type = target.type ?? 'range'
@@ -66,11 +70,11 @@ export function fromTargets<T extends Target>(targets: T[], datasource?: dashboa
       .format(
         target.format
           ? {
-              heatmap: prometheus.PromQueryFormat.Heatmap,
-              table: prometheus.PromQueryFormat.Table,
-              time_series: prometheus.PromQueryFormat.TimeSeries,
-            }[target.format]
-          : prometheus.PromQueryFormat.TimeSeries
+            heatmap: prometheus.PromQueryFormat.Heatmap,
+            table: prometheus.PromQueryFormat.Table,
+            time_series: prometheus.PromQueryFormat.TimeSeries,
+          }[target.format]
+          : prometheus.PromQueryFormat.TimeSeries,
       )
       .refId(target.refId ?? String.fromCharCode('A'.charCodeAt(0) + i))
     // .interval('$__interval')

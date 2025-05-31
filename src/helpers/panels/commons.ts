@@ -132,8 +132,9 @@ export function withCommonOpts<PT extends GenericPanelBuilder, T extends Target>
   if (opts.description !== undefined) b.description(opts.description)
   if (opts.interval !== undefined) b.interval(opts.interval)
   if (opts.maxDataPoints !== undefined) b.maxDataPoints(opts.maxDataPoints)
-  if (opts.width !== undefined) b.span(opts.width)
-  if (opts.height !== undefined) b.height(opts.height)
+  const width = opts.width || 0
+  const height = opts.height || 0
+  b.gridPos({ h: height, w: width, x: 0, y: 0 })
   if (opts.unit !== undefined) b.unit(opts.unit)
   if (opts.min !== undefined) b.min(opts.min)
   if (opts.max !== undefined) b.max(opts.max)

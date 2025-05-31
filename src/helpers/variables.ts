@@ -37,8 +37,8 @@ export type TextboxVariableOpts = {
   default?: string
 }
 
-export function NewTextboxVariable(opts: TextboxVariableOpts): dashboard.DatasourceVariableBuilder {
-  const b = new dashboard.DatasourceVariableBuilder(opts.name).label(opts.label).type('textbox')
+export function NewTextboxVariable(opts: TextboxVariableOpts): dashboard.TextBoxVariableBuilder {
+  const b = new dashboard.TextBoxVariableBuilder(opts.name).label(opts.label)
   b.hide(opts.hide ? dashboard.VariableHide.HideVariable : dashboard.VariableHide.DontHide)
   if (opts.default) {
     b.description(opts.default) // This is a workaround for the fact that the default value is not set in the builder
