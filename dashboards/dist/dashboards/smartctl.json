@@ -1462,7 +1462,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (increase(smartctl_device_power_on_seconds{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"}))",
+          "expr": "sum by (model_name, device, instance) (smartctl_device_power_on_seconds{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
