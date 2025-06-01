@@ -301,13 +301,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "pool"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Value #ALLOCATED"
             },
             "properties": [
@@ -316,20 +309,6 @@
                 "value": "decbytes"
               }
             ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #DUPLICATION_RATIO"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #FRAGMENTATION_RATIO"
-            },
-            "properties": []
           },
           {
             "matcher": {
@@ -358,13 +337,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #HEALTH"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Value #LEAKED"
             },
             "properties": [
@@ -373,13 +345,6 @@
                 "value": "decbytes"
               }
             ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #READONLY"
-            },
-            "properties": []
           },
           {
             "matcher": {

@@ -1372,27 +1372,6 @@
       },
       "transformations": [
         {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "targetField": "Switch Port",
-                "destinationType": "number"
-              }
-            ]
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "sort": [
-              {
-                "field": "Switch Port"
-              }
-            ]
-          }
-        },
-        {
           "id": "merge",
           "options": {}
         },
@@ -1430,53 +1409,32 @@
               "Value #POWER": "Power"
             }
           }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "Switch Port",
+                "destinationType": "number"
+              }
+            ]
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "Switch Port"
+              }
+            ]
+          }
         }
       ],
       "fieldConfig": {
         "defaults": {},
         "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "switch_port"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "name"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "client"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "vlan_id"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "profile"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "device"
-            },
-            "properties": []
-          },
           {
             "matcher": {
               "id": "byName",

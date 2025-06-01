@@ -693,102 +693,6 @@
           }
         }
       ],
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #value"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "instance"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "device"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "model_name"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "form_factor"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "serial_number"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "protocol"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "ata_version"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "firmware_version"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "ata_additional_product_id"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "interface"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "model_family"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "sata_version"
-            },
-            "properties": []
-          }
-        ]
-      },
       "options": {
         "frameIndex": 0,
         "showHeader": true,
@@ -999,13 +903,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #DEVICE"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Value #Temperature"
             },
             "properties": [
@@ -1018,20 +915,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #Exit status"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #Passed"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Value #Power on seconds"
             },
             "properties": [
@@ -1040,13 +923,6 @@
                 "value": "s"
               }
             ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #Power Cycle Count"
-            },
-            "properties": []
           },
           {
             "matcher": {
@@ -1107,13 +983,6 @@
                 "value": "bytes"
               }
             ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #Error log count"
-            },
-            "properties": []
           }
         ]
       },
@@ -1160,13 +1029,12 @@
       },
       "transformations": [
         {
+          "id": "merge",
+          "options": {}
+        },
+        {
           "id": "organize",
           "options": {
-            "excludeByName": {
-              "__name__": true,
-              "Time": true,
-              "job": true
-            },
             "indexByName": {
               "instance": 0,
               "device": 1,
@@ -1178,15 +1046,17 @@
               "attribute_flags_short": 7,
               "Value": 8
             },
+            "excludeByName": {},
             "renameByName": {
               "instance": "Instance",
               "device": "Device",
+              "model_name": "Model Name",
+              "attribute_id": "Attribute ID",
+              "attribute_name": "Attribute Name",
+              "attribute_value_type": "Attribute value type",
               "attribute_flags_long": "Attribute flags (long)",
               "attribute_flags_short": "Attribute flags (short)",
-              "attribute_id": "Attribute ID",
-              "attribute_name": "Attribute name",
-              "attribute_value_type": "Attribute value type",
-              "model_name": "Model Name"
+              "Value": "Value"
             }
           }
         },
@@ -1238,6 +1108,47 @@
           }
         }
       ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "instance"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 320
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "device"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "model_name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 220
+              }
+            ]
+          }
+        ]
+      },
       "options": {
         "frameIndex": 0,
         "showHeader": true,

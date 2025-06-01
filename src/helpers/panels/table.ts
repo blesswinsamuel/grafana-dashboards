@@ -4,8 +4,10 @@ import * as table from '@grafana/grafana-foundation-sdk/table'
 import { CommonPanelOpts, Unit, withCommonOpts } from './commons'
 import { PrometheusTarget, SQLTarget, Target } from './target'
 
-export type TablePanelOpts = CommonPanelOpts<Target> &
-  Partial<Pick<table.Options, 'footer' | 'cellHeight'>> & {
+export type TablePanelOpts =
+  & CommonPanelOpts<Target>
+  & Partial<Pick<table.Options, 'footer' | 'cellHeight'>>
+  & {
     queries?: Record<
       string,
       {
@@ -47,7 +49,9 @@ export function NewTablePanel(opts: TablePanelOpts): table.PanelBuilder {
           colRenames[`Value #${refId}`] = refId
         }
         tableIndexOrder.push(`Value #${refId}`)
-        tableOverrides[`Value #${refId}`] = curOverrides
+        if (Object.keys(curOverrides).length > 0) {
+          tableOverrides[`Value #${refId}`] = curOverrides
+        }
         // targets.push({ ...target, refId: refId, type: (target as any).type || 'instant', format: target.format || 'table' })
         targets.push({ ...target, refId: refId })
       } else {
@@ -55,21 +59,26 @@ export function NewTablePanel(opts: TablePanelOpts): table.PanelBuilder {
           colRenames[refId] = name
         }
         tableIndexOrder.push(refId)
-        tableOverrides[refId] = curOverrides
+        if (Object.keys(curOverrides).length > 0) {
+          tableOverrides[refId] = curOverrides
+        }
       }
       if (exclude) {
         excludeColumns.push(refId)
       }
     }
-    opts.transformations.push({ id: 'merge', options: {} })
-    opts.transformations.push({
-      id: 'organize',
-      options: {
-        indexByName: tableIndexByName(tableIndexOrder),
-        excludeByName: tableExcludeByName(excludeColumns),
-        renameByName: colRenames,
+    opts.transformations = [
+      { id: 'merge', options: {} },
+      {
+        id: 'organize',
+        options: {
+          indexByName: tableIndexByName(tableIndexOrder),
+          excludeByName: tableExcludeByName(excludeColumns),
+          renameByName: colRenames,
+        },
       },
-    })
+      ...opts.transformations,
+    ]
     opts.overridesByName = tableOverrides
   }
 

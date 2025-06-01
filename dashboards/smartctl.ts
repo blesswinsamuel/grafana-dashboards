@@ -186,24 +186,18 @@ const smartAttributesTablePanel = () => {
         format: 'table',
         type: 'instant',
       }],
+      queries: {
+        instance: { name: 'Instance', width: 320 },
+        device: { name: 'Device', width: 70 },
+        model_name: { name: 'Model Name', width: 220 },
+        attribute_id: { name: 'Attribute ID' },
+        attribute_name: { name: 'Attribute Name' },
+        attribute_value_type: { name: 'Attribute value type' },
+        attribute_flags_long: { name: 'Attribute flags (long)' },
+        attribute_flags_short: { name: 'Attribute flags (short)' },
+        Value: { name: 'Value' },
+      },
       transformations: [
-        {
-          id: 'organize',
-          options: {
-            excludeByName: { __name__: true, Time: true, job: true },
-            indexByName: tableIndexByName(['instance', 'device', 'model_name', 'attribute_id', 'attribute_name', 'attribute_value_type', 'attribute_flags_long', 'attribute_flags_short', 'Value']),
-            renameByName: {
-              instance: 'Instance',
-              device: 'Device',
-              attribute_flags_long: 'Attribute flags (long)',
-              attribute_flags_short: 'Attribute flags (short)',
-              attribute_id: 'Attribute ID',
-              attribute_name: 'Attribute name',
-              attribute_value_type: 'Attribute value type',
-              model_name: 'Model Name',
-            },
-          },
-        },
         {
           id: 'groupBy',
           options: {
