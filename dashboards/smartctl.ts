@@ -1,5 +1,7 @@
-import { GaugeMetric, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, withPanels, goRuntimeMetricsPanels, tableExcludeByName, tableIndexByName, newDashboard, units, table, common } from '../src/grafana-helpers'
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
+import { common, GaugeMetric, goRuntimeMetricsPanels, newDashboard, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, promql, table, tableExcludeByName, tableIndexByName, units, withPanels } from '../src/grafana-helpers'
+import { PrometheusTarget, Target } from '../src/helpers/panels/target'
+import { WrapFn } from '../src/helpers/promql'
 
 // https://github.com/matusnovak/prometheus-smartctl
 // https://grafana.com/grafana/dashboards/10664-smart-disk-data/
@@ -20,7 +22,7 @@ const metricDeviceCapacityBlocks = new GaugeMetric('smartctl_device_capacity_blo
 // Device capacity in bytes
 const metricDeviceCapacityBytes = new GaugeMetric('smartctl_device_capacity_bytes') // device
 // NVMe device total capacity bytes
-const metricDeviceTotalCapacityBytes = new GaugeMetric('smartctl_device_nvme_capacity_bytes') // device
+const metricDeviceNVMeCapacityBytes = new GaugeMetric('smartctl_device_nvme_capacity_bytes') // device
 // Device block size
 const metricDeviceBlockSize = new GaugeMetric('smartctl_device_block_size') // device, blocks_type
 // Device interface speed, bits per second
@@ -93,6 +95,8 @@ const errorThresholds = {
     { color: 'red', value: 1 },
   ],
 }
+const selectors = [`instance=~"$instance"`, `job="$job"`]
+const selectorsWithSerialNo = [...selectors, `serial_number=~"$serial_number"`]
 
 const overviewStats = NewPanelRow({ datasource, height: 3 }, [
   NewStatPanel({ title: 'Devices count', targets: [{ expr: `sum(${metricDeviceCount.metric}{instance=~"$instance", job="$job"})` }] }),
@@ -105,155 +109,200 @@ const overviewStats = NewPanelRow({ datasource, height: 3 }, [
   NewStatPanel({ title: 'SMART failed', targets: [{ expr: `sum(1 - ${metricDeviceSmartStatus.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }], thresholds: errorThresholds }),
 ])
 
-const deviceInfoTablePanel = NewPanelRow({ datasource, height: 14 }, [
-  NewTablePanel({
-    title: 'Device Info',
-    queries: {
-      value: { target: metricDeviceModel.raw({ selectors: `instance=~"$instance", job="$job", serial_number=~"$serial_number"`, type: 'instant' }).target({ format: 'table', type: 'instant' }) },
-      instance: { name: 'Instance' },
-      device: { name: 'Device' },
-      model_name: { name: 'Model name' },
-      form_factor: { name: 'Form factor' },
-      serial_number: { name: 'Serial number' },
-      protocol: { name: 'Protocol' },
-      ata_version: { name: 'ATA version' },
-      firmware_version: { name: 'Firmware version' },
-      ata_additional_product_id: { name: 'ATA additional product ID' },
-      interface: { name: 'Interface' },
-      model_family: { name: 'Model family' },
-      sata_version: { name: 'SATA version' },
-    },
-    excludeColumns: ['__name__', 'Time', 'Value', 'job'],
-  }),
-])
-
-const smartOverviewTablePanel = NewPanelRow({ datasource, height: 14 }, [
-  NewTablePanel({
-    title: 'SMART overview',
-    queries: {
-      instance: { name: 'Instance', width: 320 },
-      device: { name: 'Device', width: 70 },
-      model_name: { name: 'Model name', width: 220 },
-      DEVICE: { target: metricDeviceModel.calc('sum', { selectors: `instance=~"$instance", job="$job", serial_number=~"$serial_number"`, type: 'instant', groupBy: ['instance', 'device', 'model_name'] }).target() },
-      TEMP: { name: 'Temperature', unit: units.Celsius, target: { expr: `sum(${metricDeviceTemperature.metric}{instance=~"$instance", job="$job", temperature_type="current"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
-      EXIT: { name: 'Exit status', target: { expr: `sum(${metricDeviceExitStatus.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
-      PASSED: { name: 'Passed', target: { expr: `sum(${metricDeviceSmartStatus.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
-      POWON: { name: 'Power on seconds', unit: units.Seconds, target: { expr: `sum(${metricDevicePowerOnSeconds.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
-      PCC: { name: 'Power Cycle Count', target: { expr: `sum(${metricDevicePowerCycleCount.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
-      INTSPEED: { name: 'Device interface speed', unit: units.BitsPerSecondSI, target: { expr: `sum(${metricDeviceInterfaceSpeed.metric}{instance=~"$instance", job="$job", speed_type="current"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
-      CAPBYTES: { name: 'Capacity Bytes', unit: units.BytesIEC, target: { expr: `sum(${metricDeviceCapacityBytes.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
-      CAPBLOCKS: { name: 'Capacity Blocks', unit: units.Short, target: { expr: `sum(${metricDeviceCapacityBlocks.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
-      BLKSIZELOG: { name: 'Block size (logical)', unit: units.BytesIEC, target: { expr: `sum(${metricDeviceBlockSize.metric}{blocks_type="logical", instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
-      BLKSIZEPHY: { name: 'Block size (physical)', unit: units.BytesIEC, target: { expr: `sum(${metricDeviceBlockSize.metric}{blocks_type="physical", instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
-      ERRLOGCNT: { name: 'Error log count', target: { expr: `sum(${metricDeviceErrorLogCount.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"}) by (instance, device)`, format: 'table', type: 'instant' } },
-    },
-    excludeColumns: ['Time', 'Value #DEVICE'],
-    sortBy: [{ col: 'Instance' }],
-  }),
-])
-
-const smartAttributesTablePanel = NewPanelRow({ datasource, height: 8 }, [
-  NewTablePanel({
-    title: 'SMART attributes',
-    targets: [{ expr: `${metricDeviceAttribute.metric}{instance=~"$instance", job="$job"} * on(device, instance) group_left(model_name) ${metricDeviceModel.metric}{instance=~"$instance", job="$job", serial_number=~"$serial_number"}`, format: 'table', type: 'instant' }],
-    transformations: [
-      {
-        id: 'organize',
-        options: {
-          excludeByName: { __name__: true, Time: true, job: true },
-          indexByName: tableIndexByName(['instance', 'device', 'model_name', 'attribute_id', 'attribute_name', 'attribute_value_type', 'attribute_flags_long', 'attribute_flags_short', 'Value']),
-          renameByName: {
-            instance: 'Instance',
-            device: 'Device',
-            attribute_flags_long: 'Attribute flags (long)',
-            attribute_flags_short: 'Attribute flags (short)',
-            attribute_id: 'Attribute ID',
-            attribute_name: 'Attribute name',
-            attribute_value_type: 'Attribute value type',
-            model_name: 'Model Name',
-          },
-        },
+const deviceInfoTablePanel = () => {
+  return NewPanelRow({ datasource, height: 14 }, [
+    NewTablePanel({
+      title: 'Device Info',
+      queries: {
+        value: { target: metricDeviceModel.raw({ selectors: selectorsWithSerialNo, type: 'instant' }).target({ format: 'table', type: 'instant' }) },
+        instance: { name: 'Instance' },
+        device: { name: 'Device' },
+        model_name: { name: 'Model name' },
+        form_factor: { name: 'Form factor' },
+        serial_number: { name: 'Serial number' },
+        protocol: { name: 'Protocol' },
+        ata_version: { name: 'ATA version' },
+        firmware_version: { name: 'Firmware version' },
+        ata_additional_product_id: { name: 'ATA additional product ID' },
+        interface: { name: 'Interface' },
+        model_family: { name: 'Model family' },
+        sata_version: { name: 'SATA version' },
       },
-      {
-        id: 'groupBy',
-        options: {
-          fields: {
-            Instance: { aggregations: [], operation: 'groupby' },
-            Device: { aggregations: [], operation: 'groupby' },
-            'Model Name': { aggregations: [], operation: 'groupby' },
-            'Attribute ID': { aggregations: [], operation: 'groupby' },
-            'Attribute name': { aggregations: [], operation: 'groupby' },
-            'Attribute flags (long)': { aggregations: [], operation: 'groupby' },
-            'Attribute flags (short)': { aggregations: [], operation: 'groupby' },
-            'Attribute value type': { aggregations: ['allValues'], operation: 'aggregate' },
-            Value: { aggregations: ['allValues'], operation: 'aggregate' },
-          },
-        },
-      },
-    ],
-    sortBy: [{ col: 'Instance' }],
-  }),
-])
-
-const queryWithModelNameLegendFormat = '{{ model_name }} ({{ instance }}/{{ device }})'
-
-function queryWithModelName(metric: GaugeMetric, extraSelectors: string = '', func: string = '') {
-  let r = `${metric.metric}{instance=~"$instance", job="$job"${extraSelectors ? ',' + extraSelectors : ''}} * on(device, instance) group_left(model_name) ${metricDeviceModel.metric}{instance=~"$instance", job="$job", serial_number=~"$serial_number"}`
-  if (func) {
-    r = `${func}(${r})`
-  }
-  return [{ expr: `sum by (model_name, device, instance) (${r})`, legendFormat: queryWithModelNameLegendFormat }]
+      excludeColumns: ['__name__', 'Time', 'Value', 'job'],
+      sortBy: [{ col: 'Instance' }],
+    }),
+  ])
 }
 
-const timeSeriesGroup = NewPanelGroup({ title: 'Metrics' }, [
-  // available labels: entrypoint, code, method, protocol
-  NewPanelRow({ datasource, height: 8 }, [
-    NewTimeSeriesPanel({ title: 'Temperature', targets: queryWithModelName(metricDeviceTemperature, 'temperature_type="current"'), unit: units.Celsius }),
-    NewTimeSeriesPanel({ title: 'Smartctl exit status', targets: queryWithModelName(metricDeviceExitStatus) }),
-    NewTimeSeriesPanel({ title: 'SMART passed', targets: queryWithModelName(metricDeviceSmartStatus) }),
-    NewTimeSeriesPanel({ title: 'Power on duration', targets: queryWithModelName(metricDevicePowerOnSeconds, '', 'increase'), unit: units.Seconds, type: 'bar', interval: '1h' }),
-  ]),
-  NewPanelRow({ datasource, height: 8 }, [
-    NewTimeSeriesPanel({ title: 'Power cycle count', targets: queryWithModelName(metricDevicePowerCycleCount) }),
-    NewTimeSeriesPanel({ title: 'Write percentage used', targets: queryWithModelName(metricDevicePercentageUsed) }),
-    NewTimeSeriesPanel({ title: 'NVMe capacity bytes', targets: queryWithModelName(metricDeviceTotalCapacityBytes), unit: units.BytesIEC }),
-    NewTimeSeriesPanel({ title: 'Number of error log entries', description: 'Contains the number of Error Information log entries over the life of the controller', targets: queryWithModelName(metricDeviceNumErrLogEntries) }),
-  ]),
-  NewPanelRow({ datasource, height: 8 }, [
-    NewTimeSeriesPanel({ title: 'Number of media errors', description: 'Contains the number of occurrences where the controller detected an unrecovered data integrity error. Errors such as uncorrectable ECC, CRC checksum failure, or LBA tag mismatch are included in this field', targets: queryWithModelName(metricDeviceMediaErrors) }),
-    NewTimeSeriesPanel({ title: 'SMART error log count', targets: queryWithModelName(metricDeviceErrorLogCount, 'error_log_type="summary"') }),
-    NewTimeSeriesPanel({ title: 'Critical warnings for state of controller', targets: queryWithModelName(metricDeviceCriticalWarning) }),
-  ]),
-  NewPanelRow({ datasource, height: 8 }, [
-    //
-    NewTimeSeriesPanel({ title: 'Interface speed (current)', targets: queryWithModelName(metricDeviceInterfaceSpeed, 'speed_type="current"'), unit: units.BitsPerSecondSI }),
-    NewTimeSeriesPanel({ title: 'Interface speed (max)', targets: queryWithModelName(metricDeviceInterfaceSpeed, 'speed_type="max"'), unit: units.BitsPerSecondSI }),
-  ]),
-  NewPanelRow({ datasource, height: 8 }, [
-    NewTimeSeriesPanel({ title: 'Capacity Bytes', targets: queryWithModelName(metricDeviceCapacityBytes), unit: units.BytesIEC }),
-    NewTimeSeriesPanel({ title: 'Capacity Blocks', targets: queryWithModelName(metricDeviceCapacityBlocks) }),
-    NewTimeSeriesPanel({ title: 'Bytes written', targets: queryWithModelName(metricDeviceBytesWritten), unit: units.BytesIEC }),
-    NewTimeSeriesPanel({ title: 'Bytes read', targets: queryWithModelName(metricDeviceBytesRead), unit: units.BytesIEC }),
-  ]),
-  NewPanelRow({ datasource, height: 8 }, [
-    NewTimeSeriesPanel({ title: 'Block size (logical)', targets: queryWithModelName(metricDeviceBlockSize, 'blocks_type="logical"'), unit: units.BytesIEC }),
-    NewTimeSeriesPanel({ title: 'Block size (physical)', targets: queryWithModelName(metricDeviceBlockSize, 'blocks_type="physical"'), unit: units.BytesIEC }),
-    NewTimeSeriesPanel({ title: 'Available spare threshold', description: 'When the Available Spare falls below the threshold indicated in this field, an asynchronous event completion may occur. The value is indicated as a normalized percentage (0 to 100%)', targets: queryWithModelName(metricDeviceAvailableSpareThreshold), unit: units.Percent }),
-    NewTimeSeriesPanel({ title: 'Available spare', description: 'Normalized percentage (0 to 100%) of the remaining spare capacity available', targets: queryWithModelName(metricDeviceAvailableSpare), unit: units.Percent }),
-  ]),
-])
+const smartOverviewTablePanel = () => {
+  const getTarget = (metric: GaugeMetric, extraSelectors: string = ''): Target => {
+    return {
+      expr: promql.sum(
+        promql.mul(
+          metric.raw({ selectors: [...selectors, extraSelectors] }),
+          metricDeviceModel.raw({ selectors: selectorsWithSerialNo }),
+        ).on(['device', 'instance']),
+      ).by(['instance', 'device']),
+      format: 'table',
+      type: 'instant',
+    }
+  }
+
+  return NewPanelRow({ datasource, height: 14 }, [
+    NewTablePanel({
+      title: 'SMART overview',
+      queries: {
+        instance: { name: 'Instance', width: 320 },
+        device: { name: 'Device', width: 70 },
+        model_name: { name: 'Model name', width: 220 },
+        DEVICE: { target: metricDeviceModel.calc('sum', { selectors: selectorsWithSerialNo, type: 'instant', groupBy: ['instance', 'device', 'model_name'] }).target() },
+        Temperature: { unit: units.Celsius, target: getTarget(metricDeviceTemperature, 'temperature_type="current"') },
+        'Exit status': { target: getTarget(metricDeviceExitStatus) },
+        Passed: { name: 'Passed', target: getTarget(metricDeviceSmartStatus) },
+        'Power on seconds': { unit: units.Seconds, target: getTarget(metricDevicePowerOnSeconds) },
+        'Power Cycle Count': { target: getTarget(metricDevicePowerCycleCount) },
+        'Device interface speed': { unit: units.BitsPerSecondSI, target: getTarget(metricDeviceInterfaceSpeed, 'speed_type="current"') },
+        'Capacity Bytes': { unit: units.BytesIEC, target: getTarget(metricDeviceCapacityBytes) },
+        'Capacity Blocks': { unit: units.Short, target: getTarget(metricDeviceCapacityBlocks) },
+        'Block size (logical)': { unit: units.BytesIEC, target: getTarget(metricDeviceBlockSize, 'blocks_type="logical"') },
+        'Block size (physical)': { unit: units.BytesIEC, target: getTarget(metricDeviceBlockSize, 'blocks_type="physical"') },
+        'Error log count': { target: getTarget(metricDeviceErrorLogCount) },
+      },
+      excludeColumns: ['Time', 'Value #DEVICE'],
+      sortBy: [{ col: 'Instance' }],
+    }),
+  ])
+}
+
+const smartAttributesTablePanel = () => {
+  return NewPanelRow({ datasource, height: 8 }, [
+    NewTablePanel({
+      title: 'SMART attributes',
+      targets: [{
+        expr: promql.mul(
+          metricDeviceAttribute.raw({ selectors }),
+          metricDeviceModel.raw({ selectors: selectorsWithSerialNo }),
+        ).on(['device', 'instance']).groupLeft(['model_name']),
+        format: 'table',
+        type: 'instant',
+      }],
+      transformations: [
+        {
+          id: 'organize',
+          options: {
+            excludeByName: { __name__: true, Time: true, job: true },
+            indexByName: tableIndexByName(['instance', 'device', 'model_name', 'attribute_id', 'attribute_name', 'attribute_value_type', 'attribute_flags_long', 'attribute_flags_short', 'Value']),
+            renameByName: {
+              instance: 'Instance',
+              device: 'Device',
+              attribute_flags_long: 'Attribute flags (long)',
+              attribute_flags_short: 'Attribute flags (short)',
+              attribute_id: 'Attribute ID',
+              attribute_name: 'Attribute name',
+              attribute_value_type: 'Attribute value type',
+              model_name: 'Model Name',
+            },
+          },
+        },
+        {
+          id: 'groupBy',
+          options: {
+            fields: {
+              Instance: { aggregations: [], operation: 'groupby' },
+              Device: { aggregations: [], operation: 'groupby' },
+              'Model Name': { aggregations: [], operation: 'groupby' },
+              'Attribute ID': { aggregations: [], operation: 'groupby' },
+              'Attribute name': { aggregations: [], operation: 'groupby' },
+              'Attribute flags (long)': { aggregations: [], operation: 'groupby' },
+              'Attribute flags (short)': { aggregations: [], operation: 'groupby' },
+              'Attribute value type': { aggregations: ['allValues'], operation: 'aggregate' },
+              Value: { aggregations: ['allValues'], operation: 'aggregate' },
+            },
+          },
+        },
+      ],
+      sortBy: [{ col: 'Instance' }],
+    }),
+  ])
+}
+
+const timeSeriesGroup = () => {
+  const queryWithModelNameLegendFormat = '{{ model_name }} ({{ instance }}/{{ device }})'
+  const getTarget = (metric: GaugeMetric, extraSelectors: string = '', deviceModelExtraSelectors: string = ''): PrometheusTarget => {
+    return {
+      expr: promql.sum(
+        promql.mul(
+          metric.raw({ selectors: [...selectors, extraSelectors] }),
+          metricDeviceModel.raw({ selectors: [...selectorsWithSerialNo, deviceModelExtraSelectors] }),
+        ).on(['device', 'instance']).groupLeft(['model_name']),
+      ).by(['model_name', 'device', 'instance']),
+      legendFormat: queryWithModelNameLegendFormat,
+    }
+  }
+
+  return NewPanelGroup({ title: 'Metrics' }, [
+    // available labels: entrypoint, code, method, protocol
+    NewPanelRow({ datasource, height: 8 }, [
+      NewTimeSeriesPanel({ title: 'Temperature', unit: units.Celsius }, getTarget(metricDeviceTemperature, 'temperature_type="current"')),
+      NewTimeSeriesPanel({ title: 'Smartctl exit status' }, getTarget(metricDeviceExitStatus)),
+      NewTimeSeriesPanel({ title: 'SMART passed' }, getTarget(metricDeviceSmartStatus)),
+      NewTimeSeriesPanel({ title: 'Power on duration', unit: units.Seconds }, getTarget(metricDevicePowerOnSeconds)),
+    ]),
+    NewPanelRow({ datasource, height: 8 }, [
+      NewTimeSeriesPanel({ title: 'Power cycle count' }, getTarget(metricDevicePowerCycleCount)),
+      NewTimeSeriesPanel({ title: 'Write percentage used' }, getTarget(metricDevicePercentageUsed)),
+      NewTimeSeriesPanel({ title: 'NVMe capacity bytes', unit: units.BytesIEC }, {
+        expr: promql.or(
+          getTarget(metricDeviceNVMeCapacityBytes).expr as promql.Builder<promql.Expr>,
+          getTarget(metricDeviceCapacityBytes, '', 'protocol="NVMe"').expr as promql.Builder<promql.Expr>,
+        ),
+        legendFormat: queryWithModelNameLegendFormat,
+      }),
+      NewTimeSeriesPanel({ title: 'Number of error log entries', description: 'Contains the number of Error Information log entries over the life of the controller' }, getTarget(metricDeviceNumErrLogEntries)),
+    ]),
+    NewPanelRow({ datasource, height: 8 }, [
+      NewTimeSeriesPanel({
+        title: 'Number of media errors',
+        description: 'Contains the number of occurrences where the controller detected an unrecovered data integrity error. Errors such as uncorrectable ECC, CRC checksum failure, or LBA tag mismatch are included in this field',
+      }, getTarget(metricDeviceMediaErrors)),
+      NewTimeSeriesPanel({ title: 'SMART error log count' }, getTarget(metricDeviceErrorLogCount, 'error_log_type="summary"')),
+      NewTimeSeriesPanel({ title: 'Critical warnings for state of controller' }, getTarget(metricDeviceCriticalWarning)),
+    ]),
+    NewPanelRow({ datasource, height: 8 }, [
+      //
+      NewTimeSeriesPanel({ title: 'Interface speed (current)', unit: units.BitsPerSecondSI }, getTarget(metricDeviceInterfaceSpeed, 'speed_type="current"')),
+      NewTimeSeriesPanel({ title: 'Interface speed (max)', unit: units.BitsPerSecondSI }, getTarget(metricDeviceInterfaceSpeed, 'speed_type="max"')),
+    ]),
+    NewPanelRow({ datasource, height: 8 }, [
+      NewTimeSeriesPanel({ title: 'Capacity Bytes', unit: units.BytesIEC }, getTarget(metricDeviceCapacityBytes)),
+      NewTimeSeriesPanel({ title: 'Capacity Blocks', unit: units.Short }, getTarget(metricDeviceCapacityBlocks)),
+      NewTimeSeriesPanel({ title: 'Bytes written', unit: units.BytesIEC }, getTarget(metricDeviceBytesWritten)),
+      NewTimeSeriesPanel({ title: 'Bytes read', unit: units.BytesIEC }, getTarget(metricDeviceBytesRead)),
+    ]),
+    NewPanelRow({ datasource, height: 8 }, [
+      NewTimeSeriesPanel({ title: 'Block size (logical)', unit: units.BytesIEC }, getTarget(metricDeviceBlockSize, 'blocks_type="logical"')),
+      NewTimeSeriesPanel({ title: 'Block size (physical)', unit: units.BytesIEC }, getTarget(metricDeviceBlockSize, 'blocks_type="physical"')),
+      NewTimeSeriesPanel({
+        title: 'Available spare threshold',
+        description: 'When the Available Spare falls below the threshold indicated in this field, an asynchronous event completion may occur. The value is indicated as a normalized percentage (0 to 100%)',
+        unit: units.Percent,
+      }, getTarget(metricDeviceAvailableSpareThreshold)),
+      NewTimeSeriesPanel({ title: 'Available spare', description: 'Normalized percentage (0 to 100%) of the remaining spare capacity available', unit: units.Percent }, getTarget(metricDeviceAvailableSpare)),
+    ]),
+  ])
+}
 
 const panels: PanelRowAndGroups = [
   //
   NewPanelGroup({ title: 'Overview' }, [
     //
     overviewStats,
-    deviceInfoTablePanel,
-    smartOverviewTablePanel,
-    smartAttributesTablePanel,
+    deviceInfoTablePanel(),
+    smartOverviewTablePanel(),
+    smartAttributesTablePanel(),
   ]),
-  timeSeriesGroup,
-  goRuntimeMetricsPanels({ datasource, selectors: 'instance=~"$instance", job="$job"', collapsed: true }),
+  timeSeriesGroup(),
+  goRuntimeMetricsPanels({ datasource, selectors, collapsed: true }),
 ]
 
 export const smartctlDashboard = newDashboard({

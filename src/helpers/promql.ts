@@ -46,9 +46,9 @@ export type TargetOptions = {
 
 type PrometheusQueryRawOpts = { type?: 'range' | 'instant' | 'both'; groupBy?: string[] }
 
-class PrometheusQueryRaw<T extends promql.Expr> implements cog.Builder<T> {
+class PrometheusQueryRaw<T extends promql.Expr, BT extends promql.Builder<T>> implements promql.Builder<T> {
   constructor(
-    private readonly expr: cog.Builder<T>,
+    private readonly expr: BT,
     readonly opts?: PrometheusQueryRawOpts,
   ) {}
 
@@ -92,13 +92,13 @@ class PrometheusQueryRaw<T extends promql.Expr> implements cog.Builder<T> {
     return this.expr.toString()
   }
 
-  public calc(aggrOp: promql.AggregationOp, opts: { groupBy?: string[] } = {}): PrometheusQueryRaw<promql.AggregationExpr> {
+  public calc(aggrOp: promql.AggregationOp, opts: { groupBy?: string[] } = {}): PrometheusQueryRaw<promql.AggregationExpr, promql.AggregationExprBuilder> {
     const qb = applyAggr(aggrOp, this.expr).by(opts.groupBy ?? [])
     return newPrometheusQueryRaw(qb, { ...this.opts, ...opts })
   }
 
-  public wrap<TT extends promql.Expr, WrapT extends WrapFn<TT> | undefined>(wrap?: WrapT): WrapT extends undefined ? PrometheusQueryRaw<T> : PrometheusQueryRaw<TT> {
-    type ResultT = WrapT extends undefined ? PrometheusQueryRaw<T> : PrometheusQueryRaw<TT>
+  public wrap<WT extends promql.Expr, WBT extends promql.Builder<WT>, WrapT extends WrapFn<WT, WBT> | undefined>(wrap?: WrapT): WrapT extends undefined ? PrometheusQueryRaw<T, BT> : PrometheusQueryRaw<WT, WBT> {
+    type ResultT = WrapT extends undefined ? PrometheusQueryRaw<T, BT> : PrometheusQueryRaw<WT, WBT>
     if (!wrap) {
       return newPrometheusQueryRaw(this.expr, this.opts) as ResultT
     }
@@ -108,9 +108,13 @@ class PrometheusQueryRaw<T extends promql.Expr> implements cog.Builder<T> {
   public build(): T {
     return this.expr.build()
   }
+
+  public builder(): BT {
+    return this.expr
+  }
 }
 
-export type WrapFn<TT extends promql.Expr = promql.Expr> = (expr: cog.Builder<promql.Expr>) => cog.Builder<TT>
+export type WrapFn<TT extends promql.Expr = promql.Expr, BT extends promql.Builder<TT> = promql.Builder<TT>> = (expr: cog.Builder<promql.Expr>) => BT
 
 // export function newPrometheusQueryRaw<T extends promql.Expr, TT extends promql.Expr>(expr: cog.Builder<T>, opts?: PrometheusQueryRawOpts, wrap?: undefined): PrometheusQueryRaw<T>
 // export function newPrometheusQueryRaw<T extends promql.Expr, TT extends promql.Expr>(expr: cog.Builder<T>, opts?: PrometheusQueryRawOpts, wrap?: WrapFn<TT>): PrometheusQueryRaw<TT>
@@ -126,7 +130,7 @@ export type WrapFn<TT extends promql.Expr = promql.Expr> = (expr: cog.Builder<pr
 //   return new PrometheusQueryRaw(expr, opts)
 // }
 
-export function newPrometheusQueryRaw<T extends promql.Expr>(expr: cog.Builder<T>, opts?: PrometheusQueryRawOpts): PrometheusQueryRaw<T> {
+export function newPrometheusQueryRaw<T extends promql.Expr, BT extends promql.Builder<T>>(expr: BT, opts?: PrometheusQueryRawOpts): PrometheusQueryRaw<T, BT> {
   return new PrometheusQueryRaw(expr, opts)
 }
 
@@ -140,6 +144,9 @@ class PrometheusMetricBase {
   }
   public description() {
     return this.opts.description
+  }
+  public builder(): promql.VectorExprBuilder {
+    return applyLabels(promql.vector(this.metric), mergeSelectors(this.opts.selectors || '', ''))
   }
 }
 
@@ -196,17 +203,28 @@ function parsePromQLSelectors(input: string): promql.LabelSelector[] {
   return selectors
 }
 
-function applyLabels<T extends promql.VectorExprBuilder>(expr: T, selectors: string): T {
-  const labels: promql.LabelSelector[] = parsePromQLSelectors(selectors || '')
-  const bs = []
-  for (const label of labels) {
-    const b = new promql.LabelSelectorBuilder()
-    b.name(label.name)
-    b.operator(label.operator)
-    b.value(label.value)
-    bs.push(b)
+function applyLabels<T extends promql.VectorExprBuilder>(expr: T, labels: string | string[] | undefined): T {
+  const labelsArray = Array.isArray(labels) ? labels : (labels ? [labels] : [])
+  const labelsParsed: promql.LabelSelector[] = parsePromQLSelectors(labelsArray.join(', '))
+  for (const label of labelsParsed) {
+    switch (label.operator) {
+      case '=':
+        expr.label(label.name, label.value)
+        break
+      case '!=':
+        expr.labelNeq(label.name, label.value)
+        break
+      case '=~':
+        expr.labelMatchRegexp(label.name, label.value)
+        break
+      case '!~':
+        expr.labelNotMatchRegexp(label.name, label.value)
+        break
+      default:
+        throw new Error(`Unsupported operator "${label.operator}" in selector '${label.name}${label.operator}${label.value}'`)
+    }
   }
-  return expr.labels(bs)
+  return expr
 }
 
 function getRangeString(opts: CommonQueryOpts & { interval?: string }, functionVal?: FunctionVal): string {
@@ -233,24 +251,18 @@ export class CounterMetric extends PrometheusMetricBase {
   ) {
     super(metric, opts)
   }
-  public calc(aggrOp: promql.AggregationOp, functionVal: FunctionVal, opts: CommonQueryOpts & { interval?: string }): PrometheusQueryRaw<promql.AggregationExpr> {
-    const metric = this.metric
-    const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
+  public calc(aggrOp: promql.AggregationOp, functionVal: FunctionVal, opts: CommonQueryOpts & { interval?: string }): PrometheusQueryRaw<promql.AggregationExpr, promql.AggregationExprBuilder> {
     const range = getRangeString(opts, functionVal)
-    let qb = applyAggr(aggrOp, applyFunc(functionVal, applyLabels(promql.vector(metric), selectors).range(range))).by(opts.groupBy ?? [])
+    let qb = applyAggr(aggrOp, applyFunc(functionVal, applyLabels(this.builder(), opts.selectors).range(range))).by(opts.groupBy ?? [])
     return newPrometheusQueryRaw(qb, { ...this.opts, ...opts })
   }
-  public percentage(opts: CommonQueryOpts & { numeratorSelectors?: string | string[]; denominatorSelectors?: string | string[]; func?: 'rate' | 'increase' }): PrometheusQueryRaw<promql.BinaryExpr> {
-    const metric = this.metric
+  public percentage(opts: CommonQueryOpts & { numeratorSelectors?: string | string[]; denominatorSelectors?: string | string[]; func?: 'rate' | 'increase' }): PrometheusQueryRaw<promql.BinaryExpr, promql.BinaryExprBuilder> {
     const { func = 'rate' } = opts
-    const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
-    const numeratorSelectors = mergeSelectors(selectors, opts.numeratorSelectors || '')
-    const denominatorSelectors = mergeSelectors(selectors, opts.denominatorSelectors || '')
     const range = getRangeString(opts, func)
     let qb = promql.div(
       //
-      applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric), numeratorSelectors).range(range))).by(opts.groupBy ?? []),
-      applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric), denominatorSelectors).range(range))).by(opts.groupBy ?? []),
+      applyAggr('sum', applyFunc(func, applyLabels(this.builder(), mergeSelectors(opts.selectors, opts.numeratorSelectors || '')).range(range))).by(opts.groupBy ?? []),
+      applyAggr('sum', applyFunc(func, applyLabels(this.builder(), mergeSelectors(opts.selectors, opts.denominatorSelectors || '')).range(range))).by(opts.groupBy ?? []),
     )
     return newPrometheusQueryRaw(qb, { ...this.opts, ...opts })
   }
@@ -263,21 +275,14 @@ export class GaugeMetric extends PrometheusMetricBase {
   ) {
     super(metric, opts)
   }
-  public calc(aggrOp: promql.AggregationOp | undefined, opts: CommonQueryOpts & { interval?: string }): PrometheusQueryRaw<promql.VectorExpr | promql.AggregationExpr> {
-    const metric = this.metric
-    const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
-    const mb = applyLabels(promql.vector(metric), selectors)
+  public calc(aggrOp: promql.AggregationOp, opts: CommonQueryOpts & { interval?: string }): PrometheusQueryRaw<promql.AggregationExpr, promql.AggregationExprBuilder> {
+    const mb = applyLabels(this.builder(), opts.selectors)
     if (opts.interval) mb.range(opts.interval)
-    if (aggrOp) {
-      const qb = applyAggr(aggrOp, mb).by(opts.groupBy ?? [])
-      return newPrometheusQueryRaw(qb, { ...this.opts, ...opts })
-    }
-    return newPrometheusQueryRaw(mb, { ...this.opts, ...opts })
+    const qb = applyAggr(aggrOp, mb).by(opts.groupBy ?? [])
+    return newPrometheusQueryRaw(qb, { ...this.opts, ...opts })
   }
-  public raw(opts: CommonQueryOpts): PrometheusQueryRaw<promql.VectorExpr> {
-    const metric = this.metric
-    const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
-    const qb = applyLabels(promql.vector(metric), selectors)
+  public raw(opts: CommonQueryOpts): PrometheusQueryRaw<promql.VectorExpr, promql.VectorExprBuilder> {
+    const qb = applyLabels(this.builder(), opts.selectors)
     return newPrometheusQueryRaw(qb, { ...this.opts, ...opts })
   }
 }
@@ -295,15 +300,13 @@ class HistogramSummaryCommon extends PrometheusMetricBase {
   public sum() {
     return new CounterMetric(this.metric + '_sum', this.opts)
   }
-  public avg(opts: CommonQueryOpts & { func?: 'rate' | 'increase' }): PrometheusQueryRaw<promql.BinaryExpr> {
-    const metric = this.metric
+  public avg(opts: CommonQueryOpts & { func?: 'rate' | 'increase' }): PrometheusQueryRaw<promql.BinaryExpr, promql.BinaryExprBuilder> {
     const { func = 'rate' } = opts
-    const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
     const range = getRangeString(opts, func)
     const qb = promql.div(
       //
-      applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric + '_sum'), selectors).range(range))).by(opts.groupBy ?? []),
-      applyAggr('sum', applyFunc(func, applyLabels(promql.vector(metric + '_count'), selectors).range(range))).by(opts.groupBy ?? []),
+      applyAggr('sum', applyFunc(func, applyLabels(this.sum().builder(), opts.selectors).range(range))).by(opts.groupBy ?? []),
+      applyAggr('sum', applyFunc(func, applyLabels(this.count().builder(), opts.selectors).range(range))).by(opts.groupBy ?? []),
     )
     return newPrometheusQueryRaw(qb, { ...this.opts, ...opts })
   }
@@ -316,18 +319,19 @@ export class HistogramMetric extends HistogramSummaryCommon {
   ) {
     super(metric, opts)
   }
-  public calc(func: 'histogram_quantile' | 'histogram_share', value: string, opts: CommonQueryOpts): PrometheusQueryRaw<promql.FuncCallExpr> {
-    const metric = this.metric + '_bucket'
-    const selectors = mergeSelectors(this.opts.selectors, opts.selectors)
+  public bucket() {
+    return new CounterMetric(this.metric + '_bucket', this.opts)
+  }
+  public calc(func: 'histogram_quantile' | 'histogram_share', value: string, opts: CommonQueryOpts): PrometheusQueryRaw<promql.FuncCallExpr, promql.FuncCallExprBuilder> {
     const groupBy = ['le', ...(opts.groupBy || [])]
-    const iqb = promql.sum(promql.rate(applyLabels(promql.vector(metric), selectors).range(getRangeString(opts, func)))).by(groupBy)
+    const iqb = promql.sum(promql.rate(applyLabels(this.bucket().builder(), opts.selectors).range(getRangeString(opts, func)))).by(groupBy)
     const qb = applyFunc(func, promql.n(parseFloat(value)), iqb)
     return newPrometheusQueryRaw(qb, { ...this.opts, ...opts })
   }
-  public quantile(value: string, opts: CommonQueryOpts): PrometheusQueryRaw<promql.FuncCallExpr> {
+  public quantile(value: string, opts: CommonQueryOpts): PrometheusQueryRaw<promql.FuncCallExpr, promql.FuncCallExprBuilder> {
     return this.calc('histogram_quantile', value, opts)
   }
-  public share(value: string, opts: CommonQueryOpts): PrometheusQueryRaw<promql.FuncCallExpr> {
+  public share(value: string, opts: CommonQueryOpts): PrometheusQueryRaw<promql.FuncCallExpr, promql.FuncCallExprBuilder> {
     return this.calc('histogram_share', value, opts)
   }
 }

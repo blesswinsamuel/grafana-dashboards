@@ -1,6 +1,6 @@
 {
   "typescript": {
-    "lineWidth": 300,
+    "lineWidth": 400,
     "quoteStyle": "alwaysSingle",
     "semiColons": "asi"
   },

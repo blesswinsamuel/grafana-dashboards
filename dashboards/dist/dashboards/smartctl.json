@@ -799,7 +799,12 @@
           "countRows": false
         },
         "cellHeight": "md",
-        "sortBy": []
+        "sortBy": [
+          {
+            "displayName": "Instance",
+            "desc": false
+          }
+        ]
       },
       "datasource": {
         "uid": "${DS_PROMETHEUS}"
@@ -819,78 +824,78 @@
           "range": false
         },
         {
-          "expr": "sum(smartctl_device_temperature{instance=~\"$instance\", job=\"$job\", temperature_type=\"current\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"}) by (instance, device)",
-          "refId": "TEMP",
+          "expr": "sum by(instance, device) ((smartctl_device_temperature{instance=~\"$instance\",job=\"$job\",temperature_type=\"current\"}) * on(device, instance) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
+          "refId": "Temperature",
           "format": "table",
           "instant": true,
           "range": false
         },
         {
-          "expr": "sum(smartctl_device_smartctl_exit_status{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"}) by (instance, device)",
-          "refId": "EXIT",
+          "expr": "sum by(instance, device) ((smartctl_device_smartctl_exit_status{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
+          "refId": "Exit status",
           "format": "table",
           "instant": true,
           "range": false
         },
         {
-          "expr": "sum(smartctl_device_smart_status{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"}) by (instance, device)",
-          "refId": "PASSED",
+          "expr": "sum by(instance, device) ((smartctl_device_smart_status{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
+          "refId": "Passed",
           "format": "table",
           "instant": true,
           "range": false
         },
         {
-          "expr": "sum(smartctl_device_power_on_seconds{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"}) by (instance, device)",
-          "refId": "POWON",
+          "expr": "sum by(instance, device) ((smartctl_device_power_on_seconds{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
+          "refId": "Power on seconds",
           "format": "table",
           "instant": true,
           "range": false
         },
         {
-          "expr": "sum(smartctl_device_power_cycle_count{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"}) by (instance, device)",
-          "refId": "PCC",
+          "expr": "sum by(instance, device) ((smartctl_device_power_cycle_count{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
+          "refId": "Power Cycle Count",
           "format": "table",
           "instant": true,
           "range": false
         },
         {
-          "expr": "sum(smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\", speed_type=\"current\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"}) by (instance, device)",
-          "refId": "INTSPEED",
+          "expr": "sum by(instance, device) ((smartctl_device_interface_speed{instance=~\"$instance\",job=\"$job\",speed_type=\"current\"}) * on(device, instance) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
+          "refId": "Device interface speed",
           "format": "table",
           "instant": true,
           "range": false
         },
         {
-          "expr": "sum(smartctl_device_capacity_bytes{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"}) by (instance, device)",
-          "refId": "CAPBYTES",
+          "expr": "sum by(instance, device) ((smartctl_device_capacity_bytes{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
+          "refId": "Capacity Bytes",
           "format": "table",
           "instant": true,
           "range": false
         },
         {
-          "expr": "sum(smartctl_device_capacity_blocks{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"}) by (instance, device)",
-          "refId": "CAPBLOCKS",
+          "expr": "sum by(instance, device) ((smartctl_device_capacity_blocks{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
+          "refId": "Capacity Blocks",
           "format": "table",
           "instant": true,
           "range": false
         },
         {
-          "expr": "sum(smartctl_device_block_size{blocks_type=\"logical\", instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"}) by (instance, device)",
-          "refId": "BLKSIZELOG",
+          "expr": "sum by(instance, device) ((smartctl_device_block_size{instance=~\"$instance\",job=\"$job\",blocks_type=\"logical\"}) * on(device, instance) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
+          "refId": "Block size (logical)",
           "format": "table",
           "instant": true,
           "range": false
         },
         {
-          "expr": "sum(smartctl_device_block_size{blocks_type=\"physical\", instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"}) by (instance, device)",
-          "refId": "BLKSIZEPHY",
+          "expr": "sum by(instance, device) ((smartctl_device_block_size{instance=~\"$instance\",job=\"$job\",blocks_type=\"physical\"}) * on(device, instance) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
+          "refId": "Block size (physical)",
           "format": "table",
           "instant": true,
           "range": false
         },
         {
-          "expr": "sum(smartctl_device_error_log_count{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"}) by (instance, device)",
-          "refId": "ERRLOGCNT",
+          "expr": "sum by(instance, device) ((smartctl_device_error_log_count{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
+          "refId": "Error log count",
           "format": "table",
           "instant": true,
           "range": false
@@ -916,17 +921,17 @@
               "device": 1,
               "model_name": 2,
               "Value #DEVICE": 3,
-              "Value #TEMP": 4,
-              "Value #EXIT": 5,
-              "Value #PASSED": 6,
-              "Value #POWON": 7,
-              "Value #PCC": 8,
-              "Value #INTSPEED": 9,
-              "Value #CAPBYTES": 10,
-              "Value #CAPBLOCKS": 11,
-              "Value #BLKSIZELOG": 12,
-              "Value #BLKSIZEPHY": 13,
-              "Value #ERRLOGCNT": 14
+              "Value #Temperature": 4,
+              "Value #Exit status": 5,
+              "Value #Passed": 6,
+              "Value #Power on seconds": 7,
+              "Value #Power Cycle Count": 8,
+              "Value #Device interface speed": 9,
+              "Value #Capacity Bytes": 10,
+              "Value #Capacity Blocks": 11,
+              "Value #Block size (logical)": 12,
+              "Value #Block size (physical)": 13,
+              "Value #Error log count": 14
             },
             "excludeByName": {
               "Time": true,
@@ -937,17 +942,17 @@
               "device": "Device",
               "model_name": "Model name",
               "Value #DEVICE": "DEVICE",
-              "Value #TEMP": "Temperature",
-              "Value #EXIT": "Exit status",
-              "Value #PASSED": "Passed",
-              "Value #POWON": "Power on seconds",
-              "Value #PCC": "Power Cycle Count",
-              "Value #INTSPEED": "Device interface speed",
-              "Value #CAPBYTES": "Capacity Bytes",
-              "Value #CAPBLOCKS": "Capacity Blocks",
-              "Value #BLKSIZELOG": "Block size (logical)",
-              "Value #BLKSIZEPHY": "Block size (physical)",
-              "Value #ERRLOGCNT": "Error log count"
+              "Value #Temperature": "Temperature",
+              "Value #Exit status": "Exit status",
+              "Value #Passed": "Passed",
+              "Value #Power on seconds": "Power on seconds",
+              "Value #Power Cycle Count": "Power Cycle Count",
+              "Value #Device interface speed": "Device interface speed",
+              "Value #Capacity Bytes": "Capacity Bytes",
+              "Value #Capacity Blocks": "Capacity Blocks",
+              "Value #Block size (logical)": "Block size (logical)",
+              "Value #Block size (physical)": "Block size (physical)",
+              "Value #Error log count": "Error log count"
             }
           }
         }
@@ -1001,7 +1006,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #TEMP"
+              "options": "Value #Temperature"
             },
             "properties": [
               {
@@ -1013,21 +1018,21 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #EXIT"
+              "options": "Value #Exit status"
             },
             "properties": []
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #PASSED"
+              "options": "Value #Passed"
             },
             "properties": []
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #POWON"
+              "options": "Value #Power on seconds"
             },
             "properties": [
               {
@@ -1039,14 +1044,14 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #PCC"
+              "options": "Value #Power Cycle Count"
             },
             "properties": []
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #INTSPEED"
+              "options": "Value #Device interface speed"
             },
             "properties": [
               {
@@ -1058,7 +1063,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #CAPBYTES"
+              "options": "Value #Capacity Bytes"
             },
             "properties": [
               {
@@ -1070,7 +1075,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #CAPBLOCKS"
+              "options": "Value #Capacity Blocks"
             },
             "properties": [
               {
@@ -1082,7 +1087,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #BLKSIZELOG"
+              "options": "Value #Block size (logical)"
             },
             "properties": [
               {
@@ -1094,7 +1099,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #BLKSIZEPHY"
+              "options": "Value #Block size (physical)"
             },
             "properties": [
               {
@@ -1106,7 +1111,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #ERRLOGCNT"
+              "options": "Value #Error log count"
             },
             "properties": []
           }
@@ -1139,7 +1144,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "smartctl_device_attribute{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"}",
+          "expr": "(smartctl_device_attribute{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"})",
           "refId": "A",
           "format": "table",
           "instant": true,
@@ -1273,7 +1278,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_temperature{instance=~\"$instance\", job=\"$job\",temperature_type=\"current\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_temperature{instance=~\"$instance\",job=\"$job\",temperature_type=\"current\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -1346,7 +1351,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_smartctl_exit_status{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_smartctl_exit_status{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -1418,7 +1423,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_smart_status{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_smart_status{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -1490,7 +1495,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_power_on_seconds{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_power_on_seconds{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -1499,7 +1504,6 @@
         }
       ],
       "title": "Power on duration",
-      "interval": "1h",
       "gridPos": {
         "h": 8,
         "w": 6,
@@ -1516,19 +1520,19 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
+            "drawStyle": "line",
+            "fillOpacity": 0,
             "gradientMode": "none",
-            "lineInterpolation": "stepAfter",
+            "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": false,
             "thresholdsStyle": {
               "mode": "off"
             },
             "stacking": {
-              "mode": "normal"
+              "mode": "none"
             }
           }
         },
@@ -1541,9 +1545,12 @@
           "placement": "bottom",
           "showLegend": true,
           "calcs": [
-            "sum"
+            "min",
+            "max",
+            "mean",
+            "lastNotNull"
           ],
-          "sortBy": "Total",
+          "sortBy": "Last *",
           "sortDesc": true
         },
         "tooltip": {
@@ -1561,7 +1568,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_power_cycle_count{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_power_cycle_count{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -1633,7 +1640,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_percentage_used{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_percentage_used{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -1706,7 +1713,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_nvme_capacity_bytes{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"}) or (smartctl_device_capacity_bytes{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\", protocol=\"NVMe\"})",
+          "expr": "(sum by(model_name, device, instance) ((smartctl_device_nvme_capacity_bytes{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))) or (sum by(model_name, device, instance) ((smartctl_device_capacity_bytes{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\",protocol=\"NVMe\"})))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -1779,7 +1786,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_num_err_log_entries{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_num_err_log_entries{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -1852,7 +1859,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_media_errors{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_media_errors{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -1925,7 +1932,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_error_log_count{instance=~\"$instance\", job=\"$job\",error_log_type=\"summary\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_error_log_count{instance=~\"$instance\",job=\"$job\",error_log_type=\"summary\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -1997,7 +2004,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_critical_warning{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_critical_warning{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -2069,7 +2076,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\",speed_type=\"current\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_interface_speed{instance=~\"$instance\",job=\"$job\",speed_type=\"current\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -2142,7 +2149,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_interface_speed{instance=~\"$instance\", job=\"$job\",speed_type=\"max\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_interface_speed{instance=~\"$instance\",job=\"$job\",speed_type=\"max\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -2215,7 +2222,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_capacity_bytes{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_capacity_bytes{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -2288,7 +2295,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_capacity_blocks{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_capacity_blocks{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -2305,6 +2312,7 @@
       },
       "fieldConfig": {
         "defaults": {
+          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2360,7 +2368,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_bytes_written{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_bytes_written{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -2433,7 +2441,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_bytes_read{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_bytes_read{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -2506,7 +2514,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_block_size{instance=~\"$instance\", job=\"$job\",blocks_type=\"logical\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_block_size{instance=~\"$instance\",job=\"$job\",blocks_type=\"logical\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -2579,7 +2587,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_block_size{instance=~\"$instance\", job=\"$job\",blocks_type=\"physical\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_block_size{instance=~\"$instance\",job=\"$job\",blocks_type=\"physical\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -2652,7 +2660,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_available_spare_threshold{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_available_spare_threshold{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
@@ -2726,7 +2734,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "sum by (model_name, device, instance) (smartctl_device_available_spare{instance=~\"$instance\", job=\"$job\"} * on(device, instance) group_left(model_name) smartctl_device{instance=~\"$instance\", job=\"$job\", serial_number=~\"$serial_number\"})",
+          "expr": "sum by(model_name, device, instance) ((smartctl_device_available_spare{instance=~\"$instance\",job=\"$job\"}) * on(device, instance) group_left(model_name) (smartctl_device{instance=~\"$instance\",job=\"$job\",serial_number=~\"$serial_number\"}))",
           "refId": "A",
           "format": "time_series",
           "legendFormat": "{{ model_name }} ({{ instance }}/{{ device }})",
