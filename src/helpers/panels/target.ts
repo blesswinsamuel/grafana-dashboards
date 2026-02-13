@@ -54,7 +54,7 @@ export function fromTargets<T extends Target>(targets: T[], datasource?: dashboa
     const ds = target.datasource ?? datasource
     if ('rawSql' in target) {
       const b = new expr.TypeSqlBuilder()
-        .format('table')
+        .format(target.format || 'table')
         .queryType('table')
         .refId(target.refId ?? String.fromCharCode('A'.charCodeAt(0) + i))
       if (ds) b.datasource(ds)

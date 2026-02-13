@@ -18,6 +18,7 @@ export { NewPieChartPanel, type PieChartPanelOpts } from './helpers/panels/piech
 export { NewStatPanel, type StatPanelOpts } from './helpers/panels/stat'
 export { NewTablePanel, type TablePanelOpts } from './helpers/panels/table'
 export { tableExcludeByName, tableIndexByName } from './helpers/panels/table'
+export { NewTextPanel, type TextPanelOpts } from './helpers/panels/text'
 export { NewTimeSeriesPanel, type TimeSeriesPanelOpts } from './helpers/panels/timeseries'
 export type { CommonMetricOpts, CommonQueryOpts } from './helpers/promql'
 export { CounterMetric, formatLegendFormat, GaugeMetric, HistogramMetric, mergeSelectors, SummaryMetric } from './helpers/promql'
@@ -110,6 +111,7 @@ type DashboardOpts = {
   panels: PanelRowAndGroups
   variables?: cog.Builder<dashboard.VariableModel>[]
   annotations?: cog.Builder<dashboard.AnnotationQuery>[]
+  links?: cog.Builder<dashboard.DashboardLink>[]
   includeGeneratedDashboardNote?: boolean
 }
 
@@ -126,6 +128,7 @@ export function newDashboard(opts: DashboardOpts): dashboard.DashboardBuilder {
     db.withVariable(variableBuilder)
   }
   db.annotations(opts.annotations || [])
+  db.links(opts.links || [])
   if (includeGeneratedDashboardNote) {
     db.withPanel(
       new text.PanelBuilder()

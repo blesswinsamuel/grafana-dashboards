@@ -19,7 +19,8 @@ export function NewPieChartPanel(opts: PieChartPanelOpts, ...targets: Target[]):
   lb.calcs([])
   b.legend(lb)
 
-  b.reduceOptions(new common.ReduceDataOptionsBuilder().values(false).calcs(['lastNotNull']).fields(''))
+  // b.reduceOptions(new common.ReduceDataOptionsBuilder().values(false).calcs(['lastNotNull']).fields(''))
+  b.reduceOptions(new common.ReduceDataOptionsBuilder().values(true))
 
   b.tooltip(new common.VizTooltipOptionsBuilder().mode(common.TooltipDisplayMode.Multi).sort(common.SortOrder.Descending))
 

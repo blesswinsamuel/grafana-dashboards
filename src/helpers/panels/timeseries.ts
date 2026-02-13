@@ -1,15 +1,15 @@
-import * as units from '@grafana/grafana-foundation-sdk/units'
+import * as cog from '@grafana/grafana-foundation-sdk/cog'
+import * as common from '@grafana/grafana-foundation-sdk/common'
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
 import * as expr from '@grafana/grafana-foundation-sdk/expr'
-import * as common from '@grafana/grafana-foundation-sdk/common'
 import * as prometheus from '@grafana/grafana-foundation-sdk/prometheus'
 import * as timeseries from '@grafana/grafana-foundation-sdk/timeseries'
-import * as cog from '@grafana/grafana-foundation-sdk/cog'
-import { CommonPanelOpts, inferUnit, withCommonOpts } from './commons'
+import * as units from '@grafana/grafana-foundation-sdk/units'
+import { CommonPanelOpts, inferUnit, TimeseriesChartType, withCommonOpts } from './commons'
 import { Target } from './target'
 
 export type TimeSeriesPanelOpts = CommonPanelOpts<Target> & {
-  type?: 'bar' | 'line'
+  type?: TimeseriesChartType
   legendCalcs?: string[]
   legendPlacement?: common.LegendPlacement | 'right' | 'bottom'
   stackingMode?: common.StackingMode
@@ -17,7 +17,12 @@ export type TimeSeriesPanelOpts = CommonPanelOpts<Target> & {
 export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: Target[]): timeseries.PanelBuilder {
   ;[opts.unit, opts.type] = inferUnit(targets, opts.type, opts.unit)
   opts.targets = [...(opts.targets || []), ...(targets || [])]
-  const legendCalcs = opts.legendCalcs ?? { bar: ['sum'], line: ['min', 'max', 'mean', 'lastNotNull'] }[opts.type]
+  const legendCalcs = opts.legendCalcs ?? {
+    bar: ['sum'],
+    line: ['min', 'max', 'mean', 'lastNotNull'],
+    'scatter': ['mean', 'median', 'min', 'max'],
+    'area': ['min', 'max', 'mean', 'lastNotNull'],
+  }[opts.type]
   const b = new timeseries.PanelBuilder()
   withCommonOpts(b, opts)
   b.axisCenteredZero(false)
@@ -53,6 +58,23 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: Target
       b.stacking(new common.StackingConfigBuilder().mode(opts.stackingMode ?? common.StackingMode.None))
       b.maxDataPoints(opts.maxDataPoints ?? 100)
       break
+    case 'scatter':
+      b.drawStyle(common.GraphDrawStyle.Points)
+      b.fillOpacity(0)
+      b.lineInterpolation(common.LineInterpolation.Linear)
+      b.showPoints(common.VisibilityMode.Auto)
+      b.pointSize(2)
+      b.stacking(new common.StackingConfigBuilder().mode(opts.stackingMode ?? common.StackingMode.Normal))
+      // b.maxDataPoints(opts.maxDataPoints ?? 100)
+      break
+    case 'area':
+      b.drawStyle(common.GraphDrawStyle.Line)
+      b.fillOpacity(100)
+      b.lineInterpolation(common.LineInterpolation.StepAfter)
+      b.showPoints(common.VisibilityMode.Never)
+      b.stacking(new common.StackingConfigBuilder().mode(opts.stackingMode ?? common.StackingMode.Normal))
+      b.maxDataPoints(opts.maxDataPoints ?? 100)
+      break
   }
 
   const lb = new common.VizLegendOptionsBuilder().showLegend(true).calcs(legendCalcs).displayMode(common.LegendDisplayMode.Table)
@@ -67,14 +89,14 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: Target
   const legendSortBy = legendCalcs[legendCalcs.length - 1]
   const legendSortByName = legendSortBy
     ? {
-        mean: 'Mean',
-        min: 'Min',
-        max: 'Max',
-        last: 'Last',
-        lastNotNull: 'Last *',
-        sum: 'Total',
-        '': 'None',
-      }[legendSortBy]
+      mean: 'Mean',
+      min: 'Min',
+      max: 'Max',
+      last: 'Last',
+      lastNotNull: 'Last *',
+      sum: 'Total',
+      '': 'None',
+    }[legendSortBy]
     : undefined
   if (legendSortByName) {
     lb.sortBy(legendSortByName)

@@ -14,7 +14,9 @@ import { fromTargets, Target } from './target'
 type UnitKeys = keyof typeof units
 export type Unit = (typeof units)[UnitKeys]
 
-export function inferUnit(targets: Target[], type?: 'line' | 'bar', fallback?: Unit): [Unit | undefined, 'line' | 'bar'] {
+export type TimeseriesChartType = 'line' | 'bar' | 'scatter' | 'area'
+
+export function inferUnit(targets: Target[], type?: TimeseriesChartType, fallback?: Unit): [Unit | undefined, TimeseriesChartType] {
   const expr = targets.length > 0 && targets[0] && 'expr' in targets[0] ? targets[0].expr.toString() : ''
   if (!type) {
     if (expr.includes('$__interval')) {
@@ -33,7 +35,7 @@ export function inferUnit(targets: Target[], type?: 'line' | 'bar', fallback?: U
       if (!fallback) {
         if (expr.includes('histogram_quantile')) {
           // histogram quantile
-          if (expr.includes('_seconds_bucket')) {
+          if (expr.includes('_seconds_bucket') || expr.includes('_s_bucket')) {
             fallback = units.Seconds
           }
           if (expr.includes('_milliseconds_bucket') || expr.includes('_ms_bucket')) {
@@ -43,7 +45,7 @@ export function inferUnit(targets: Target[], type?: 'line' | 'bar', fallback?: U
           // histogram share
           fallback = units.PercentUnit
         } else {
-          if (expr.includes('_seconds_sum') && expr.includes('_seconds_count') && expr.includes('rate') && expr.includes('/')) {
+          if (((expr.includes('_seconds_sum') && expr.includes('_seconds_count')) || (expr.includes('_s_sum') && expr.includes('_s_count'))) && expr.includes('rate') && expr.includes('/')) {
             fallback = units.Seconds
           } else if (expr.includes('_request_') || expr.includes('_requests_') || expr.includes('_response_')) {
             fallback = units.RequestsPerSecond
@@ -114,6 +116,7 @@ export type CommonPanelOpts<T extends Target> = {
 
   overrides?: dashboard.FieldConfigSource['overrides']
   overridesByName?: Record<string, Record<string, any>>
+  overridesByRefId?: Record<string, Record<string, any>>
 
   links?: (Partial<dashboard.DashboardLink> & Pick<dashboard.DashboardLink, 'title'>)[]
   //   fieldConfigDefaults?: dashboard.FieldConfig
@@ -152,6 +155,14 @@ export function withCommonOpts<PT extends GenericPanelBuilder, T extends Target>
   if (opts.overridesByName !== undefined) {
     for (const [name, properties] of Object.entries(opts.overridesByName)) {
       b.overrideByName(
+        name,
+        Object.entries(properties).map(([key, value]) => ({ id: key, value })),
+      )
+    }
+  }
+  if (opts.overridesByRefId !== undefined) {
+    for (const [name, properties] of Object.entries(opts.overridesByRefId)) {
+      b.overrideByQuery(
         name,
         Object.entries(properties).map(([key, value]) => ({ id: key, value })),
       )

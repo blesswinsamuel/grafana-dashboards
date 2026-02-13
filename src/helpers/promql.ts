@@ -3,11 +3,14 @@ import * as prometheus from '@grafana/grafana-foundation-sdk/prometheus'
 import * as promql from '@grafana/promql-builder'
 import { PrometheusTarget } from './panels/target'
 
-export function formatLegendFormat(legendFormat: string | undefined, groupBy: string[] | undefined) {
+export function formatLegendFormat(legendFormat: string | undefined, groupBy: string[] | undefined, {
+  prefix = '',
+  suffix = '',
+}: { prefix?: string; suffix?: string } = {}): string | undefined {
   if (!legendFormat) {
     legendFormat = groupBy ? groupBy.map((k) => `{{${k}}}`).join(' - ') : 'value'
   }
-  return legendFormat
+  return `${prefix}${legendFormat}${suffix}`
 }
 
 export const mergeSelectors = (...selectors: (string | string[] | undefined)[]) => {

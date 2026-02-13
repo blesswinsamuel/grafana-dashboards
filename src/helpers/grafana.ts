@@ -35,10 +35,11 @@ export async function writeDashboardAndPostToGrafana(opts: GrafanaDashboardOpts)
   await fs.writeFile(opts.filename, JSON.stringify(dashboard, null, 2))
   if (grafanaURL) {
     console.info(`${new Date().toISOString()}: Writing dashboard ${opts.filename} to Grafana at ${grafanaURL}`)
-    dashboard['uid'] = `${prefix ? `${prefix}-` : ''}${dashboard['uid']}`
-    dashboard['uid'] = dashboard['uid'].substring(0, 40)
-    dashboard['title'] = `${prefix ? `[${prefix}] ` : ''}${dashboard['title']}`
-    // dashboard['version'] = Math.floor(Math.random() * 1000)
+    const dashboardMut = { ...dashboard } as any
+    dashboardMut['uid'] = `${prefix ? `${prefix}-` : ''}${dashboardMut['uid']}`
+    dashboardMut['uid'] = dashboardMut['uid'].substring(0, 40)
+    dashboardMut['title'] = `${prefix ? `[${prefix}] ` : ''}${dashboardMut['title']}`
+    // dashboardMut['version'] = Math.floor(Math.random() * 1000)
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     }
@@ -54,7 +55,7 @@ export async function writeDashboardAndPostToGrafana(opts: GrafanaDashboardOpts)
     const fetchOpts: RequestInit = {
       method: 'POST',
       body: JSON.stringify({
-        dashboard: dashboard,
+        dashboard: dashboardMut,
         folderUid: opts.folderUid,
         overwrite: true,
         message: 'Updated by script',
