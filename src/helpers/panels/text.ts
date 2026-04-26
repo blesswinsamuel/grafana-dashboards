@@ -9,10 +9,7 @@ export type TextPanelOpts = {
 }
 
 export function NewTextPanel({ content, mode = 'markdown', transparent = true, height, title }: TextPanelOpts): text.PanelBuilder {
-  const b = new text.PanelBuilder()
-    .transparent(transparent)
-    .mode({ html: text.TextMode.HTML, markdown: text.TextMode.Markdown, code: text.TextMode.Code }[mode])
-    .content(content)
+  const b = new text.PanelBuilder().transparent(transparent).mode({ html: text.TextMode.HTML, markdown: text.TextMode.Markdown, code: text.TextMode.Code }[mode]).content(content)
   if (height) {
     b.height(height)
   }

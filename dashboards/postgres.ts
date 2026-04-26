@@ -1,10 +1,24 @@
-import { DataSourceRef } from '@grafana/grafana-foundation-sdk/dashboard'
+import type { DataSourceRef } from '@grafana/grafana-foundation-sdk/dashboard'
 import { cadvisorMetricsPanels } from '../src/common-panels/k8s-cadvisor'
 import { podMetricsPanels } from '../src/common-panels/k8s-kube-state-metrics'
-import { CounterMetric, GaugeMetric, goRuntimeMetricsPanels, newDashboard, NewPanelGroup, NewPanelRow, NewPieChartPanel, NewPrometheusDatasourceVariable, NewQueryVariable, NewTimeSeriesPanel, PanelRowAndGroups, units } from '../src/grafana-helpers'
+import {
+  CounterMetric,
+  GaugeMetric,
+  goRuntimeMetricsPanels,
+  NewPanelGroup,
+  NewPanelRow,
+  NewPieChartPanel,
+  NewPrometheusDatasourceVariable,
+  NewQueryVariable,
+  NewTimeSeriesPanel,
+  newDashboard,
+  type PanelRowAndGroups,
+  units,
+} from '../src/grafana-helpers'
 import { wrapConditional } from '../src/helpers/promql'
 
 const datasource: DataSourceRef = {
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: Grafana variable
   uid: '${DS_PROMETHEUS}',
 }
 
@@ -323,23 +337,65 @@ const selectors = `instance=~"$instance", namespace=~"$namespace"`
 const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Database Size' }, [
     NewPanelRow({ datasource, height: 8 }, [
-      NewPieChartPanel({ title: 'Database Size', unit: units.BytesSI }, pgDatabaseSizeBytes.calc('sum', { selectors, groupBy: ['datname'] }).target()),
-      NewTimeSeriesPanel({ title: 'Database Size', unit: units.BytesSI }, pgDatabaseSizeBytes.calc('sum', { selectors, groupBy: ['datname'] }).target()),
-      NewTimeSeriesPanel({ title: 'Locks Count' }, pgLocksCount.calc('sum', { selectors, groupBy: ['datname', 'mode'] }).wrap(wrapConditional('>', 0)).target()),
-      NewTimeSeriesPanel({ title: 'Number of backends connected' }, statDatabaseNumbackends.calc('sum', { selectors: [selectors, `datname!=""`], groupBy: ['datname'] }).target()),
+      NewPieChartPanel({ title: 'Database Size', unit: units.BytesSI }, pgDatabaseSizeBytes.sum({ selectors, by: ['datname'] }).target()),
+      NewTimeSeriesPanel({ title: 'Database Size', unit: units.BytesSI }, pgDatabaseSizeBytes.sum({ selectors, by: ['datname'] }).target()),
+      NewTimeSeriesPanel(
+        { title: 'Locks Count' },
+        pgLocksCount
+          .sum({ selectors, by: ['datname', 'mode'] })
+          .wrap(wrapConditional('>', 0))
+          .target(),
+      ),
+      NewTimeSeriesPanel({ title: 'Number of backends connected' }, statDatabaseNumbackends.sum({ selectors: [selectors, `datname!=""`], by: ['datname'] }).target()),
     ]),
   ]),
   NewPanelGroup({ title: 'Activity count' }, [
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Active' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="active"`], groupBy: ['datname'] }).wrap(wrapConditional('>', 0)).target()),
-      NewTimeSeriesPanel({ title: 'Disabled' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="disabled"`], groupBy: ['datname'] }).wrap(wrapConditional('>', 0)).target()),
-      NewTimeSeriesPanel({ title: 'Fastpath function call' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="fastpath function call"`], groupBy: ['datname'] }).wrap(wrapConditional('>', 0)).target()),
-      NewTimeSeriesPanel({ title: 'Idle' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle"`], groupBy: ['datname'] }).wrap(wrapConditional('>', 0)).target()),
+      NewTimeSeriesPanel(
+        { title: 'Active' },
+        pgStatActivityCount
+          .sum({ selectors: [selectors, `state="active"`], by: ['datname'] })
+          .wrap(wrapConditional('>', 0))
+          .target(),
+      ),
+      NewTimeSeriesPanel(
+        { title: 'Disabled' },
+        pgStatActivityCount
+          .sum({ selectors: [selectors, `state="disabled"`], by: ['datname'] })
+          .wrap(wrapConditional('>', 0))
+          .target(),
+      ),
+      NewTimeSeriesPanel(
+        { title: 'Fastpath function call' },
+        pgStatActivityCount
+          .sum({ selectors: [selectors, `state="fastpath function call"`], by: ['datname'] })
+          .wrap(wrapConditional('>', 0))
+          .target(),
+      ),
+      NewTimeSeriesPanel(
+        { title: 'Idle' },
+        pgStatActivityCount
+          .sum({ selectors: [selectors, `state="idle"`], by: ['datname'] })
+          .wrap(wrapConditional('>', 0))
+          .target(),
+      ),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'Idle in transaction' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle in transaction"`], groupBy: ['datname'] }).wrap(wrapConditional('>', 0)).target()),
-      NewTimeSeriesPanel({ title: 'Idle in transaction (aborted)' }, pgStatActivityCount.calc('sum', { selectors: [selectors, `state="idle in transaction (aborted)"`], groupBy: ['datname'] }).wrap(wrapConditional('>', 0)).target()),
+      NewTimeSeriesPanel(
+        { title: 'Idle in transaction' },
+        pgStatActivityCount
+          .sum({ selectors: [selectors, `state="idle in transaction"`], by: ['datname'] })
+          .wrap(wrapConditional('>', 0))
+          .target(),
+      ),
+      NewTimeSeriesPanel(
+        { title: 'Idle in transaction (aborted)' },
+        pgStatActivityCount
+          .sum({ selectors: [selectors, `state="idle in transaction (aborted)"`], by: ['datname'] })
+          .wrap(wrapConditional('>', 0))
+          .target(),
+      ),
     ]),
   ]),
   cadvisorMetricsPanels({ datasource, selectors: [`namespace=~"$namespace"`, `pod=~"$pod"`], collapsed: true }),
@@ -352,7 +408,14 @@ export const postgresDashboard = newDashboard({
     NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }),
     NewQueryVariable({ datasource, name: 'namespace', label: 'Namespace', query: 'label_values(postgres_exporter_build_info, namespace)' }),
     NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(postgres_exporter_build_info{namespace=~"$namespace"}, instance)', includeAll: true, multi: true }),
-    NewQueryVariable({ datasource, name: 'pod', label: 'Pod', query: 'label_values(postgres_exporter_build_info{namespace=~"$namespace", instance=~"$instance"}, pod)', includeAll: true, multi: true }),
+    NewQueryVariable({
+      datasource,
+      name: 'pod',
+      label: 'Pod',
+      query: 'label_values(postgres_exporter_build_info{namespace=~"$namespace", instance=~"$instance"}, pod)',
+      includeAll: true,
+      multi: true,
+    }),
   ],
   panels: panels,
 })

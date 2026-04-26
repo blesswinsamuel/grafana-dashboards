@@ -1,72 +1,64 @@
 import * as common from '@grafana/grafana-foundation-sdk/common'
-import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
 import * as table from '@grafana/grafana-foundation-sdk/table'
-import { CommonPanelOpts, Unit, withCommonOpts } from './commons'
-import { PrometheusTarget, SQLTarget, Target } from './target'
+import type { Target, Unit } from '../promql'
+import { type CommonPanelOpts, withCommonOpts } from './commons'
 
-export type TablePanelOpts =
-  & CommonPanelOpts<Target>
-  & Partial<Pick<table.Options, 'footer' | 'cellHeight'>>
-  & {
-    queries?: Record<
-      string,
-      {
-        target?: Target
-        name?: string
-        width?: number
-        unit?: Unit
-        exclude?: boolean
-        overrides?: Record<string, unknown>
-      }
-    >
+export type TableColumn = {
+  /** refId used for the query and the Value column name. */
+  id: string
+  /** Display name for the column (replaces `Value #<id>`). */
+  name?: string
+  /** Query target for this column (omit for non-value columns like label fields). */
+  target?: Target
+  unit?: Unit
+  width?: number
+  overrides?: Record<string, unknown>
+  exclude?: boolean
+}
+
+export type TablePanelOpts = CommonPanelOpts &
+  Partial<Pick<table.Options, 'footer' | 'cellHeight'>> & {
+    columns?: TableColumn[] | Record<string, Omit<TableColumn, 'id'>>
     excludeColumns?: string[]
     sortBy?: { col: string; desc?: boolean }[]
   }
 
 export function NewTablePanel(opts: TablePanelOpts): table.PanelBuilder {
+  const targets: Target[] = [...(opts.targets ?? [])]
   const tableOverrides: Record<string, Record<string, any>> = {}
   const tableIndexOrder: string[] = []
   const colRenames: Record<string, string> = {}
-  const targets: Target[] = []
+  const excludeColumns: string[] = [...(opts.excludeColumns ?? [])]
 
-  if (opts.queries) {
+  // Normalize columns: accept both array and legacy object formats
+  const columns: TableColumn[] = Array.isArray(opts.columns)
+    ? opts.columns
+    : opts.columns
+      ? Object.entries(opts.columns as Record<string, Omit<TableColumn, 'id'>>).map(([id, col]) => ({ id, ...col }))
+      : []
+
+  if (columns.length > 0) {
     opts.transformations = opts.transformations ?? []
 
-    const { queries, excludeColumns = [] } = opts
-    // console.log(queries)
-    for (const [refId, { target, unit, width, overrides, name, exclude }] of Object.entries(queries)) {
-      const curOverrides = { ...overrides }
-      if (unit) {
-        curOverrides['unit'] = unit
-      }
-      if (width) {
-        curOverrides['custom.width'] = width
-      }
+    for (const { id, target, unit, width, overrides, name, exclude } of columns) {
+      const curOverrides: Record<string, any> = { ...overrides }
+      if (unit) curOverrides['unit'] = unit
+      if (width) curOverrides['custom.width'] = width
+
       if (target) {
-        if (name) {
-          colRenames[`Value #${refId}`] = name
-        } else {
-          colRenames[`Value #${refId}`] = refId
-        }
-        tableIndexOrder.push(`Value #${refId}`)
-        if (Object.keys(curOverrides).length > 0) {
-          tableOverrides[`Value #${refId}`] = curOverrides
-        }
-        // targets.push({ ...target, refId: refId, type: (target as any).type || 'instant', format: target.format || 'table' })
-        targets.push({ ...target, refId: refId })
+        const colKey = `Value #${id}`
+        colRenames[colKey] = name ?? id
+        tableIndexOrder.push(colKey)
+        if (Object.keys(curOverrides).length > 0) tableOverrides[colKey] = curOverrides
+        targets.push({ ...target, refId: id })
       } else {
-        if (name) {
-          colRenames[refId] = name
-        }
-        tableIndexOrder.push(refId)
-        if (Object.keys(curOverrides).length > 0) {
-          tableOverrides[refId] = curOverrides
-        }
+        if (name) colRenames[id] = name
+        tableIndexOrder.push(id)
+        if (Object.keys(curOverrides).length > 0) tableOverrides[id] = curOverrides
       }
-      if (exclude) {
-        excludeColumns.push(refId)
-      }
+      if (exclude) excludeColumns.push(id)
     }
+
     opts.transformations = [
       { id: 'merge', options: {} },
       {
@@ -79,19 +71,18 @@ export function NewTablePanel(opts: TablePanelOpts): table.PanelBuilder {
       },
       ...opts.transformations,
     ]
-    opts.overridesByName = tableOverrides
+    opts.overridesByName = { ...tableOverrides, ...opts.overridesByName }
   }
 
   const b = new table.PanelBuilder()
-  withCommonOpts(b, opts, ...targets)
+  withCommonOpts(b, { ...opts, targets })
 
   b.cellHeight(common.TableCellHeight.Md)
   b.showHeader(true)
 
   const sortByBuilders: common.TableSortByFieldStateBuilder[] = []
   for (const sort of opts.sortBy || []) {
-    const sb = new common.TableSortByFieldStateBuilder().displayName(sort.col).desc(sort.desc ?? false)
-    sortByBuilders.push(sb)
+    sortByBuilders.push(new common.TableSortByFieldStateBuilder().displayName(sort.col).desc(sort.desc ?? false))
   }
   b.sortBy(sortByBuilders)
 
@@ -100,38 +91,13 @@ export function NewTablePanel(opts: TablePanelOpts): table.PanelBuilder {
     if (opts.footer.countRows) fb.countRows(true)
     if (opts.footer.reducer) fb.reducer(opts.footer.reducer)
     if (opts.footer.show) fb.show(true)
-    if (opts.footer.countRows) fb.countRows(opts.footer.countRows)
     if (opts.footer.enablePagination) fb.enablePagination(opts.footer.enablePagination)
     b.footer(fb)
   }
 
-  //   const panel: Panel<Record<string, unknown>, GraphFieldConfig> = {
-  //     ...defaultPanel,
-  //     datasource: opts.datasource,
-  //     options: {
-  //       cellHeight: TableCellHeight.Md,
-  //       frameIndex: -1,
-  //       showHeader: true,
-  //       ...opts.options,
-  //     } satisfies TablePanelOptions,
-  //     timeFrom: opts.timeFrom ?? defaultPanel.timeFrom,
-  //   }
-
   return b
 }
 
-export const tableIndexByName = (columns: string[]): { [key: string]: number } => {
-  const indexByName: { [key: string]: number } = {}
-  for (let i = 0; i < columns.length; i++) {
-    indexByName[columns[i]!] = i
-  }
-  return indexByName
-}
+export const tableIndexByName = (columns: string[]): Record<string, number> => Object.fromEntries(columns.map((col, i) => [col, i]))
 
-export const tableExcludeByName = (columns: string[]): { [key: string]: boolean } => {
-  const excludeByName: { [key: string]: boolean } = {}
-  for (let i = 0; i < columns.length; i++) {
-    excludeByName[columns[i]!] = true
-  }
-  return excludeByName
-}
+export const tableExcludeByName = (columns: string[]): Record<string, boolean> => Object.fromEntries(columns.map((col) => [col, true]))

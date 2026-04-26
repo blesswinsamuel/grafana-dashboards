@@ -1,11 +1,17 @@
-import { CounterMetric, dashboard, GaugeMetric, NewPanelGroup, NewPanelRow, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelGroup } from '../grafana-helpers'
+import { CounterMetric, type dashboard, GaugeMetric, NewPanelGroup, NewPanelRow, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, type PanelGroup } from '../grafana-helpers'
 
 // https://github.com/kubernetes/kube-state-metrics/tree/main/docs/metrics/workload
 
 // cronjob metrics
-const cronjobAnnotations = new GaugeMetric('kube_cronjob_annotations', { description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist', labels: ['cronjob', 'namespace', 'annotation_CRONJOB_ANNOTATION'] })
+const cronjobAnnotations = new GaugeMetric('kube_cronjob_annotations', {
+  description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist',
+  labels: ['cronjob', 'namespace', 'annotation_CRONJOB_ANNOTATION'],
+})
 const cronjobInfo = new GaugeMetric('kube_cronjob_info', { labels: ['cronjob', 'namespace', 'schedule', 'concurrency_policy', 'timezone'] })
-const cronjobLabels = new GaugeMetric('kube_cronjob_labels', { description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist', labels: ['cronjob', 'namespace', 'label_CRONJOB_LABEL'] })
+const cronjobLabels = new GaugeMetric('kube_cronjob_labels', {
+  description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist',
+  labels: ['cronjob', 'namespace', 'label_CRONJOB_LABEL'],
+})
 const cronjobCreated = new GaugeMetric('kube_cronjob_created', { labels: ['cronjob', 'namespace'] })
 const cronjobNextScheduleTime = new GaugeMetric('kube_cronjob_next_schedule_time', { labels: ['cronjob', 'namespace'] })
 const cronjobStatusActive = new GaugeMetric('kube_cronjob_status_active', { labels: ['cronjob', 'namespace'] })
@@ -18,7 +24,10 @@ const cronjobSpecSuccessfulJobHistoryLimit = new GaugeMetric('kube_cronjob_spec_
 const cronjobSpecFailedJobHistoryLimit = new GaugeMetric('kube_cronjob_spec_failed_job_history_limit', { labels: ['cronjob', 'namespace'] })
 
 // daemonset metrics
-const daemonsetAnnotations = new GaugeMetric('kube_daemonset_annotations', { description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist', labels: ['daemonset', 'namespace', 'annotation_DAEMONSET_ANNOTATION'] })
+const daemonsetAnnotations = new GaugeMetric('kube_daemonset_annotations', {
+  description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist',
+  labels: ['daemonset', 'namespace', 'annotation_DAEMONSET_ANNOTATION'],
+})
 const daemonsetCreated = new GaugeMetric('kube_daemonset_created', { labels: ['daemonset', 'namespace'] })
 const daemonsetStatusCurrentNumberScheduled = new GaugeMetric('kube_daemonset_status_current_number_scheduled', { labels: ['daemonset', 'namespace'] })
 const daemonsetStatusDesiredNumberScheduled = new GaugeMetric('kube_daemonset_status_desired_number_scheduled', { labels: ['daemonset', 'namespace'] })
@@ -29,10 +38,16 @@ const daemonsetStatusNumberUnavailable = new GaugeMetric('kube_daemonset_status_
 const daemonsetStatusObservedGeneration = new GaugeMetric('kube_daemonset_status_observed_generation', { labels: ['daemonset', 'namespace'] })
 const daemonsetStatusUpdatedNumberScheduled = new GaugeMetric('kube_daemonset_status_updated_number_scheduled', { labels: ['daemonset', 'namespace'] })
 const daemonsetMetadataGeneration = new GaugeMetric('kube_daemonset_metadata_generation', { labels: ['daemonset', 'namespace'] })
-const daemonsetLabels = new GaugeMetric('kube_daemonset_labels', { description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist', labels: ['daemonset', 'namespace', 'label_DAEMONSET_LABEL'] })
+const daemonsetLabels = new GaugeMetric('kube_daemonset_labels', {
+  description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist',
+  labels: ['daemonset', 'namespace', 'label_DAEMONSET_LABEL'],
+})
 
 // deployment metrics
-const deploymentAnnotations = new GaugeMetric('kube_deployment_annotations', { description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist', labels: ['deployment', 'namespace', 'annotation_DEPLOYMENT_ANNOTATION'] })
+const deploymentAnnotations = new GaugeMetric('kube_deployment_annotations', {
+  description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist',
+  labels: ['deployment', 'namespace', 'annotation_DEPLOYMENT_ANNOTATION'],
+})
 const deploymentStatusReplicas = new GaugeMetric('kube_deployment_status_replicas', { labels: ['deployment', 'namespace'] })
 const deploymentStatusReplicasReady = new GaugeMetric('kube_deployment_status_replicas_ready', { labels: ['deployment', 'namespace'] })
 const deploymentStatusReplicasAvailable = new GaugeMetric('kube_deployment_status_replicas_available', { labels: ['deployment', 'namespace'] })
@@ -45,26 +60,47 @@ const deploymentSpecPaused = new GaugeMetric('kube_deployment_spec_paused', { la
 const deploymentSpecStrategyRollingUpdateMaxUnavailable = new GaugeMetric('kube_deployment_spec_strategy_rollingupdate_max_unavailable', { labels: ['deployment', 'namespace'] })
 const deploymentSpecStrategyRollingUpdateMaxSurge = new GaugeMetric('kube_deployment_spec_strategy_rollingupdate_max_surge', { labels: ['deployment', 'namespace'] })
 const deploymentMetadataGeneration = new GaugeMetric('kube_deployment_metadata_generation', { labels: ['deployment', 'namespace'] })
-const deploymentLabels = new GaugeMetric('kube_deployment_labels', { description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist', labels: ['deployment', 'namespace', 'label_DEPLOYMENT_LABEL'] })
+const deploymentLabels = new GaugeMetric('kube_deployment_labels', {
+  description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist',
+  labels: ['deployment', 'namespace', 'label_DEPLOYMENT_LABEL'],
+})
 const deploymentCreated = new GaugeMetric('kube_deployment_created', { labels: ['deployment', 'namespace'] })
 
 // hpa metrics
-const horizontalpodautoscalerInfo = new GaugeMetric('kube_horizontalpodautoscaler_info', { labels: ['horizontalpodautoscaler', 'namespace', 'scaletargetref_api_version', 'scaletargetref_kind', 'scaletargetref_name'] })
-const horizontalpodautoscalerAnnotations = new GaugeMetric('kube_horizontalpodautoscaler_annotations', { description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist', labels: ['horizontalpodautoscaler', 'namespace', 'annotation_HORIZONTALPODAUTOSCALER_ANNOTATION'] })
-const horizontalpodautoscalerLabels = new GaugeMetric('kube_horizontalpodautoscaler_labels', { description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist', labels: ['horizontalpodautoscaler', 'namespace', 'label_HORIZONTALPODAUTOSCALER_LABEL'] })
+const horizontalpodautoscalerInfo = new GaugeMetric('kube_horizontalpodautoscaler_info', {
+  labels: ['horizontalpodautoscaler', 'namespace', 'scaletargetref_api_version', 'scaletargetref_kind', 'scaletargetref_name'],
+})
+const horizontalpodautoscalerAnnotations = new GaugeMetric('kube_horizontalpodautoscaler_annotations', {
+  description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist',
+  labels: ['horizontalpodautoscaler', 'namespace', 'annotation_HORIZONTALPODAUTOSCALER_ANNOTATION'],
+})
+const horizontalpodautoscalerLabels = new GaugeMetric('kube_horizontalpodautoscaler_labels', {
+  description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist',
+  labels: ['horizontalpodautoscaler', 'namespace', 'label_HORIZONTALPODAUTOSCALER_LABEL'],
+})
 const horizontalpodautoscalerMetadataGeneration = new GaugeMetric('kube_horizontalpodautoscaler_metadata_generation', { labels: ['horizontalpodautoscaler', 'namespace'] })
 const horizontalpodautoscalerSpecMaxReplicas = new GaugeMetric('kube_horizontalpodautoscaler_spec_max_replicas', { labels: ['horizontalpodautoscaler', 'namespace'] })
 const horizontalpodautoscalerSpecMinReplicas = new GaugeMetric('kube_horizontalpodautoscaler_spec_min_replicas', { labels: ['horizontalpodautoscaler', 'namespace'] })
-const horizontalpodautoscalerSpecTargetMetric = new GaugeMetric('kube_horizontalpodautoscaler_spec_target_metric', { labels: ['horizontalpodautoscaler', 'namespace', 'metric_name', 'metric_target_type'] })
-const horizontalpodautoscalerStatusTargetMetric = new GaugeMetric('kube_horizontalpodautoscaler_status_target_metric', { labels: ['horizontalpodautoscaler', 'namespace', 'metric_name', 'metric_target_type'] })
+const horizontalpodautoscalerSpecTargetMetric = new GaugeMetric('kube_horizontalpodautoscaler_spec_target_metric', {
+  labels: ['horizontalpodautoscaler', 'namespace', 'metric_name', 'metric_target_type'],
+})
+const horizontalpodautoscalerStatusTargetMetric = new GaugeMetric('kube_horizontalpodautoscaler_status_target_metric', {
+  labels: ['horizontalpodautoscaler', 'namespace', 'metric_name', 'metric_target_type'],
+})
 const horizontalpodautoscalerStatusCondition = new GaugeMetric('kube_horizontalpodautoscaler_status_condition', { labels: ['horizontalpodautoscaler', 'namespace', 'condition', 'status'] })
 const horizontalpodautoscalerStatusCurrentReplicas = new GaugeMetric('kube_horizontalpodautoscaler_status_current_replicas', { labels: ['horizontalpodautoscaler', 'namespace'] })
 const horizontalpodautoscalerStatusDesiredReplicas = new GaugeMetric('kube_horizontalpodautoscaler_status_desired_replicas', { labels: ['horizontalpodautoscaler', 'namespace'] })
 
 // job metrics
-const jobAnnotations = new GaugeMetric('kube_job_annotations', { description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist', labels: ['job', 'namespace', 'annotation_JOB_ANNOTATION'] })
+const jobAnnotations = new GaugeMetric('kube_job_annotations', {
+  description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist',
+  labels: ['job', 'namespace', 'annotation_JOB_ANNOTATION'],
+})
 const jobInfo = new GaugeMetric('kube_job_info', { labels: ['job', 'namespace'] })
-const jobLabels = new GaugeMetric('kube_job_labels', { description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist', labels: ['job', 'namespace', 'label_JOB_LABEL'] })
+const jobLabels = new GaugeMetric('kube_job_labels', {
+  description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist',
+  labels: ['job', 'namespace', 'label_JOB_LABEL'],
+})
 const jobOwner = new GaugeMetric('kube_job_owner', { labels: ['job', 'namespace', 'owner_kind', 'owner_name', 'owner_is_controller'] })
 const jobSpecParallelism = new GaugeMetric('kube_job_spec_parallelism', { labels: ['job', 'namespace'] })
 const jobSpecCompletions = new GaugeMetric('kube_job_spec_completions', { labels: ['job', 'namespace'] })
@@ -80,13 +116,19 @@ const jobCreated = new GaugeMetric('kube_job_created', { labels: ['job', 'namesp
 const jobStatusSuspended = new GaugeMetric('kube_job_status_suspended', { labels: ['job', 'namespace'] })
 
 // pod metrics
-const podAnnotations = new GaugeMetric('kube_pod_annotations', { description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist', labels: ['pod', 'namespace', 'annotation_POD_ANNOTATION'] })
+const podAnnotations = new GaugeMetric('kube_pod_annotations', {
+  description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist',
+  labels: ['pod', 'namespace', 'annotation_POD_ANNOTATION'],
+})
 const podInfo = new GaugeMetric('kube_pod_info', { labels: ['pod', 'namespace', 'host_ip', 'pod_ip', 'node', 'created_by_kind', 'created_by_name', 'uid', 'priority_class', 'host_network'] })
 const podIPs = new GaugeMetric('kube_pod_ips', { labels: ['pod', 'namespace', 'ip', 'ip_family', 'uid'] })
 const podStartTime = new GaugeMetric('kube_pod_start_time', { labels: ['pod', 'namespace', 'uid'] })
 const podCompletionTime = new GaugeMetric('kube_pod_completion_time', { labels: ['pod', 'namespace', 'uid'] })
 const podOwner = new GaugeMetric('kube_pod_owner', { labels: ['pod', 'namespace', 'owner_kind', 'owner_name', 'owner_is_controller', 'uid'] })
-const podLabels = new GaugeMetric('kube_pod_labels', { description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist', labels: ['pod', 'namespace', 'label_POD_LABEL', 'uid'] })
+const podLabels = new GaugeMetric('kube_pod_labels', {
+  description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist',
+  labels: ['pod', 'namespace', 'label_POD_LABEL', 'uid'],
+})
 const podNodeSelectors = new GaugeMetric('kube_pod_nodeselectors', { labels: ['pod', 'namespace', 'nodeselector_NODE_SELECTOR', 'uid'] })
 const podStatusPhase = new GaugeMetric('kube_pod_status_phase', { labels: ['pod', 'namespace', 'phase', 'uid'] })
 const podStatusQosClass = new GaugeMetric('kube_pod_status_qos_class', { labels: ['pod', 'namespace', 'qos_class', 'uid'] })
@@ -127,7 +169,9 @@ const podInitContainerStatusRestartsTotal = new CounterMetric('kube_pod_init_con
 const podInitContainerResourceLimits = new GaugeMetric('kube_pod_init_container_resource_limits', { labels: ['resource', 'unit', 'container', 'pod', 'namespace', 'node', 'uid'] })
 const podInitContainerResourceRequests = new GaugeMetric('kube_pod_init_container_resource_requests', { labels: ['resource', 'unit', 'container', 'pod', 'namespace', 'node', 'uid'] })
 const podSpecVolumesPersistentvolumeclaimsInfo = new GaugeMetric('kube_pod_spec_volumes_persistentvolumeclaims_info', { labels: ['pod', 'namespace', 'volume', 'persistentvolumeclaim', 'uid'] })
-const podSpecVolumesPersistentvolumeclaimsReadonly = new GaugeMetric('kube_pod_spec_volumes_persistentvolumeclaims_readonly', { labels: ['pod', 'namespace', 'volume', 'persistentvolumeclaim', 'uid'] })
+const podSpecVolumesPersistentvolumeclaimsReadonly = new GaugeMetric('kube_pod_spec_volumes_persistentvolumeclaims_readonly', {
+  labels: ['pod', 'namespace', 'volume', 'persistentvolumeclaim', 'uid'],
+})
 const podStatusReason = new GaugeMetric('kube_pod_status_reason', { labels: ['pod', 'namespace', 'reason', 'uid'] })
 const podStatusScheduledTime = new GaugeMetric('kube_pod_status_scheduled_time', { labels: ['pod', 'namespace', 'uid'] })
 const podStatusUnschedulable = new GaugeMetric('kube_pod_status_unschedulable', { labels: ['pod', 'namespace', 'uid'] })
@@ -136,19 +180,28 @@ const podServiceAccount = new GaugeMetric('kube_pod_service_account', { labels: 
 const podScheduler = new GaugeMetric('kube_pod_scheduler', { labels: ['pod', 'namespace', 'uid', 'name'] })
 
 // replicaset metrics
-const replicasetAnnotations = new GaugeMetric('kube_replicaset_annotations', { description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist', labels: ['replicaset', 'namespace', 'annotation_REPLICASET_ANNOTATION'] })
+const replicasetAnnotations = new GaugeMetric('kube_replicaset_annotations', {
+  description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist',
+  labels: ['replicaset', 'namespace', 'annotation_REPLICASET_ANNOTATION'],
+})
 const replicasetStatusReplicas = new GaugeMetric('kube_replicaset_status_replicas', { labels: ['replicaset', 'namespace'] })
 const replicasetStatusFullyLabeledReplicas = new GaugeMetric('kube_replicaset_status_fully_labeled_replicas', { labels: ['replicaset', 'namespace'] })
 const replicasetStatusReadyReplicas = new GaugeMetric('kube_replicaset_status_ready_replicas', { labels: ['replicaset', 'namespace'] })
 const replicasetStatusObservedGeneration = new GaugeMetric('kube_replicaset_status_observed_generation', { labels: ['replicaset', 'namespace'] })
 const replicasetSpecReplicas = new GaugeMetric('kube_replicaset_spec_replicas', { labels: ['replicaset', 'namespace'] })
 const replicasetMetadataGeneration = new GaugeMetric('kube_replicaset_metadata_generation', { labels: ['replicaset', 'namespace'] })
-const replicasetLabels = new GaugeMetric('kube_replicaset_labels', { description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist', labels: ['replicaset', 'namespace', 'label_REPLICASET_LABEL'] })
+const replicasetLabels = new GaugeMetric('kube_replicaset_labels', {
+  description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist',
+  labels: ['replicaset', 'namespace', 'label_REPLICASET_LABEL'],
+})
 const replicasetCreated = new GaugeMetric('kube_replicaset_created', { labels: ['replicaset', 'namespace'] })
 const replicasetOwner = new GaugeMetric('kube_replicaset_owner', { labels: ['replicaset', 'namespace', 'owner_kind', 'owner_name', 'owner_is_controller'] })
 
 // replicationcontroller metrics
-const replicationcontrollerAnnotations = new GaugeMetric('kube_replicationcontroller_annotations', { description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist', labels: ['replicationcontroller', 'namespace', 'annotation_REPLICATIONCONTROLLER_ANNOTATION'] })
+const replicationcontrollerAnnotations = new GaugeMetric('kube_replicationcontroller_annotations', {
+  description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist',
+  labels: ['replicationcontroller', 'namespace', 'annotation_REPLICATIONCONTROLLER_ANNOTATION'],
+})
 const replicationcontrollerStatusReplicas = new GaugeMetric('kube_replicationcontroller_status_replicas', { labels: ['replicationcontroller', 'namespace'] })
 const replicationcontrollerStatusFullyLabeledReplicas = new GaugeMetric('kube_replicationcontroller_status_fully_labeled_replicas', { labels: ['replicationcontroller', 'namespace'] })
 const replicationcontrollerStatusReadyReplicas = new GaugeMetric('kube_replicationcontroller_status_ready_replicas', { labels: ['replicationcontroller', 'namespace'] })
@@ -160,7 +213,10 @@ const replicationcontrollerCreated = new GaugeMetric('kube_replicationcontroller
 const replicationcontrollerOwner = new GaugeMetric('kube_replicationcontroller_owner', { labels: ['replicationcontroller', 'namespace', 'owner_kind', 'owner_name', 'owner_is_controller'] })
 
 // statefulset metrics
-const statefulsetAnnotations = new GaugeMetric('kube_statefulset_annotations', { description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist', labels: ['statefulset', 'namespace', 'annotation_STATEFULSET_ANNOTATION'] })
+const statefulsetAnnotations = new GaugeMetric('kube_statefulset_annotations', {
+  description: 'Kubernetes annotations converted to Prometheus labels controlled via --metric-annotations-allowlist',
+  labels: ['statefulset', 'namespace', 'annotation_STATEFULSET_ANNOTATION'],
+})
 const statefulsetStatusReplicas = new GaugeMetric('kube_statefulset_status_replicas', { labels: ['statefulset', 'namespace'] })
 const statefulsetStatusReplicasCurrent = new GaugeMetric('kube_statefulset_status_replicas_current', { labels: ['statefulset', 'namespace'] })
 const statefulsetStatusReplicasReady = new GaugeMetric('kube_statefulset_status_replicas_ready', { labels: ['statefulset', 'namespace'] })
@@ -170,19 +226,34 @@ const statefulsetStatusObservedGeneration = new GaugeMetric('kube_statefulset_st
 const statefulsetReplicas = new GaugeMetric('kube_statefulset_replicas', { labels: ['statefulset', 'namespace'] })
 const statefulsetOrdinalsStart = new GaugeMetric('kube_statefulset_ordinals_start', { labels: ['statefulset', 'namespace'] })
 const statefulsetMetadataGeneration = new GaugeMetric('kube_statefulset_metadata_generation', { labels: ['statefulset', 'namespace'] })
-const statefulsetPersistentvolumeclaimRetentionPolicy = new GaugeMetric('kube_statefulset_persistentvolumeclaim_retention_policy', { labels: ['statefulset', 'namespace', 'when_deleted', 'when_scaled'] })
+const statefulsetPersistentvolumeclaimRetentionPolicy = new GaugeMetric('kube_statefulset_persistentvolumeclaim_retention_policy', {
+  labels: ['statefulset', 'namespace', 'when_deleted', 'when_scaled'],
+})
 const statefulsetCreated = new GaugeMetric('kube_statefulset_created', { labels: ['statefulset', 'namespace'] })
-const statefulsetLabels = new GaugeMetric('kube_statefulset_labels', { description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist', labels: ['statefulset', 'namespace', 'label_STATEFULSET_LABEL'] })
+const statefulsetLabels = new GaugeMetric('kube_statefulset_labels', {
+  description: 'Kubernetes labels converted to Prometheus labels controlled via --metric-labels-allowlist',
+  labels: ['statefulset', 'namespace', 'label_STATEFULSET_LABEL'],
+})
 const statefulsetStatusCurrentRevision = new GaugeMetric('kube_statefulset_status_current_revision', { labels: ['statefulset', 'namespace', 'revision'] })
 const statefulsetStatusUpdateRevision = new GaugeMetric('kube_statefulset_status_update_revision', { labels: ['statefulset', 'namespace', 'revision'] })
 
-export function podMetricsPanels({ datasource, title, selectors = [], collapsed }: { datasource?: dashboard.DataSourceRef; title?: string; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
-  const groupBy = ['namespace', 'pod']
+export function podMetricsPanels({
+  datasource,
+  title,
+  selectors = [],
+  collapsed,
+}: {
+  datasource?: dashboard.DataSourceRef
+  title?: string
+  selectors?: string | string[]
+  collapsed?: boolean
+}): PanelGroup {
+  const by = ['namespace', 'pod']
   return NewPanelGroup({ title: title ?? 'Kubernetes Pod Metrics', collapsed }, [
     NewPanelRow({ datasource, height: 14 }, [
       NewTablePanel({
         title: 'Pod Info',
-        queries: {
+        columns: {
           created_by_kind: { name: 'Created By' },
           created_by_name: { name: 'Created By Name' },
           host_ip: { name: 'Host IP' },
@@ -193,9 +264,9 @@ export function podMetricsPanels({ datasource, title, selectors = [], collapsed 
           pod_ip: { name: 'Pod IP' },
           uid: { name: 'UID' },
 
-          'Pod Info': { target: podInfo.calc('max', { selectors, groupBy: podInfo.labels(), type: 'instant' }).target() },
-          'Pod Start Time': { target: podStartTime.calc('max', { selectors, groupBy: podStartTime.labels(), type: 'instant' }).target() },
-          'Pod Completion Time': { target: podCompletionTime.calc('max', { selectors, groupBy: podCompletionTime.labels(), type: 'instant' }).target() },
+          'Pod Info': { target: podInfo.max({ selectors, by: podInfo.labels(), instant: true }).target() },
+          'Pod Start Time': { target: podStartTime.max({ selectors, by: podStartTime.labels(), instant: true }).target() },
+          'Pod Completion Time': { target: podCompletionTime.max({ selectors, by: podCompletionTime.labels(), instant: true }).target() },
         },
         excludeColumns: ['Time', 'Value #Pod Info'],
       }),

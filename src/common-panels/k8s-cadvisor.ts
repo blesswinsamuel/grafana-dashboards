@@ -1,6 +1,6 @@
-import { dashboard, NewPanelGroup, NewPanelRow, NewStatPanel, NewTimeSeriesPanel, PanelGroup } from '../grafana-helpers'
-import { CounterMetric, GaugeMetric, SummaryMetric, wrapMultiply } from '../helpers/promql'
 import * as units from '@grafana/grafana-foundation-sdk/units'
+import { type dashboard, NewPanelGroup, NewPanelRow, NewStatPanel, NewTimeSeriesPanel, type PanelGroup } from '../grafana-helpers'
+import { CounterMetric, GaugeMetric, SummaryMetric, wrapMultiply } from '../helpers/promql'
 
 // https://github.com/google/cadvisor/blob/master/docs/storage/prometheus.md
 
@@ -11,7 +11,9 @@ const containerCpuCfsThrottledPeriodsTotal = new CounterMetric('container_cpu_cf
 const containerCpuCfsThrottledSecondsTotal = new CounterMetric('container_cpu_cfs_throttled_seconds_total', { description: 'Total time duration the container has been throttled' })
 const containerCpuLoadAverage10s = new GaugeMetric('container_cpu_load_average_10s', { description: 'Value of container cpu load average over the last 10 seconds' })
 const containerCpuSchedstatRunPeriodsTotal = new CounterMetric('container_cpu_schedstat_run_periods_total', { description: 'Number of times processes of the cgroup have run on the cpu' })
-const containerCpuSchedstatRunqueueSecondsTotal = new CounterMetric('container_cpu_schedstat_runqueue_seconds_total', { description: 'Time duration processes of the container have been waiting on a runqueue' })
+const containerCpuSchedstatRunqueueSecondsTotal = new CounterMetric('container_cpu_schedstat_runqueue_seconds_total', {
+  description: 'Time duration processes of the container have been waiting on a runqueue',
+})
 const containerCpuSchedstatRunSecondsTotal = new CounterMetric('container_cpu_schedstat_run_seconds_total', { description: 'Time duration the processes of the container have run on the CPU' })
 const containerCpuSystemSecondsTotal = new CounterMetric('container_cpu_system_seconds_total', { description: 'Cumulative system cpu time consumed' })
 const containerCpuUsageSecondsTotal = new CounterMetric('container_cpu_usage_seconds_total', { description: 'Cumulative cpu time consumed' })
@@ -37,9 +39,15 @@ const containerFsWritesTotal = new CounterMetric('container_fs_writes_total', { 
 const containerHugetlbFailcnt = new CounterMetric('container_hugetlb_failcnt', { description: 'Number of hugepage usage hits limits' })
 const containerHugetlbMaxUsageBytes = new GaugeMetric('container_hugetlb_max_usage_bytes', { description: 'Maximum hugepage usages recorded' })
 const containerHugetlbUsageBytes = new GaugeMetric('container_hugetlb_usage_bytes', { description: 'Current hugepage usage' })
-const containerLlcOccupancyBytes = new GaugeMetric('container_llc_occupancy_bytes', { description: 'Last level cache usage statistics for container counted with RDT Memory Bandwidth Monitoring (MBM).' })
-const containerMemoryBandwidthBytes = new GaugeMetric('container_memory_bandwidth_bytes', { description: 'Total memory bandwidth usage statistics for container counted with RDT Memory Bandwidth Monitoring (MBM).' })
-const containerMemoryBandwidthLocalBytes = new GaugeMetric('container_memory_bandwidth_local_bytes', { description: 'Local memory bandwidth usage statistics for container counted with RDT Memory Bandwidth Monitoring (MBM).' })
+const containerLlcOccupancyBytes = new GaugeMetric('container_llc_occupancy_bytes', {
+  description: 'Last level cache usage statistics for container counted with RDT Memory Bandwidth Monitoring (MBM).',
+})
+const containerMemoryBandwidthBytes = new GaugeMetric('container_memory_bandwidth_bytes', {
+  description: 'Total memory bandwidth usage statistics for container counted with RDT Memory Bandwidth Monitoring (MBM).',
+})
+const containerMemoryBandwidthLocalBytes = new GaugeMetric('container_memory_bandwidth_local_bytes', {
+  description: 'Local memory bandwidth usage statistics for container counted with RDT Memory Bandwidth Monitoring (MBM).',
+})
 const containerMemoryCache = new GaugeMetric('container_memory_cache', { description: 'Total page cache memory' })
 const containerMemoryFailcnt = new CounterMetric('container_memory_failcnt', { description: 'Number of memory usage hits limits' })
 const containerMemoryFailuresTotal = new CounterMetric('container_memory_failures_total', { description: 'Cumulative count of memory allocation failures' })
@@ -65,10 +73,20 @@ const containerNetworkTransmitPacketsTotal = new CounterMetric('container_networ
 const containerNetworkUdp6UsageTotal = new GaugeMetric('container_network_udp6_usage_total', { description: 'udp6 connection usage statistic for container' })
 const containerNetworkUdpUsageTotal = new GaugeMetric('container_network_udp_usage_total', { description: 'udp connection usage statistic for container' })
 const containerOomEventsTotal = new CounterMetric('container_oom_events_total', { description: 'Count of out of memory events observed for the container' })
-const containerPerfEventsScalingRatio = new GaugeMetric('container_perf_events_scaling_ratio', { description: 'Scaling ratio for perf event counter (event can be identified by event label and cpu indicates the core for which event was measured). See perf event configuration.' })
-const containerPerfEventsTotal = new CounterMetric('container_perf_events_total', { description: 'Scaled counter of perf core event (event can be identified by event label and cpu indicates the core for which event was measured). See perf event configuration.' })
-const containerPerfUncoreEventsScalingRatio = new GaugeMetric('container_perf_uncore_events_scaling_ratio', { description: 'Scaling ratio for perf uncore event counter (event can be identified by event label, pmu and socket lables indicate the PMU and the CPU socket for which event was measured). See perf event configuration. Metric exists only for main cgroup (id="/").' })
-const containerPerfUncoreEventsTotal = new CounterMetric('container_perf_uncore_events_total', { description: 'Scaled counter of perf uncore event (event can be identified by event label, pmu and socket lables indicate the PMU and the CPU socket for which event was measured). See perf event configuration). Metric exists only for main cgroup (id="/").' })
+const containerPerfEventsScalingRatio = new GaugeMetric('container_perf_events_scaling_ratio', {
+  description: 'Scaling ratio for perf event counter (event can be identified by event label and cpu indicates the core for which event was measured). See perf event configuration.',
+})
+const containerPerfEventsTotal = new CounterMetric('container_perf_events_total', {
+  description: 'Scaled counter of perf core event (event can be identified by event label and cpu indicates the core for which event was measured). See perf event configuration.',
+})
+const containerPerfUncoreEventsScalingRatio = new GaugeMetric('container_perf_uncore_events_scaling_ratio', {
+  description:
+    'Scaling ratio for perf uncore event counter (event can be identified by event label, pmu and socket lables indicate the PMU and the CPU socket for which event was measured). See perf event configuration. Metric exists only for main cgroup (id="/").',
+})
+const containerPerfUncoreEventsTotal = new CounterMetric('container_perf_uncore_events_total', {
+  description:
+    'Scaled counter of perf uncore event (event can be identified by event label, pmu and socket lables indicate the PMU and the CPU socket for which event was measured). See perf event configuration). Metric exists only for main cgroup (id="/").',
+})
 const containerProcesses = new GaugeMetric('container_processes', { description: 'Number of processes running inside the container' })
 const containerSockets = new GaugeMetric('container_sockets', { description: 'Number of open sockets for the container' })
 const containerSpecCpuPeriod = new GaugeMetric('container_spec_cpu_period', { description: 'CPU period of the container' })
@@ -88,8 +106,14 @@ const machineCpuCacheCapacityBytes = new GaugeMetric('machine_cpu_cache_capacity
 const machineCpuCores = new GaugeMetric('machine_cpu_cores', { description: 'Number of logical CPU cores' })
 const machineCpuPhysicalCores = new GaugeMetric('machine_cpu_physical_cores', { description: 'Number of physical CPU cores' })
 const machineCpuSockets = new GaugeMetric('machine_cpu_sockets', { description: 'Number of CPU sockets' })
-const machineDimmCapacityBytes = new GaugeMetric('machine_dimm_capacity_bytes', { description: 'Total RAM DIMM capacity (all types memory modules) value labeled by dimm type, information is retrieved from sysfs edac per-DIMM API (/sys/devices/system/edac/mc/) introduced in kernel 3.6' })
-const machineDimmCount = new GaugeMetric('machine_dimm_count', { description: 'Number of RAM DIMM (all types memory modules) value labeled by dimm type, information is retrieved from sysfs edac per-DIMM API (/sys/devices/system/edac/mc/) introduced in kernel 3.6' })
+const machineDimmCapacityBytes = new GaugeMetric('machine_dimm_capacity_bytes', {
+  description:
+    'Total RAM DIMM capacity (all types memory modules) value labeled by dimm type, information is retrieved from sysfs edac per-DIMM API (/sys/devices/system/edac/mc/) introduced in kernel 3.6',
+})
+const machineDimmCount = new GaugeMetric('machine_dimm_count', {
+  description:
+    'Number of RAM DIMM (all types memory modules) value labeled by dimm type, information is retrieved from sysfs edac per-DIMM API (/sys/devices/system/edac/mc/) introduced in kernel 3.6',
+})
 const machineMemoryBytes = new GaugeMetric('machine_memory_bytes', { description: 'Amount of memory installed on the machine' })
 const machineSwapBytes = new GaugeMetric('machine_swap_bytes', { description: 'Amount of swap memory available on the machine' })
 const machineNodeDistance = new GaugeMetric('machine_node_distance', { description: 'Distance between NUMA node and target NUMA node' })
@@ -99,58 +123,70 @@ const machineNvmAvgPowerBudgetWatts = new GaugeMetric('machine_nvm_avg_power_bud
 const machineNvmCapacity = new GaugeMetric('machine_nvm_capacity', { description: 'NVM capacity value labeled by NVM mode (memory mode or app direct mode)' })
 const machineThreadSiblingsCount = new GaugeMetric('machine_thread_siblings_count', { description: 'Number of CPU thread siblings' })
 
-export function cadvisorMetricsPanels({ datasource, title, selectors = [], groupBy = ['pod', 'instance'], collapsed }: { datasource?: dashboard.DataSourceRef; title?: string; groupBy?: string[]; selectors?: string | string[]; collapsed?: boolean }): PanelGroup {
+export function cadvisorMetricsPanels({
+  datasource,
+  title,
+  selectors = [],
+  by = ['pod', 'instance'],
+  collapsed,
+}: {
+  datasource?: dashboard.DataSourceRef
+  title?: string
+  by?: string[]
+  selectors?: string | string[]
+  collapsed?: boolean
+}): PanelGroup {
   return NewPanelGroup({ title: title ?? 'cAdvisor Metrics', collapsed }, [
     NewPanelRow({ datasource, height: 3 }, [
       //
-      NewStatPanel({ title: 'Container Start Time (max)', unit: units.DateTimeFromNow }, containerStartTimeSeconds.calc('max', { selectors, type: 'instant' }).wrap(wrapMultiply(1000)).target()),
+      NewStatPanel({ title: 'Container Start Time (max)', unit: units.DateTimeFromNow }, containerStartTimeSeconds.max({ selectors, instant: true }).wrap(wrapMultiply(1000)).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'CPU Usage', unit: units.Short }, containerCpuUsageSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Memory Usage' }, containerMemoryUsageBytes.calc('sum', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Memory Working Set' }, containerMemoryWorkingSetBytes.calc('sum', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Memory Cache', unit: units.BytesSI }, containerMemoryCache.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'CPU Usage', unit: units.Short }, containerCpuUsageSecondsTotal.rate({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Usage' }, containerMemoryUsageBytes.sum({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Working Set' }, containerMemoryWorkingSetBytes.sum({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Cache', unit: units.BytesSI }, containerMemoryCache.sum({ selectors, by }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'Threads' }, containerThreads.calc('sum', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Processes' }, containerProcesses.calc('sum', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'File Descriptors' }, containerFileDescriptors.calc('sum', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Sockets' }, containerSockets.calc('sum', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Threads' }, containerThreads.sum({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Processes' }, containerProcesses.sum({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'File Descriptors' }, containerFileDescriptors.sum({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Sockets' }, containerSockets.sum({ selectors, by }).target()),
     ]),
     // cpu
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'CPU Load Average 10s' }, containerCpuLoadAverage10s.calc('sum', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'CPU Usage User' }, containerCpuUserSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'CPU Usage System' }, containerCpuSystemSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'CPU Usage Throttled' }, containerCpuCfsThrottledSecondsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'CPU Load Average 10s' }, containerCpuLoadAverage10s.sum({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'CPU Usage User' }, containerCpuUserSecondsTotal.rate({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'CPU Usage System' }, containerCpuSystemSecondsTotal.rate({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'CPU Usage Throttled' }, containerCpuCfsThrottledSecondsTotal.rate({ selectors, by }).target()),
     ]),
     // memory
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Memory Failures' }, containerMemoryFailuresTotal.calc('sum', 'increase', { selectors, groupBy: [...groupBy, 'failure_type'] }).target()),
-      NewTimeSeriesPanel({ title: 'OOM Events' }, containerOomEventsTotal.calc('sum', 'increase', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Memory Swap' }, containerMemorySwap.calc('sum', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Memory Failcnt' }, containerMemoryFailcnt.calc('sum', 'increase', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Failures' }, containerMemoryFailuresTotal.increase({ selectors, by: [...by, 'failure_type'] }).target()),
+      NewTimeSeriesPanel({ title: 'OOM Events' }, containerOomEventsTotal.increase({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Swap' }, containerMemorySwap.sum({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Failcnt' }, containerMemoryFailcnt.increase({ selectors, by }).target()),
     ]),
     // network
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Network Receive Bytes' }, containerNetworkReceiveBytesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Network Transmit Bytes' }, containerNetworkTransmitBytesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Network Receive Errors' }, containerNetworkReceiveErrorsTotal.calc('sum', 'increase', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Network Transmit Errors' }, containerNetworkTransmitErrorsTotal.calc('sum', 'increase', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Network Receive Bytes' }, containerNetworkReceiveBytesTotal.rate({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Network Transmit Bytes' }, containerNetworkTransmitBytesTotal.rate({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Network Receive Errors' }, containerNetworkReceiveErrorsTotal.increase({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Network Transmit Errors' }, containerNetworkTransmitErrorsTotal.increase({ selectors, by }).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'Network Receive Packets' }, containerNetworkReceivePacketsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Network Transmit Packets' }, containerNetworkTransmitPacketsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Network Receive Packets Dropped' }, containerNetworkReceivePacketsDroppedTotal.calc('sum', 'increase', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'Network Transmit Packets Dropped' }, containerNetworkTransmitPacketsDroppedTotal.calc('sum', 'increase', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'Network Receive Packets' }, containerNetworkReceivePacketsTotal.rate({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Network Transmit Packets' }, containerNetworkTransmitPacketsTotal.rate({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Network Receive Packets Dropped' }, containerNetworkReceivePacketsDroppedTotal.increase({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'Network Transmit Packets Dropped' }, containerNetworkTransmitPacketsDroppedTotal.increase({ selectors, by }).target()),
     ]),
     // fs
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({ title: 'FS Reads Bytes' }, containerFsReadsBytesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'FS Writes Bytes' }, containerFsWritesBytesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'FS Read rate' }, containerFsReadsTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
-      NewTimeSeriesPanel({ title: 'FS Write rate' }, containerFsWritesTotal.calc('sum', 'rate', { selectors, groupBy }).target()),
+      NewTimeSeriesPanel({ title: 'FS Reads Bytes' }, containerFsReadsBytesTotal.rate({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'FS Writes Bytes' }, containerFsWritesBytesTotal.rate({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'FS Read rate' }, containerFsReadsTotal.rate({ selectors, by }).target()),
+      NewTimeSeriesPanel({ title: 'FS Write rate' }, containerFsWritesTotal.rate({ selectors, by }).target()),
     ]),
   ])
 }

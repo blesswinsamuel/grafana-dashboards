@@ -1,13 +1,31 @@
-import { CounterMetric, GaugeMetric, goRuntimeMetricsPanels, newDashboard, NewLokiDatasourceVariable, NewLokiLogsPanel, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTimeSeriesPanel, PanelRowAndGroups, SummaryMetric, units } from '../src/grafana-helpers'
+import type * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
 import { cadvisorMetricsPanels } from '../src/common-panels/k8s-cadvisor'
-import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
-import { wrapConditional, WrapFn, wrapMultiply } from '../src/helpers/promql'
+import {
+  CounterMetric,
+  GaugeMetric,
+  goRuntimeMetricsPanels,
+  NewLokiDatasourceVariable,
+  NewLokiLogsPanel,
+  NewPanelGroup,
+  NewPanelRow,
+  NewPrometheusDatasourceVariable,
+  NewQueryVariable,
+  NewStatPanel,
+  NewTimeSeriesPanel,
+  newDashboard,
+  type PanelRowAndGroups,
+  SummaryMetric,
+  units,
+} from '../src/grafana-helpers'
+import { type WrapFn, wrapConditional, wrapMultiply } from '../src/helpers/promql'
 
 const datasource: dashboard.DataSourceRef = {
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: Grafana variable
   uid: '${DS_PROMETHEUS}',
 }
 
 const lokiDatasource: dashboard.DataSourceRef = {
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: Grafana variable
   uid: '${DS_LOKI}',
 }
 
@@ -65,39 +83,39 @@ const serviceRespsBytesTotal = new CounterMetric('traefik_service_responses_byte
 
 const selectors = `namespace=~"$namespace", instance=~"$instance"`
 
-const serviceMetricsPanels = (opts: { title?: string; groupBy: string[]; extraSelectors?: string[]; wrap?: WrapFn }) => {
-  const { title = 'Service Metrics', extraSelectors = [], wrap, groupBy } = opts
-  return NewPanelGroup({ title: `${title} (by ${opts.groupBy.join(', ')})` }, [
+const serviceMetricsPanels = (opts: { title?: string; by: string[]; extraSelectors?: string[]; wrap?: WrapFn }) => {
+  const { title = 'Service Metrics', extraSelectors = [], wrap, by } = opts
+  return NewPanelGroup({ title: `${title} (by ${opts.by.join(', ')})` }, [
     // available labels: service, code, method, protocol
     NewPanelRow({ datasource, height: 8 }, [
       // by service
       NewTimeSeriesPanel(
-        { title: `Request Count by ${opts.groupBy.join(', ')}` },
+        { title: `Request Count by ${opts.by.join(', ')}` },
         serviceReqs
-          .calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"', ...extraSelectors], groupBy })
+          .increase({ selectors: [selectors, 'service=~"$service"', ...extraSelectors], by })
           .wrap(wrap)
-          .target()
+          .target(),
       ),
       NewTimeSeriesPanel(
-        { title: `Request Bytes by ${opts.groupBy.join(', ')}` },
+        { title: `Request Bytes by ${opts.by.join(', ')}` },
         serviceReqsBytesTotal
-          .calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"', ...extraSelectors], groupBy })
+          .increase({ selectors: [selectors, 'service=~"$service"', ...extraSelectors], by })
           .wrap(wrap)
-          .target()
+          .target(),
       ),
       NewTimeSeriesPanel(
-        { title: `Response Bytes by ${opts.groupBy.join(', ')}` },
+        { title: `Response Bytes by ${opts.by.join(', ')}` },
         serviceRespsBytesTotal
-          .calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"', ...extraSelectors], groupBy })
+          .increase({ selectors: [selectors, 'service=~"$service"', ...extraSelectors], by })
           .wrap(wrap)
-          .target()
+          .target(),
       ),
       NewTimeSeriesPanel(
-        { title: `Avg request duration by ${opts.groupBy.join(', ')}` },
+        { title: `Avg request duration by ${opts.by.join(', ')}` },
         serviceReqDurations
-          .avg({ selectors: [selectors, 'service=~"$service"', ...extraSelectors], groupBy })
+          .avg({ selectors: [selectors, 'service=~"$service"', ...extraSelectors], by })
           .wrap(wrap)
-          .target()
+          .target(),
       ),
     ]),
   ])
@@ -106,50 +124,53 @@ const serviceMetricsPanels = (opts: { title?: string; groupBy: string[]; extraSe
 const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Overview' }, [
     NewPanelRow({ datasource, height: 3 }, [
-      NewStatPanel({ title: 'Request Count' }, serviceReqs.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], interval: '$__range' }).target()),
-      NewStatPanel({ title: 'Request Bytes' }, serviceReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], interval: '$__range' }).target()),
-      NewStatPanel({ title: 'Response Bytes' }, serviceRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], interval: '$__range' }).target()),
-      NewStatPanel({ title: 'Config reloads' }, configReloads.calc('sum', 'increase', { selectors, interval: '$__range' }).target()),
-      NewStatPanel({ title: 'Last successful config reload', unit: units.DateTimeFromNow }, lastConfigReloadSuccess.calc('max', { selectors }).wrap(wrapMultiply(1000)).target()),
+      NewStatPanel({ title: 'Request Count' }, serviceReqs.increase({ selectors: [selectors, 'service=~"$service"'], interval: '$__range' }).target()),
+      NewStatPanel({ title: 'Request Bytes' }, serviceReqsBytesTotal.increase({ selectors: [selectors, 'service=~"$service"'], interval: '$__range' }).target()),
+      NewStatPanel({ title: 'Response Bytes' }, serviceRespsBytesTotal.increase({ selectors: [selectors, 'service=~"$service"'], interval: '$__range' }).target()),
+      NewStatPanel({ title: 'Config reloads' }, configReloads.increase({ selectors, interval: '$__range' }).target()),
+      NewStatPanel({ title: 'Last successful config reload', unit: units.DateTimeFromNow }, lastConfigReloadSuccess.max({ selectors }).wrap(wrapMultiply(1000)).target()),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'Open connections' }, openConnections.calc('sum', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint', 'protocol'] }).target()),
+      NewTimeSeriesPanel({ title: 'Open connections' }, openConnections.sum({ selectors: [selectors, 'entrypoint=~"$entrypoint"'], by: ['entrypoint', 'protocol'] }).target()),
     ]),
   ]),
   NewPanelGroup({ title: 'Entrypoint Metrics' }, [
     // available labels: entrypoint, code, method, protocol
     NewPanelRow({ datasource, height: 8 }, [
       // by entrypoint
-      NewTimeSeriesPanel({ title: 'Request Count' }, entryPointReqs.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint'] }).target()),
-      NewTimeSeriesPanel({ title: 'Request Bytes' }, entryPointReqsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint'] }).target()),
-      NewTimeSeriesPanel({ title: 'Response Bytes' }, entryPointRespsBytesTotal.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint'] }).target()),
-      NewTimeSeriesPanel({ title: 'Avg request duration' }, entryPointReqDurations.avg({ selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint'] }).target()),
+      NewTimeSeriesPanel({ title: 'Request Count' }, entryPointReqs.increase({ selectors: [selectors, 'entrypoint=~"$entrypoint"'], by: ['entrypoint'] }).target()),
+      NewTimeSeriesPanel({ title: 'Request Bytes' }, entryPointReqsBytesTotal.increase({ selectors: [selectors, 'entrypoint=~"$entrypoint"'], by: ['entrypoint'] }).target()),
+      NewTimeSeriesPanel({ title: 'Response Bytes' }, entryPointRespsBytesTotal.increase({ selectors: [selectors, 'entrypoint=~"$entrypoint"'], by: ['entrypoint'] }).target()),
+      NewTimeSeriesPanel({ title: 'Avg request duration' }, entryPointReqDurations.avg({ selectors: [selectors, 'entrypoint=~"$entrypoint"'], by: ['entrypoint'] }).target()),
     ]),
   ]),
-  serviceMetricsPanels({ groupBy: ['service'] }),
-  serviceMetricsPanels({ groupBy: ['protocol'] }),
-  serviceMetricsPanels({ groupBy: ['method'] }),
-  serviceMetricsPanels({ groupBy: ['code'] }),
-  serviceMetricsPanels({ title: 'Service Metrics (errors)', groupBy: ['code', 'protocol', 'method', 'service'], extraSelectors: ['code=~"(4|5).."'], wrap: wrapConditional('>', 0) }),
+  serviceMetricsPanels({ by: ['service'] }),
+  serviceMetricsPanels({ by: ['protocol'] }),
+  serviceMetricsPanels({ by: ['method'] }),
+  serviceMetricsPanels({ by: ['code'] }),
+  serviceMetricsPanels({ title: 'Service Metrics (errors)', by: ['code', 'protocol', 'method', 'service'], extraSelectors: ['code=~"(4|5).."'], wrap: wrapConditional('>', 0) }),
   // NewPanelGroup({ title: 'Service Metrics (by code) (errors)' }, [
   //   // NewPanelRow({ datasource, height: 8 }, [
   //   //   //
-  //   //   NewTimeSeriesPanel({ title: 'Service Retries' }, serviceRetries.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service'] }).target()),
-  //   //   NewTimeSeriesPanel({ title: 'Service Server Up' }, serviceServerUp.calc('max', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service', 'url'] }).target()),
+  //   //   NewTimeSeriesPanel({ title: 'Service Retries' }, serviceRetries.increase({ selectors: [selectors, 'service=~"$service"'], by: ['service'] }).target()),
+  //   //   NewTimeSeriesPanel({ title: 'Service Server Up' }, serviceServerUp.max({ selectors: [selectors, 'service=~"$service"'], by: ['service', 'url'] }).target()),
   //   // ]),
   // ]),
   NewPanelGroup({ title: 'TLS Metrics' }, [
     NewPanelRow({ datasource, height: 8 }, [
       //
-      NewTimeSeriesPanel({ title: 'TLS requests by entrypoint' }, entryPointReqsTLS.calc('sum', 'increase', { selectors: [selectors, 'entrypoint=~"$entrypoint"'], groupBy: ['entrypoint', 'tls_cipher', 'version'] }).target()),
-      NewTimeSeriesPanel({ title: 'TLS requests by service' }, serviceReqsTLS.calc('sum', 'increase', { selectors: [selectors, 'service=~"$service"'], groupBy: ['service', 'tls_cipher', 'version'] }).target()),
+      NewTimeSeriesPanel(
+        { title: 'TLS requests by entrypoint' },
+        entryPointReqsTLS.increase({ selectors: [selectors, 'entrypoint=~"$entrypoint"'], by: ['entrypoint', 'tls_cipher', 'version'] }).target(),
+      ),
+      NewTimeSeriesPanel({ title: 'TLS requests by service' }, serviceReqsTLS.increase({ selectors: [selectors, 'service=~"$service"'], by: ['service', 'tls_cipher', 'version'] }).target()),
       NewTimeSeriesPanel(
         { title: 'TLS certs expiration timestamp', unit: units.DateTimeFromNow },
         tlsCertsNotAfterTimestamp
-          .calc('max', { selectors: [selectors], groupBy: ['cn', 'sans', 'serial'] })
+          .max({ selectors: [selectors], by: ['cn', 'sans', 'serial'] })
           .wrap(wrapMultiply(1000))
-          .target()
+          .target(),
       ),
     ]),
   ]),
@@ -157,8 +178,22 @@ const panels: PanelRowAndGroups = [
     // {container_name="traefik"} | json | DownstreamStatus >= 400
     // ClientAddr RequestAddr RequestPath DownstreamStatus RouterName
     // 'ServiceAddr', 'ServiceName', 'ServiceURL', 'level', 'Duration', 'OriginDuration'
-    NewPanelRow({ datasource: lokiDatasource, height: 16 }, [NewLokiLogsPanel({ title: 'Downstream errors (4xx)' }, { expr: `{container_name="traefik"} | json | DownstreamStatus >= 400 and DownstreamStatus < 500 | line_format "{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}"` })]),
-    NewPanelRow({ datasource: lokiDatasource, height: 16 }, [NewLokiLogsPanel({ title: 'Downstream errors (5xx)' }, { expr: `{container_name="traefik"} | json | DownstreamStatus >= 500 | line_format "{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}"` })]),
+    NewPanelRow({ datasource: lokiDatasource, height: 16 }, [
+      NewLokiLogsPanel(
+        { title: 'Downstream errors (4xx)' },
+        {
+          expr: `{container_name="traefik"} | json | DownstreamStatus >= 400 and DownstreamStatus < 500 | line_format "{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}"`,
+        },
+      ),
+    ]),
+    NewPanelRow({ datasource: lokiDatasource, height: 16 }, [
+      NewLokiLogsPanel(
+        { title: 'Downstream errors (5xx)' },
+        {
+          expr: `{container_name="traefik"} | json | DownstreamStatus >= 500 | line_format "{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}"`,
+        },
+      ),
+    ]),
     // NewPanelRow({ datasource: lokiDatasource, height: 16 }, [NewLokiLogsPanel({ title: 'Downstream errors (0)' }, { expr: `{container_name="traefik"} | json | DownstreamStatus == 0 | line_format "{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}"` })]),
   ]),
   goRuntimeMetricsPanels({ datasource, selectors, collapsed: true }),
@@ -177,8 +212,22 @@ export const traefikDashboard = newDashboard({
     NewLokiDatasourceVariable({ name: 'DS_LOKI', label: 'Loki' }),
     NewQueryVariable({ datasource, name: 'namespace', label: 'Namespace', query: 'label_values(traefik_config_reloads_total, namespace)', includeAll: true, multi: true }),
     NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: 'label_values(traefik_config_reloads_total{namespace=~"$namespace"}, instance)', includeAll: true, multi: true }),
-    NewQueryVariable({ datasource, name: 'pod', label: 'Pod', query: 'label_values(traefik_config_reloads_total{namespace=~"$namespace", instance=~"$instance"}, pod)', includeAll: true, multi: true }),
-    NewQueryVariable({ datasource, name: 'entrypoint', label: 'Entrypoint', query: 'label_values(traefik_entrypoint_requests_total{instance=~"$instance"}, entrypoint)', includeAll: true, multi: true }),
+    NewQueryVariable({
+      datasource,
+      name: 'pod',
+      label: 'Pod',
+      query: 'label_values(traefik_config_reloads_total{namespace=~"$namespace", instance=~"$instance"}, pod)',
+      includeAll: true,
+      multi: true,
+    }),
+    NewQueryVariable({
+      datasource,
+      name: 'entrypoint',
+      label: 'Entrypoint',
+      query: 'label_values(traefik_entrypoint_requests_total{instance=~"$instance"}, entrypoint)',
+      includeAll: true,
+      multi: true,
+    }),
     NewQueryVariable({ datasource, name: 'service', label: 'Service', query: 'label_values(traefik_service_requests_total{instance=~"$instance"}, service)', includeAll: true, multi: true }),
   ],
   panels,

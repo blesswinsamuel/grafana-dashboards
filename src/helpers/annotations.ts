@@ -1,6 +1,5 @@
-import * as cog from '@grafana/grafana-foundation-sdk/cog'
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
-import { dangerouslyAddCustomValues } from './panels/commons'
+import { dangerouslyAddCustomValues } from './sdk-compat'
 
 export type LogAnnotationOpts = {
   datasource: dashboard.DataSourceRef
@@ -15,19 +14,12 @@ export function NewElasticsearchAnnotation(opts: LogAnnotationOpts): dashboard.A
   const b = new dashboard.AnnotationQueryBuilder()
   b.datasource(opts.datasource)
   b.enable(true)
-  if (opts.iconColor) {
-    b.iconColor(opts.iconColor)
-  }
-  if (opts.name) {
-    b.name(opts.name)
-  }
-  b.target(dangerouslyAddCustomValues(new dashboard.AnnotationTargetBuilder().limit(100).matchAny(false).tags([]).type('dashboard'), {
-    query: opts.logQuery,
-  } as any))
-  dangerouslyAddCustomValues(b, {
-    tagsField: opts.tagsField,
-    textField: opts.textField,
-  } as any)
+  if (opts.iconColor) b.iconColor(opts.iconColor)
+  if (opts.name) b.name(opts.name)
+  const targetBuilder = new dashboard.AnnotationTargetBuilder().limit(100).matchAny(false).tags([]).type('dashboard')
+  dangerouslyAddCustomValues(targetBuilder, { query: opts.logQuery } as any)
+  b.target(targetBuilder)
+  dangerouslyAddCustomValues(b, { tagsField: opts.tagsField, textField: opts.textField } as any)
   return b
 }
 
@@ -41,12 +33,8 @@ export function NewGrafanaAnnotation(opts: GrafanaAnnotationOpts): dashboard.Ann
   const b = new dashboard.AnnotationQueryBuilder()
   b.datasource({ type: 'datasource', uid: 'grafana' })
   b.enable(true)
-  if (opts.iconColor) {
-    b.iconColor(opts.iconColor)
-  }
-  if (opts.name) {
-    b.name(opts.name)
-  }
+  if (opts.iconColor) b.iconColor(opts.iconColor)
+  if (opts.name) b.name(opts.name)
   b.target(new dashboard.AnnotationTargetBuilder().limit(100).matchAny(true).tags(opts.tags).type('tags'))
   return b
 }

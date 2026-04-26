@@ -1,6 +1,26 @@
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
-import { common, GaugeMetric, goRuntimeMetricsPanels, newDashboard, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, promql, table, tableExcludeByName, tableIndexByName, units, withPanels } from '../src/grafana-helpers'
-import { PrometheusTarget, Target } from '../src/helpers/panels/target'
+import {
+  common,
+  GaugeMetric,
+  goRuntimeMetricsPanels,
+  NewPanelGroup,
+  NewPanelRow,
+  NewPrometheusDatasourceVariable,
+  NewQueryVariable,
+  NewStatPanel,
+  NewTablePanel,
+  NewTimeSeriesPanel,
+  newDashboard,
+  type PanelRowAndGroups,
+  promql,
+  rawTarget,
+  table,
+  tableExcludeByName,
+  tableIndexByName,
+  units,
+  withPanels,
+} from '../src/grafana-helpers'
+import type { PrometheusTarget, Target } from '../src/helpers/panels/target'
 import { WrapFn } from '../src/helpers/promql'
 
 // https://github.com/matusnovak/prometheus-smartctl
@@ -8,6 +28,7 @@ import { WrapFn } from '../src/helpers/promql'
 // https://github.com/prometheus-community/smartctl_exporter/blob/master/metrics.go
 
 const datasource: dashboard.DataSourceRef = {
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: Grafana variable
   uid: '${DS_PROMETHEUS}',
 }
 
@@ -100,21 +121,49 @@ const selectorsWithSerialNo = [...selectors, `serial_number=~"$serial_number"`]
 
 const overviewStats = NewPanelRow({ datasource, height: 3 }, [
   NewStatPanel({ title: 'Devices count', targets: [{ expr: `sum(${metricDeviceCount.metric}{instance=~"$instance", job="$job"})` }] }),
-  NewStatPanel({ title: 'Missing devices', targets: [{ expr: `sum(${metricDeviceCount.metric}{instance=~"$instance", job="$job"}) - sum(${metricDeviceModel.metric}{instance=~"$instance", job="$job"})` }], thresholds: errorThresholds }),
-  NewStatPanel({ title: 'Exit status', targets: [{ expr: `max(${metricDeviceExitStatus.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }], thresholds: errorThresholds }),
-  NewStatPanel({ title: 'Error log entries', targets: [{ expr: `sum(${metricDeviceNumErrLogEntries.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }], thresholds: errorThresholds }),
-  NewStatPanel({ title: 'Media errors', targets: [{ expr: `sum(${metricDeviceMediaErrors.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }], thresholds: errorThresholds }),
-  NewStatPanel({ title: 'SMART error log count', targets: [{ expr: `sum(${metricDeviceErrorLogCount.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }], thresholds: errorThresholds }),
-  NewStatPanel({ title: 'Critical warnings', targets: [{ expr: `sum(${metricDeviceCriticalWarning.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }], thresholds: errorThresholds }),
-  NewStatPanel({ title: 'SMART failed', targets: [{ expr: `sum(1 - ${metricDeviceSmartStatus.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }], thresholds: errorThresholds }),
+  NewStatPanel({
+    title: 'Missing devices',
+    targets: [{ expr: `sum(${metricDeviceCount.metric}{instance=~"$instance", job="$job"}) - sum(${metricDeviceModel.metric}{instance=~"$instance", job="$job"})` }],
+    thresholds: errorThresholds,
+  }),
+  NewStatPanel({
+    title: 'Exit status',
+    targets: [{ expr: `max(${metricDeviceExitStatus.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }],
+    thresholds: errorThresholds,
+  }),
+  NewStatPanel({
+    title: 'Error log entries',
+    targets: [{ expr: `sum(${metricDeviceNumErrLogEntries.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }],
+    thresholds: errorThresholds,
+  }),
+  NewStatPanel({
+    title: 'Media errors',
+    targets: [{ expr: `sum(${metricDeviceMediaErrors.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }],
+    thresholds: errorThresholds,
+  }),
+  NewStatPanel({
+    title: 'SMART error log count',
+    targets: [{ expr: `sum(${metricDeviceErrorLogCount.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }],
+    thresholds: errorThresholds,
+  }),
+  NewStatPanel({
+    title: 'Critical warnings',
+    targets: [{ expr: `sum(${metricDeviceCriticalWarning.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }],
+    thresholds: errorThresholds,
+  }),
+  NewStatPanel({
+    title: 'SMART failed',
+    targets: [{ expr: `sum(1 - ${metricDeviceSmartStatus.metric}{instance=~"$instance", job="$job"} * on (device, instance) ${metricDeviceModel.metric}{serial_number=~"$serial_number"})` }],
+    thresholds: errorThresholds,
+  }),
 ])
 
 const deviceInfoTablePanel = () => {
   return NewPanelRow({ datasource, height: 14 }, [
     NewTablePanel({
       title: 'Device Info',
-      queries: {
-        value: { target: metricDeviceModel.raw({ selectors: selectorsWithSerialNo, type: 'instant' }).target({ format: 'table', type: 'instant' }) },
+      columns: {
+        value: { target: metricDeviceModel.raw({ selectors: selectorsWithSerialNo, instant: true }).target({ format: 'table' }) },
         instance: { name: 'Instance' },
         device: { name: 'Device' },
         model_name: { name: 'Model name' },
@@ -136,26 +185,22 @@ const deviceInfoTablePanel = () => {
 
 const smartOverviewTablePanel = () => {
   const getTarget = (metric: GaugeMetric, extraSelectors: string = ''): Target => {
-    return {
-      expr: promql.sum(
-        promql.mul(
-          metric.raw({ selectors: [...selectors, extraSelectors] }),
-          metricDeviceModel.raw({ selectors: selectorsWithSerialNo }),
-        ).on(['device', 'instance']),
-      ).by(['instance', 'device']),
-      format: 'table',
-      type: 'instant',
-    }
+    return rawTarget(
+      promql
+        .sum(promql.mul(metric.raw({ selectors: [...selectors, extraSelectors] }).builder(), metricDeviceModel.raw({ selectors: selectorsWithSerialNo }).builder()).on(['device', 'instance']))
+        .by(['instance', 'device']),
+      { format: 'table', type: 'instant' },
+    )
   }
 
   return NewPanelRow({ datasource, height: 14 }, [
     NewTablePanel({
       title: 'SMART overview',
-      queries: {
+      columns: {
         instance: { name: 'Instance', width: 320 },
         device: { name: 'Device', width: 70 },
         model_name: { name: 'Model name', width: 220 },
-        DEVICE: { target: metricDeviceModel.calc('sum', { selectors: selectorsWithSerialNo, type: 'instant', groupBy: ['instance', 'device', 'model_name'] }).target() },
+        DEVICE: { target: metricDeviceModel.sum({ selectors: selectorsWithSerialNo, instant: true, by: ['instance', 'device', 'model_name'] }).target() },
         Temperature: { unit: units.Celsius, target: getTarget(metricDeviceTemperature, 'temperature_type="current"') },
         'Exit status': { target: getTarget(metricDeviceExitStatus) },
         Passed: { name: 'Passed', target: getTarget(metricDeviceSmartStatus) },
@@ -178,15 +223,16 @@ const smartAttributesTablePanel = () => {
   return NewPanelRow({ datasource, height: 8 }, [
     NewTablePanel({
       title: 'SMART attributes',
-      targets: [{
-        expr: promql.mul(
-          metricDeviceAttribute.raw({ selectors }),
-          metricDeviceModel.raw({ selectors: selectorsWithSerialNo }),
-        ).on(['device', 'instance']).groupLeft(['model_name']),
-        format: 'table',
-        type: 'instant',
-      }],
-      queries: {
+      targets: [
+        rawTarget(
+          promql
+            .mul(metricDeviceAttribute.raw({ selectors }).builder(), metricDeviceModel.raw({ selectors: selectorsWithSerialNo }).builder())
+            .on(['device', 'instance'])
+            .groupLeft(['model_name']),
+          { format: 'table', type: 'instant' },
+        ),
+      ],
+      columns: {
         instance: { name: 'Instance', width: 320 },
         device: { name: 'Device', width: 70 },
         model_name: { name: 'Model Name', width: 220 },
@@ -223,15 +269,17 @@ const smartAttributesTablePanel = () => {
 const timeSeriesGroup = () => {
   const queryWithModelNameLegendFormat = '{{ model_name }} ({{ instance }}/{{ device }})'
   const getTarget = (metric: GaugeMetric, extraSelectors: string = '', deviceModelExtraSelectors: string = ''): PrometheusTarget => {
-    return {
-      expr: promql.sum(
-        promql.mul(
-          metric.raw({ selectors: [...selectors, extraSelectors] }),
-          metricDeviceModel.raw({ selectors: [...selectorsWithSerialNo, deviceModelExtraSelectors] }),
-        ).on(['device', 'instance']).groupLeft(['model_name']),
-      ).by(['model_name', 'device', 'instance']),
-      legendFormat: queryWithModelNameLegendFormat,
-    }
+    return rawTarget(
+      promql
+        .sum(
+          promql
+            .mul(metric.raw({ selectors: [...selectors, extraSelectors] }).builder(), metricDeviceModel.raw({ selectors: [...selectorsWithSerialNo, deviceModelExtraSelectors] }).builder())
+            .on(['device', 'instance'])
+            .groupLeft(['model_name']),
+        )
+        .by(['model_name', 'device', 'instance']),
+      { legend: queryWithModelNameLegendFormat },
+    )
   }
 
   return NewPanelGroup({ title: 'Metrics' }, [
@@ -245,20 +293,27 @@ const timeSeriesGroup = () => {
     NewPanelRow({ datasource, height: 8 }, [
       NewTimeSeriesPanel({ title: 'Power cycle count' }, getTarget(metricDevicePowerCycleCount)),
       NewTimeSeriesPanel({ title: 'Write percentage used' }, getTarget(metricDevicePercentageUsed)),
-      NewTimeSeriesPanel({ title: 'NVMe capacity bytes', unit: units.BytesIEC }, {
-        expr: promql.or(
-          getTarget(metricDeviceNVMeCapacityBytes).expr as promql.Builder<promql.Expr>,
-          getTarget(metricDeviceCapacityBytes, '', 'protocol="NVMe"').expr as promql.Builder<promql.Expr>,
+      NewTimeSeriesPanel(
+        { title: 'NVMe capacity bytes', unit: units.BytesIEC },
+        rawTarget(
+          promql.or(getTarget(metricDeviceNVMeCapacityBytes).expr as promql.Builder<promql.Expr>, getTarget(metricDeviceCapacityBytes, '', 'protocol="NVMe"').expr as promql.Builder<promql.Expr>),
+          { legend: queryWithModelNameLegendFormat },
         ),
-        legendFormat: queryWithModelNameLegendFormat,
-      }),
-      NewTimeSeriesPanel({ title: 'Number of error log entries', description: 'Contains the number of Error Information log entries over the life of the controller' }, getTarget(metricDeviceNumErrLogEntries)),
+      ),
+      NewTimeSeriesPanel(
+        { title: 'Number of error log entries', description: 'Contains the number of Error Information log entries over the life of the controller' },
+        getTarget(metricDeviceNumErrLogEntries),
+      ),
     ]),
     NewPanelRow({ datasource, height: 8 }, [
-      NewTimeSeriesPanel({
-        title: 'Number of media errors',
-        description: 'Contains the number of occurrences where the controller detected an unrecovered data integrity error. Errors such as uncorrectable ECC, CRC checksum failure, or LBA tag mismatch are included in this field',
-      }, getTarget(metricDeviceMediaErrors)),
+      NewTimeSeriesPanel(
+        {
+          title: 'Number of media errors',
+          description:
+            'Contains the number of occurrences where the controller detected an unrecovered data integrity error. Errors such as uncorrectable ECC, CRC checksum failure, or LBA tag mismatch are included in this field',
+        },
+        getTarget(metricDeviceMediaErrors),
+      ),
       NewTimeSeriesPanel({ title: 'SMART error log count' }, getTarget(metricDeviceErrorLogCount, 'error_log_type="summary"')),
       NewTimeSeriesPanel({ title: 'Critical warnings for state of controller' }, getTarget(metricDeviceCriticalWarning)),
     ]),
@@ -276,12 +331,19 @@ const timeSeriesGroup = () => {
     NewPanelRow({ datasource, height: 8 }, [
       NewTimeSeriesPanel({ title: 'Block size (logical)', unit: units.BytesIEC }, getTarget(metricDeviceBlockSize, 'blocks_type="logical"')),
       NewTimeSeriesPanel({ title: 'Block size (physical)', unit: units.BytesIEC }, getTarget(metricDeviceBlockSize, 'blocks_type="physical"')),
-      NewTimeSeriesPanel({
-        title: 'Available spare threshold',
-        description: 'When the Available Spare falls below the threshold indicated in this field, an asynchronous event completion may occur. The value is indicated as a normalized percentage (0 to 100%)',
-        unit: units.Percent,
-      }, getTarget(metricDeviceAvailableSpareThreshold)),
-      NewTimeSeriesPanel({ title: 'Available spare', description: 'Normalized percentage (0 to 100%) of the remaining spare capacity available', unit: units.Percent }, getTarget(metricDeviceAvailableSpare)),
+      NewTimeSeriesPanel(
+        {
+          title: 'Available spare threshold',
+          description:
+            'When the Available Spare falls below the threshold indicated in this field, an asynchronous event completion may occur. The value is indicated as a normalized percentage (0 to 100%)',
+          unit: units.Percent,
+        },
+        getTarget(metricDeviceAvailableSpareThreshold),
+      ),
+      NewTimeSeriesPanel(
+        { title: 'Available spare', description: 'Normalized percentage (0 to 100%) of the remaining spare capacity available', unit: units.Percent },
+        getTarget(metricDeviceAvailableSpare),
+      ),
     ]),
   ])
 }
@@ -304,9 +366,30 @@ export const smartctlDashboard = newDashboard({
     NewPrometheusDatasourceVariable({ name: 'DS_PROMETHEUS', label: 'Prometheus' }),
     NewQueryVariable({ datasource, name: 'job', label: 'Job', query: `label_values(${metricSmartctlVersion.metric}, job)` }),
     NewQueryVariable({ datasource, name: 'instance', label: 'Instance', query: `label_values(${metricSmartctlVersion.metric}{job="$job"}, instance)`, includeAll: true, multi: true }),
-    NewQueryVariable({ datasource, name: 'interface', label: 'Device Interface', query: `label_values(${metricDeviceModel.metric}{job="$job", instance=~"$instance"}, interface)`, includeAll: true, multi: true }),
-    NewQueryVariable({ datasource, name: 'model_name', label: 'Model Name', query: `label_values(${metricDeviceModel.metric}{job="$job", instance=~"$instance", interface=~"$interface"}, model_name)`, includeAll: true, multi: true }),
-    NewQueryVariable({ datasource, name: 'serial_number', label: 'Serial Number', query: `label_values(${metricDeviceModel.metric}{job="$job", instance=~"$instance", interface=~"$interface", model_name=~"$model_name"}, serial_number)`, includeAll: true, multi: true }),
+    NewQueryVariable({
+      datasource,
+      name: 'interface',
+      label: 'Device Interface',
+      query: `label_values(${metricDeviceModel.metric}{job="$job", instance=~"$instance"}, interface)`,
+      includeAll: true,
+      multi: true,
+    }),
+    NewQueryVariable({
+      datasource,
+      name: 'model_name',
+      label: 'Model Name',
+      query: `label_values(${metricDeviceModel.metric}{job="$job", instance=~"$instance", interface=~"$interface"}, model_name)`,
+      includeAll: true,
+      multi: true,
+    }),
+    NewQueryVariable({
+      datasource,
+      name: 'serial_number',
+      label: 'Serial Number',
+      query: `label_values(${metricDeviceModel.metric}{job="$job", instance=~"$instance", interface=~"$interface", model_name=~"$model_name"}, serial_number)`,
+      includeAll: true,
+      multi: true,
+    }),
   ],
   panels,
 })

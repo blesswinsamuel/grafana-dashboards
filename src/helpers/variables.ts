@@ -1,4 +1,5 @@
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
+import { dangerouslyAddCustomValues } from './sdk-compat'
 
 export type DataSourceVariableOpts = {
   name: string
@@ -8,26 +9,16 @@ export type DataSourceVariableOpts = {
 
 export function NewDatasourceVariable(opts: DataSourceVariableOpts & { type: 'mysql' | 'prometheus' | 'loki' }): dashboard.DatasourceVariableBuilder {
   const b = new dashboard.DatasourceVariableBuilder(opts.name).label(opts.label).type(opts.type).hide(dashboard.VariableHide.DontHide)
-  if (opts.regex) {
-    b.regex(opts.regex)
-  }
+  if (opts.regex) b.regex(opts.regex)
   return b
 }
 
 export function NewPrometheusDatasourceVariable(opts: DataSourceVariableOpts): dashboard.DatasourceVariableBuilder {
-  const b = new dashboard.DatasourceVariableBuilder(opts.name).label(opts.label).type('prometheus').hide(dashboard.VariableHide.DontHide)
-  if (opts.regex) {
-    b.regex(opts.regex)
-  }
-  return b
+  return NewDatasourceVariable({ ...opts, type: 'prometheus' })
 }
 
 export function NewLokiDatasourceVariable(opts: DataSourceVariableOpts): dashboard.DatasourceVariableBuilder {
-  const b = new dashboard.DatasourceVariableBuilder(opts.name).label(opts.label).type('loki').hide(dashboard.VariableHide.DontHide)
-  if (opts.regex) {
-    b.regex(opts.regex)
-  }
-  return b
+  return NewDatasourceVariable({ ...opts, type: 'loki' })
 }
 
 export type TextboxVariableOpts = {
@@ -41,7 +32,8 @@ export function NewTextboxVariable(opts: TextboxVariableOpts): dashboard.TextBox
   const b = new dashboard.TextBoxVariableBuilder(opts.name).label(opts.label)
   b.hide(opts.hide ? dashboard.VariableHide.HideVariable : dashboard.VariableHide.DontHide)
   if (opts.default) {
-    b.description(opts.default) // This is a workaround for the fact that the default value is not set in the builder
+    // SDK does not yet expose a `current` setter - write it directly
+    dangerouslyAddCustomValues(b, { current: { selected: false, text: opts.default, value: opts.default } } as any)
   }
   return b
 }

@@ -1,89 +1,48 @@
-import * as cog from '@grafana/grafana-foundation-sdk/cog'
-import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
+import type * as cog from '@grafana/grafana-foundation-sdk/cog'
+import type * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
 import * as expr from '@grafana/grafana-foundation-sdk/expr'
 import * as prometheus from '@grafana/grafana-foundation-sdk/prometheus'
-import { promql } from '../../grafana-helpers'
-import { dangerouslyAddCustomValues } from './commons'
+import type { PrometheusTarget, SqlTarget, Target } from '../promql'
+import { dangerouslyAddCustomValues } from '../sdk-compat'
 
-export type PrometheusTarget = { datasource?: dashboard.DataSourceRef } & {
-  expr: string | cog.Builder<promql.Expr>
-  // interval?: string
-  legendFormat?: string
-  refId?: string
-  type?: 'range' | 'instant' | 'both'
-  format?: 'table' | 'time_series' | 'heatmap'
+export type { PrometheusTarget, SqlTarget, Target } from '../promql'
+
+function generateRefId(i: number): string {
+  if (i < 26) return String.fromCharCode(65 + i)
+  return `Q${i}`
 }
 
-export type SQLTarget = { datasource?: dashboard.DataSourceRef } & {
-  rawSql: string
-  refId?: string
-  format?: 'table' | 'time_series' | 'heatmap'
-}
-
-export type Target = PrometheusTarget | SQLTarget
-
-export const deepMerge = <T = { [key: string]: any }>(obj1: T, obj2?: Partial<T>): T => {
-  const clone1 = structuredClone(obj1)
-  if (!obj2) {
-    return clone1
-  }
-
-  for (let key in obj2) {
-    if (obj2[key] instanceof Object && clone1[key] instanceof Object) {
-      if (obj2[key] instanceof Array && clone1[key] instanceof Array) {
-        // don't merge array of strings
-        // @ts-ignore
-        clone1[key] = obj2[key]
-      } else {
-        // @ts-ignore
-        clone1[key] = deepMerge(clone1[key], obj2[key])
-      }
-    } else {
-      // @ts-ignore
-      clone1[key] = obj2[key]
-    }
-  }
-
-  return clone1
-}
-
-type fromTargetsReturnType<T> = T extends PrometheusTarget ? cog.Builder<prometheus.dataquery> : T extends SQLTarget ? cog.Builder<expr.TypeSql> : unknown
-
-export function fromTargets<T extends Target>(targets: T[], datasource?: dashboard.DataSourceRef): fromTargetsReturnType<T>[] {
+export function buildTargets(targets: Target[], datasource?: dashboard.DataSourceRef): cog.Builder<any>[] {
   return targets.map((target, i) => {
     const ds = target.datasource ?? datasource
-    if ('rawSql' in target) {
+    const refId = target.refId ?? generateRefId(i)
+
+    if (target.kind === 'sql') {
       const b = new expr.TypeSqlBuilder()
         .format(target.format || 'table')
         .queryType('table')
-        .refId(target.refId ?? String.fromCharCode('A'.charCodeAt(0) + i))
+        .refId(refId)
       if (ds) b.datasource(ds)
-      dangerouslyAddCustomValues(b, {
-        rawSql: target.rawSql,
-        rawQuery: true,
-      } as any)
+      dangerouslyAddCustomValues(b, { rawSql: target.rawSql, rawQuery: true } as any)
       return b
     }
-    target.type = target.type ?? 'range'
+
     const b = new prometheus.DataqueryBuilder()
       .expr(target.expr.toString())
       .format(
-        target.format
-          ? {
-            heatmap: prometheus.PromQueryFormat.Heatmap,
-            table: prometheus.PromQueryFormat.Table,
-            time_series: prometheus.PromQueryFormat.TimeSeries,
-          }[target.format]
-          : prometheus.PromQueryFormat.TimeSeries,
+        {
+          heatmap: prometheus.PromQueryFormat.Heatmap,
+          table: prometheus.PromQueryFormat.Table,
+          time_series: prometheus.PromQueryFormat.TimeSeries,
+        }[target.format],
       )
-      .refId(target.refId ?? String.fromCharCode('A'.charCodeAt(0) + i))
-    // .interval('$__interval')
+      .refId(refId)
     if (ds) b.datasource(ds)
     if (target.legendFormat) b.legendFormat(target.legendFormat)
     if (target.type === 'both') b.rangeAndInstant()
-    if (target.type === 'instant') b.instant()
-    if (target.type === 'range') b.range()
+    else if (target.type === 'instant') b.instant()
+    else b.range()
 
     return b
-  }) as fromTargetsReturnType<T>[]
+  })
 }

@@ -133,6 +133,7 @@
     "list": []
   },
   "title": "Traefik",
+  "links": [],
   "panels": [
     {
       "type": "text",
@@ -146,7 +147,7 @@
       },
       "options": {
         "mode": "html",
-        "content": "<div style=\"background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;\">\n<h4>This dashboard was generated from code</h4>\n\n<p>Any edits will be lost when the dashboard is regenerated.</p>\n</div>"
+        "content": "<div style=\"background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;\">\n<h4>This dashboard was generated from code</h4>\n<p>Any edits will be lost when the dashboard is regenerated.</p>\n</div>"
       }
     },
     {
@@ -583,7 +584,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -793,7 +793,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "s",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -879,7 +878,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1089,7 +1087,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "s",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1175,7 +1172,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1385,7 +1381,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "s",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1471,7 +1466,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1681,7 +1675,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "s",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1767,7 +1760,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -1977,7 +1969,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "s",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2063,7 +2054,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2273,7 +2263,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "s",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2359,7 +2348,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2429,7 +2417,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -2570,7 +2557,6 @@
         {
           "expr": "{container_name=\"traefik\"} | json | DownstreamStatus >= 400 and DownstreamStatus < 500 | line_format \"{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}\"",
           "refId": "A",
-          "format": "time_series",
           "range": true,
           "instant": false
         }
@@ -2605,7 +2591,6 @@
         {
           "expr": "{container_name=\"traefik\"} | json | DownstreamStatus >= 500 | line_format \"{{.ClientAddr}} - {{.RequestProtocol}} - {{.RequestScheme}}://{{.RequestAddr}}{{.RequestPath}} - {{.RouterName}} - {{.DownstreamStatus}} - {{.OriginStatus}}\"",
           "refId": "A",
-          "format": "time_series",
           "range": true,
           "instant": false
         }
@@ -3806,7 +3791,6 @@
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -5264,7 +5248,6 @@
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -5334,7 +5317,6 @@
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -5476,7 +5458,6 @@
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -5692,7 +5673,6 @@
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -5762,7 +5742,6 @@
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -5978,7 +5957,6 @@
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
@@ -6048,7 +6026,6 @@
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",

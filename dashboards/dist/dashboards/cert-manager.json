@@ -25,6 +25,7 @@
     "list": []
   },
   "title": "Cert Manager",
+  "links": [],
   "panels": [
     {
       "type": "text",
@@ -38,7 +39,7 @@
       },
       "options": {
         "mode": "html",
-        "content": "<div style=\"background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;\">\n<h4>This dashboard was generated from code</h4>\n\n<p>Any edits will be lost when the dashboard is regenerated.</p>\n</div>"
+        "content": "<div style=\"background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;\">\n<h4>This dashboard was generated from code</h4>\n<p>Any edits will be lost when the dashboard is regenerated.</p>\n</div>"
       }
     },
     {
@@ -220,7 +221,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -290,7 +290,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",

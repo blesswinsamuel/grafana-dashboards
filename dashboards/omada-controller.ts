@@ -1,8 +1,23 @@
-import { CounterMetric, dashboard, GaugeMetric, newDashboard, NewPanelGroup, NewPanelRow, NewPrometheusDatasourceVariable, NewQueryVariable, NewStatPanel, NewTablePanel, NewTimeSeriesPanel, PanelRowAndGroups, units } from '../src/grafana-helpers'
-import { RuleGroup } from '../src/helpers/alerting-rules'
+import {
+  CounterMetric,
+  type dashboard,
+  GaugeMetric,
+  NewPanelGroup,
+  NewPanelRow,
+  NewPrometheusDatasourceVariable,
+  NewQueryVariable,
+  NewStatPanel,
+  NewTablePanel,
+  NewTimeSeriesPanel,
+  newDashboard,
+  type PanelRowAndGroups,
+  units,
+} from '../src/grafana-helpers'
+import type { RuleGroup } from '../src/helpers/alerting-rules'
 import { wrapMultiply } from '../src/helpers/promql'
 
 const datasource: dashboard.DataSourceRef = {
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: Grafana variable
   uid: '${DS_PROMETHEUS}',
 }
 
@@ -66,51 +81,75 @@ const panels: PanelRowAndGroups = [
   NewPanelGroup({ title: 'Omada Controller' }, [
     NewPanelRow({ datasource, height: 4 }, [
       //
-      NewStatPanel({ title: 'Total PoE Used', unit: units.Watt, reduceCalc: 'lastNotNull' }, portPowerWatts.calc('sum', { selectors }).target()),
-      NewStatPanel({ title: 'Controller Uptime', unit: units.Seconds }, controllerUptimeSeconds.calc('max', { selectors, type: 'instant' }).target()),
-      NewStatPanel({ title: 'Active Switch Ports', reduceCalc: 'lastNotNull' }, portLinkStatus.calc('sum', { selectors }).target()),
-      NewStatPanel({ title: 'Connected Clients', reduceCalc: 'lastNotNull' }, clientConnectedTotal.calc('sum', { selectors }).target()),
+      NewStatPanel({ title: 'Total PoE Used', unit: units.Watt, reduceCalc: 'lastNotNull' }, portPowerWatts.sum({ selectors }).target()),
+      NewStatPanel({ title: 'Controller Uptime', unit: units.Seconds }, controllerUptimeSeconds.max({ selectors, instant: true }).target()),
+      NewStatPanel({ title: 'Active Switch Ports', reduceCalc: 'lastNotNull' }, portLinkStatus.sum({ selectors }).target()),
+      NewStatPanel({ title: 'Connected Clients', reduceCalc: 'lastNotNull' }, clientConnectedTotal.sum({ selectors }).target()),
     ]),
   ]),
   NewPanelGroup({ title: 'Omada Devices' }, [
     NewPanelRow({ datasource, height: 10 }, [
       //
-      NewTimeSeriesPanel({ title: 'CPU Usage %', unit: units.Percent, max: 100 }, deviceCpuPercentage.calc('sum', { selectors, groupBy: ['device', 'device_type', 'ip'] }).target()),
-      NewTimeSeriesPanel({ title: 'Memory Usage %', unit: units.Percent, max: 100 }, deviceMemPercentage.calc('sum', { selectors, groupBy: ['device', 'device_type', 'ip'] }).target()),
+      NewTimeSeriesPanel({ title: 'CPU Usage %', unit: units.Percent, max: 100 }, deviceCpuPercentage.sum({ selectors, by: ['device', 'device_type', 'ip'] }).target()),
+      NewTimeSeriesPanel({ title: 'Memory Usage %', unit: units.Percent, max: 100 }, deviceMemPercentage.sum({ selectors, by: ['device', 'device_type', 'ip'] }).target()),
     ]),
     NewPanelRow({ datasource, height: 10 }, [
       NewTimeSeriesPanel({
         title: 'Rx/Tx Rate',
         targets: [
           //
-          deviceRxRate.calc('sum', { selectors, groupBy: ['device', 'device_type', 'ip'] }).target({ refId: 'RX', legendFormat: 'Rx - {{ device }} {{ device_type }} {{ ip }}' }),
-          deviceTxRate.calc('sum', { selectors, groupBy: ['device', 'device_type', 'ip'] }).wrap(wrapMultiply(-1)).target({ refId: 'TX', legendFormat: 'Tx - {{ device }} {{ device_type }} {{ ip }}' }),
+          deviceRxRate.sum({ selectors, by: ['device', 'device_type', 'ip'] }).target({ refId: 'RX', legend: 'Rx - {{ device }} {{ device_type }} {{ ip }}' }),
+          deviceTxRate
+            .sum({ selectors, by: ['device', 'device_type', 'ip'] })
+            .wrap(wrapMultiply(-1))
+            .target({ refId: 'TX', legend: 'Tx - {{ device }} {{ device_type }} {{ ip }}' }),
         ],
         unit: units.BytesPerSecondSI,
         legendCalcs: ['mean', 'last'],
       }),
-      NewTimeSeriesPanel({ title: 'Uptime', unit: units.Seconds }, deviceUptimeSeconds.calc('max', { selectors, groupBy: ['device', 'device_type', 'ip'] }).target()),
-      NewTimeSeriesPanel({ title: 'PoE remaining', unit: units.Watt }, devicePoeRemainWatts.calc('max', { selectors, groupBy: ['device', 'device_type', 'ip'] }).target()),
+      NewTimeSeriesPanel({ title: 'Uptime', unit: units.Seconds }, deviceUptimeSeconds.max({ selectors, by: ['device', 'device_type', 'ip'] }).target()),
+      NewTimeSeriesPanel({ title: 'PoE remaining', unit: units.Watt }, devicePoeRemainWatts.max({ selectors, by: ['device', 'device_type', 'ip'] }).target()),
     ]),
   ]),
   NewPanelGroup({ title: 'Omada Clients' }, [
     NewPanelRow({ datasource, height: 10 }, [
       //
-      NewTimeSeriesPanel({ title: 'Clients Connected', unit: units.Short }, clientConnectedTotal.calc('sum', { selectors, groupBy: ['connection_mode', 'wifi_mode'] }).target()),
-      NewTimeSeriesPanel({ title: 'Signal Percentage', unit: units.Percent, max: 100 }, clientSignalPct.calc('sum', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target()),
+      NewTimeSeriesPanel({ title: 'Clients Connected', unit: units.Short }, clientConnectedTotal.sum({ selectors, by: ['connection_mode', 'wifi_mode'] }).target()),
+      NewTimeSeriesPanel(
+        { title: 'Signal Percentage', unit: units.Percent, max: 100 },
+        clientSignalPct.sum({ selectors: [selectors, `ip!=""`], by: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target(),
+      ),
     ]),
     NewPanelRow({ datasource, height: 10 }, [
-      NewTimeSeriesPanel({ title: 'RSSI dBm', unit: units.DecibelMilliWatt, legendCalcs: ['mean', 'min', 'last'] }, clientRssiDbm.calc('sum', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target()),
-      NewTimeSeriesPanel({ title: 'SNR dBm', unit: units.DecibelMilliWatt, legendCalcs: ['mean', 'min', 'last'] }, clientSnrDbm.calc('sum', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target()),
+      NewTimeSeriesPanel(
+        { title: 'RSSI dBm', unit: units.DecibelMilliWatt, legendCalcs: ['mean', 'min', 'last'] },
+        clientRssiDbm.sum({ selectors: [selectors, `ip!=""`], by: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target(),
+      ),
+      NewTimeSeriesPanel(
+        { title: 'SNR dBm', unit: units.DecibelMilliWatt, legendCalcs: ['mean', 'min', 'last'] },
+        clientSnrDbm.sum({ selectors: [selectors, `ip!=""`], by: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target(),
+      ),
     ]),
     NewPanelRow({ datasource, height: 10 }, [
-      NewTimeSeriesPanel({ title: 'Upload Rate', unit: units.BytesPerSecondSI }, clientTrafficUpBytes.calc('sum', 'rate', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target()),
-      NewTimeSeriesPanel({ title: 'Download Rate', unit: units.BytesPerSecondSI }, clientTrafficDownBytes.calc('sum', 'rate', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target()),
+      NewTimeSeriesPanel(
+        { title: 'Upload Rate', unit: units.BytesPerSecondSI },
+        clientTrafficUpBytes.rate({ selectors: [selectors, `ip!=""`], by: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target(),
+      ),
+      NewTimeSeriesPanel(
+        { title: 'Download Rate', unit: units.BytesPerSecondSI },
+        clientTrafficDownBytes.rate({ selectors: [selectors, `ip!=""`], by: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target(),
+      ),
     ]),
     NewPanelRow({ datasource, height: 10 }, [
       //
-      NewTimeSeriesPanel({ title: 'Rx Rate', unit: units.BytesPerSecondSI }, clientRxRate.calc('sum', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target()),
-      NewTimeSeriesPanel({ title: 'Tx Rate', unit: units.BytesPerSecondSI }, clientTxRate.calc('sum', { selectors: [selectors, `ip!=""`], groupBy: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target()),
+      NewTimeSeriesPanel(
+        { title: 'Rx Rate', unit: units.BytesPerSecondSI },
+        clientRxRate.sum({ selectors: [selectors, `ip!=""`], by: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target(),
+      ),
+      NewTimeSeriesPanel(
+        { title: 'Tx Rate', unit: units.BytesPerSecondSI },
+        clientTxRate.sum({ selectors: [selectors, `ip!=""`], by: ['client', 'ap_name', 'connection_mode', 'ssid', 'vlan_id', 'wifi_mode'] }).target(),
+      ),
     ]),
   ]),
   NewPanelGroup({ title: 'Omada Ports' }, [
@@ -119,7 +158,7 @@ const panels: PanelRowAndGroups = [
       NewTablePanel({
         //
         title: 'Port Link Status',
-        queries: {
+        columns: {
           switch_port: { name: 'Switch Port' },
           name: { name: 'Name' },
           client: { name: 'Client' },
@@ -127,17 +166,21 @@ const panels: PanelRowAndGroups = [
           profile: { name: 'Profile' },
           device: { name: 'Device' },
           STATUS: {
-            target: portLinkStatus.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], type: 'instant' }).target(),
+            target: portLinkStatus.sum({ selectors, by: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], instant: true }).target(),
             name: 'Status',
             overrides: {
               mappings: [{ options: { '1': { color: 'green', index: 1, text: 'ON' }, '0': { color: 'red', index: 0, text: 'OFF' } }, type: 'value' }],
               'custom.cellOptions': { type: 'color-background', mode: 'gradient', applyToRow: false, wrapText: false },
             },
           },
-          SPEED: { name: 'Speed', target: portLinkSpeedMbps.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], type: 'instant' }).target(), unit: units.MebibitsPerSecond },
-          RX: { name: 'Rx', target: portLinkRx.calc('sum', 'increase', { selectors, groupBy: ['switch_port'], type: 'instant' }).target(), unit: units.BytesSI },
-          TX: { name: 'Tx', target: portLinkTx.calc('sum', 'increase', { selectors, groupBy: ['switch_port'], type: 'instant' }).target(), unit: units.BytesSI },
-          POWER: { name: 'Power', target: portPowerWatts.calc('sum', { selectors, groupBy: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], type: 'instant' }).target(), unit: units.Watt },
+          SPEED: {
+            name: 'Speed',
+            target: portLinkSpeedMbps.sum({ selectors, by: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], instant: true }).target(),
+            unit: units.MebibitsPerSecond,
+          },
+          RX: { name: 'Rx', target: portLinkRx.increase({ selectors, by: ['switch_port'], instant: true }).target(), unit: units.BytesSI },
+          TX: { name: 'Tx', target: portLinkTx.increase({ selectors, by: ['switch_port'], instant: true }).target(), unit: units.BytesSI },
+          POWER: { name: 'Power', target: portPowerWatts.sum({ selectors, by: ['client', 'device', 'name', 'profile', 'site', 'switch_port', 'vlan_id'], instant: true }).target(), unit: units.Watt },
         },
         excludeColumns: ['Time', 'site'],
         transformations: [

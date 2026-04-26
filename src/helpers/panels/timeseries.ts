@@ -1,30 +1,29 @@
-import * as cog from '@grafana/grafana-foundation-sdk/cog'
 import * as common from '@grafana/grafana-foundation-sdk/common'
-import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
-import * as expr from '@grafana/grafana-foundation-sdk/expr'
-import * as prometheus from '@grafana/grafana-foundation-sdk/prometheus'
 import * as timeseries from '@grafana/grafana-foundation-sdk/timeseries'
-import * as units from '@grafana/grafana-foundation-sdk/units'
-import { CommonPanelOpts, inferUnit, TimeseriesChartType, withCommonOpts } from './commons'
-import { Target } from './target'
+import type { Target } from '../promql'
+import { type CommonPanelOpts, inferPanelDefaults, withCommonOpts } from './commons'
 
-export type TimeSeriesPanelOpts = CommonPanelOpts<Target> & {
+export type TimeseriesChartType = 'line' | 'bar' | 'scatter' | 'area'
+
+export type TimeSeriesPanelOpts = CommonPanelOpts & {
   type?: TimeseriesChartType
   legendCalcs?: string[]
   legendPlacement?: common.LegendPlacement | 'right' | 'bottom'
   stackingMode?: common.StackingMode
 }
-export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: Target[]): timeseries.PanelBuilder {
-  ;[opts.unit, opts.type] = inferUnit(targets, opts.type, opts.unit)
-  opts.targets = [...(opts.targets || []), ...(targets || [])]
-  const legendCalcs = opts.legendCalcs ?? {
-    bar: ['sum'],
-    line: ['min', 'max', 'mean', 'lastNotNull'],
-    'scatter': ['mean', 'median', 'min', 'max'],
-    'area': ['min', 'max', 'mean', 'lastNotNull'],
-  }[opts.type]
+
+export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...extraTargets: Target[]): timeseries.PanelBuilder {
+  if (extraTargets.length > 0) opts = { ...opts, targets: [...(opts.targets ?? []), ...extraTargets] }
+  const defaults = inferPanelDefaults(opts.targets ?? [])
+  opts.unit = opts.unit ?? defaults.unit
+  // chartType: 'bar' hint from counter increase/delta, 'line' otherwise
+  const chartType: TimeseriesChartType = opts.type ?? (defaults.chartType === 'bar' ? 'bar' : 'line')
+  const legendCalcs =
+    opts.legendCalcs ?? { bar: ['sum'], line: ['min', 'max', 'mean', 'lastNotNull'], scatter: ['mean', 'median', 'min', 'max'], area: ['min', 'max', 'mean', 'lastNotNull'] }[chartType]!
+
   const b = new timeseries.PanelBuilder()
   withCommonOpts(b, opts)
+
   b.axisCenteredZero(false)
   b.axisColorMode(common.AxisColorMode.Text)
   b.axisGridShow(true)
@@ -41,7 +40,7 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: Target
   b.spanNulls(false)
   b.thresholdsStyle(new common.GraphThresholdsStyleConfigBuilder().mode(opts.thresholdsStyleMode ?? common.GraphThresholdsStyleMode.Off))
 
-  switch (opts.type) {
+  switch (chartType) {
     case 'bar':
       b.drawStyle(common.GraphDrawStyle.Bars)
       b.fillOpacity(100)
@@ -65,7 +64,6 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: Target
       b.showPoints(common.VisibilityMode.Auto)
       b.pointSize(2)
       b.stacking(new common.StackingConfigBuilder().mode(opts.stackingMode ?? common.StackingMode.Normal))
-      // b.maxDataPoints(opts.maxDataPoints ?? 100)
       break
     case 'area':
       b.drawStyle(common.GraphDrawStyle.Line)
@@ -83,78 +81,14 @@ export function NewTimeSeriesPanel(opts: TimeSeriesPanelOpts, ...targets: Target
     else if (opts.legendPlacement === 'bottom') lb.placement(common.LegendPlacement.Bottom)
     else lb.placement(opts.legendPlacement as common.LegendPlacement)
   }
-  if (legendCalcs.length == 0) {
-    lb.displayMode(common.LegendDisplayMode.List)
-  }
+  if (legendCalcs.length === 0) lb.displayMode(common.LegendDisplayMode.List)
   const legendSortBy = legendCalcs[legendCalcs.length - 1]
-  const legendSortByName = legendSortBy
-    ? {
-      mean: 'Mean',
-      min: 'Min',
-      max: 'Max',
-      last: 'Last',
-      lastNotNull: 'Last *',
-      sum: 'Total',
-      '': 'None',
-    }[legendSortBy]
-    : undefined
+  const legendSortByName = legendSortBy ? { mean: 'Mean', min: 'Min', max: 'Max', last: 'Last', lastNotNull: 'Last *', sum: 'Total', '': 'None' }[legendSortBy] : undefined
   if (legendSortByName) {
     lb.sortBy(legendSortByName)
     lb.sortDesc(true)
   }
   b.legend(lb)
-
   b.tooltip(new common.VizTooltipOptionsBuilder().mode(common.TooltipDisplayMode.Multi).sort(common.SortOrder.Descending))
-  //   if (opts.timezone !== undefined) b.timezone(opts.timezone)
-  //   if (opts.legend !== undefined) b.legend({ build: () => opts.legend! })
-  //   if (opts.tooltip !== undefined) b.tooltip({ build: () => opts.tooltip! })
-  //   if (opts.orientation !== undefined) b.orientation(opts.orientation)
-
-  //   fieldConfig: {
-  //   defaults: {
-  //     color: {
-  //       mode: FieldColorModeId.PaletteClassic,
-  //     },
-  //     custom: {
-  //       axisCenteredZero: false,
-  //       axisColorMode: AxisColorMode.Text,
-  //       axisGridShow: true,
-  //       axisLabel: '',
-  //       axisPlacement: AxisPlacement.Auto,
-  //       barAlignment: 0,
-  //       drawStyle: GraphDrawStyle.Line,
-  //       fillOpacity: 0,
-  //       gradientMode: GraphGradientMode.None,
-  //       hideFrom: {
-  //         legend: false,
-  //         tooltip: false,
-  //         viz: false,
-  //       },
-  //       lineInterpolation: LineInterpolation.Linear,
-  //       lineWidth: 1,
-  //       pointSize: 5,
-  //       scaleDistribution: {
-  //         type: ScaleDistribution.Linear,
-  //       },
-  //       showPoints: VisibilityMode.Auto,
-  //       spanNulls: false,
-  //       stacking: {
-  //         group: 'A',
-  //         mode: StackingMode.None,
-  //       },
-  //       thresholdsStyle: {
-  //         mode: opts.thresholdsStyleMode ?? GraphThresholdsStyleMode.Off,
-  //       },
-  //     },
-  //     mappings: opts.mappings,
-  //     thresholds: opts.thresholds,
-  //     unit: opts.defaultUnit,
-  //     min: opts.min,
-  //     max: opts.max,
-  //     ...opts.fieldConfigDefaults,
-  //   },
-  //   overrides: opts.overrides ?? [],
-  // },
-
   return b
 }

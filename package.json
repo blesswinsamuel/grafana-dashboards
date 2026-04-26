@@ -3,7 +3,11 @@
   "main": "src/grafana-helpers.ts",
   "scripts": {
     "generate": "bun dashboards/dashboards.ts",
-    "dev": "bun --watch dashboards/dashboards.ts"
+    "dev": "bun --watch dashboards/dashboards.ts",
+    "typecheck": "bun x tsc --noEmit",
+    "format": "bun x biome format --write .",
+    "lint": "bun x biome lint .",
+    "check": "bun x biome check --write ."
   },
   "files": [
     "src/**/*"
@@ -14,7 +18,7 @@
     "yaml": "^2.8.0"
   },
   "devDependencies": {
-    "@types/node": "^22.15.21",
-    "prettier": "^3.5.3"
+    "@biomejs/biome": "^2.0.0",
+    "@types/node": "^22.15.21"
   }
 }

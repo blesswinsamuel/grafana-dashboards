@@ -1,149 +1,70 @@
-import * as barchart from '@grafana/grafana-foundation-sdk/barchart'
-import * as bargauge from '@grafana/grafana-foundation-sdk/bargauge'
-import * as cog from '@grafana/grafana-foundation-sdk/cog'
-import * as common from '@grafana/grafana-foundation-sdk/common'
+import type * as barchart from '@grafana/grafana-foundation-sdk/barchart'
+import type * as bargauge from '@grafana/grafana-foundation-sdk/bargauge'
+import type * as common from '@grafana/grafana-foundation-sdk/common'
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
-import * as logs from '@grafana/grafana-foundation-sdk/logs'
-import * as piechart from '@grafana/grafana-foundation-sdk/piechart'
-import * as stat from '@grafana/grafana-foundation-sdk/stat'
-import * as table from '@grafana/grafana-foundation-sdk/table'
-import * as timeseries from '@grafana/grafana-foundation-sdk/timeseries'
-import * as units from '@grafana/grafana-foundation-sdk/units'
-import { fromTargets, Target } from './target'
+import type * as logs from '@grafana/grafana-foundation-sdk/logs'
+import type * as piechart from '@grafana/grafana-foundation-sdk/piechart'
+import type * as stat from '@grafana/grafana-foundation-sdk/stat'
+import type * as table from '@grafana/grafana-foundation-sdk/table'
+import type * as timeseries from '@grafana/grafana-foundation-sdk/timeseries'
+import type { Target } from '../promql'
+import { buildTargets } from './target'
 
-type UnitKeys = keyof typeof units
-export type Unit = (typeof units)[UnitKeys]
+export type { Unit } from '../promql'
 
-export type TimeseriesChartType = 'line' | 'bar' | 'scatter' | 'area'
+export type PanelDefaults = { unit?: string; chartType?: 'line' | 'bar' }
 
-export function inferUnit(targets: Target[], type?: TimeseriesChartType, fallback?: Unit): [Unit | undefined, TimeseriesChartType] {
-  const expr = targets.length > 0 && targets[0] && 'expr' in targets[0] ? targets[0].expr.toString() : ''
-  if (!type) {
-    if (expr.includes('$__interval')) {
-      // interval (bar chart)
-      type = 'bar'
-      if (!fallback) {
-        if (expr.includes('_bytes_total')) {
-          fallback = units.BytesSI
-        } else {
-          fallback = units.Short
-        }
-      }
-    } else if (expr.includes('$__rate_interval')) {
-      // rate (line chart)
-      type = 'line'
-      if (!fallback) {
-        if (expr.includes('histogram_quantile')) {
-          // histogram quantile
-          if (expr.includes('_seconds_bucket') || expr.includes('_s_bucket')) {
-            fallback = units.Seconds
-          }
-          if (expr.includes('_milliseconds_bucket') || expr.includes('_ms_bucket')) {
-            fallback = units.Milliseconds
-          }
-        } else if (expr.includes('histogram_share')) {
-          // histogram share
-          fallback = units.PercentUnit
-        } else {
-          if (((expr.includes('_seconds_sum') && expr.includes('_seconds_count')) || (expr.includes('_s_sum') && expr.includes('_s_count'))) && expr.includes('rate') && expr.includes('/')) {
-            fallback = units.Seconds
-          } else if (expr.includes('_request_') || expr.includes('_requests_') || expr.includes('_response_')) {
-            fallback = units.RequestsPerSecond
-          } else if (expr.includes('_bytes_total')) {
-            fallback = units.BytesPerSecondSI
-          } else if (expr.includes('_reads_total')) {
-            fallback = units.ReadsPerSecond
-          } else if (expr.includes('_writes_total')) {
-            fallback = units.WritesPerSecond
-          } else if (expr.includes('_packets_total')) {
-            fallback = units.PacketsPerSecond
-          }
-        }
-      }
-    } else {
-      // gauge
-      type = 'line'
-      if (!fallback) {
-        if (expr.includes('_seconds')) {
-          fallback = units.Seconds
-        } else if (expr.includes('_milliseconds') || expr.includes('_ms')) {
-          fallback = units.Milliseconds
-        } else if (expr.includes('_bytes')) {
-          fallback = units.BytesSI
-        } else if (expr.includes('_percent')) {
-          fallback = units.PercentUnit
-        }
-      }
+export function inferPanelDefaults(targets: Target[]): PanelDefaults {
+  for (const t of targets) {
+    if (t.kind === 'prometheus' && t.hints) {
+      return { unit: t.hints.unit, chartType: t.hints.chartType }
     }
   }
-  return [fallback, type ?? 'line']
+  return {}
 }
 
-export function overridesMatchByName(overrides: Record<string, Record<string, any>>): dashboard.FieldConfigSource['overrides'] {
-  const result: dashboard.FieldConfigSource['overrides'] = []
-  for (const matcher of Object.keys(overrides)) {
-    result.push({
-      matcher: { id: 'byName', options: matcher },
-      properties: Object.entries(overrides[matcher]!).map(([key, value]) => {
-        return { id: key, value }
-      }),
-    })
-  }
-  return result
-}
-
-export type CommonPanelOpts<T extends Target> = {
+export type CommonPanelOpts = {
   datasource?: dashboard.DataSourceRef
   title: string
   description?: string
-  targets?: T[]
-  unit?: Unit
+  targets?: Target[]
+  unit?: string
   min?: number
   max?: number
   decimals?: number
-
   transformations?: dashboard.DataTransformerConfig[]
-
   width?: number
   height?: number
   maxDataPoints?: number
   interval?: string
   timeFrom?: string
-
   thresholdsStyleMode?: common.GraphThresholdsStyleMode
   mappings?: dashboard.ValueMapping[]
   thresholds?: dashboard.ThresholdsConfig
-
   overrides?: dashboard.FieldConfigSource['overrides']
   overridesByName?: Record<string, Record<string, any>>
   overridesByRefId?: Record<string, Record<string, any>>
-
   links?: (Partial<dashboard.DashboardLink> & Pick<dashboard.DashboardLink, 'title'>)[]
-  //   fieldConfigDefaults?: dashboard.FieldConfig
 }
 
 type GenericPanelBuilder = timeseries.PanelBuilder | stat.PanelBuilder | logs.PanelBuilder | barchart.PanelBuilder | piechart.PanelBuilder | table.PanelBuilder | bargauge.PanelBuilder
 
-export function withCommonOpts<PT extends GenericPanelBuilder, T extends Target>(b: PT, opts: CommonPanelOpts<T>, ...extraTargets: T[]): PT {
-  const targets = [...(opts.targets || []), ...(extraTargets || [])]
-  opts.targets = targets
-  opts.unit = opts.unit ?? (targets.length > 0 ? inferUnit(targets)[0] : undefined)
-  if (targets) b.targets(fromTargets(targets, opts.datasource))
+export function withCommonOpts<PT extends GenericPanelBuilder>(b: PT, opts: CommonPanelOpts): PT {
+  const defaults = inferPanelDefaults(opts.targets ?? [])
+  const unit = opts.unit ?? defaults.unit
 
+  if (opts.targets) b.targets(buildTargets(opts.targets, opts.datasource))
   if (opts.datasource !== undefined) b.datasource(opts.datasource)
   if (opts.title !== undefined) b.title(opts.title)
   if (opts.description !== undefined) b.description(opts.description)
   if (opts.interval !== undefined) b.interval(opts.interval)
   if (opts.maxDataPoints !== undefined) b.maxDataPoints(opts.maxDataPoints)
-  const width = opts.width || 0
-  const height = opts.height || 0
-  b.gridPos({ h: height, w: width, x: 0, y: 0 })
-  if (opts.unit !== undefined) b.unit(opts.unit)
+  b.gridPos({ h: opts.height || 0, w: opts.width || 0, x: 0, y: 0 })
+  if (unit !== undefined) b.unit(unit)
   if (opts.min !== undefined) b.min(opts.min)
   if (opts.max !== undefined) b.max(opts.max)
   if (opts.decimals !== undefined) b.decimals(opts.decimals)
-  if (opts.transformations != undefined) b.transformations(opts.transformations)
-
+  if (opts.transformations !== undefined) b.transformations(opts.transformations)
   if (opts.mappings !== undefined) b.mappings(opts.mappings)
   if (opts.thresholds !== undefined) {
     const tb = new dashboard.ThresholdsConfigBuilder()
@@ -168,9 +89,7 @@ export function withCommonOpts<PT extends GenericPanelBuilder, T extends Target>
       )
     }
   }
-
   b.transparent(false)
-
   if (opts.links !== undefined) {
     const bls: dashboard.DashboardLinkBuilder[] = []
     for (const link of opts.links) {
@@ -185,15 +104,16 @@ export function withCommonOpts<PT extends GenericPanelBuilder, T extends Target>
     }
     b.links(bls)
   }
-
   return b
 }
 
-export function dangerouslyAddCustomValues<T extends object>(b: cog.Builder<T>, customValues: Partial<T>): cog.Builder<T> {
-  const o = b.build()
-  for (const [key, value] of Object.entries(customValues)) {
-    // @ts-ignore
-    o[key] = value
+export function overridesMatchByName(overrides: Record<string, Record<string, any>>): dashboard.FieldConfigSource['overrides'] {
+  const result: dashboard.FieldConfigSource['overrides'] = []
+  for (const matcher of Object.keys(overrides)) {
+    result.push({
+      matcher: { id: 'byName', options: matcher },
+      properties: Object.entries(overrides[matcher]!).map(([key, value]) => ({ id: key, value })),
+    })
   }
-  return b
+  return result
 }

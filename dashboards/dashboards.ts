@@ -1,12 +1,12 @@
-import { postgresDashboard } from './postgres'
+import { Dashboard, type DashboardBuilder, DashboardCursorSync } from '@grafana/grafana-foundation-sdk/dashboard'
+import path from 'path'
+import { writeDashboardAndPostToGrafana, writePrometheusRules } from '../src/grafana-helpers'
+import { certManagerDashboard } from './cert-manager'
 import { omadaControllerDashboard, omadaControllerRules } from './omada-controller'
+import { postgresDashboard } from './postgres'
 import { smartctlDashboard } from './smartctl'
 import { traefikDashboard } from './traefik'
-import { certManagerDashboard } from './cert-manager'
 import { zfsDashboard } from './zfs'
-import { writeDashboardAndPostToGrafana, writePrometheusRules } from '../src/grafana-helpers'
-import path from 'path'
-import { Dashboard, DashboardBuilder, DashboardCursorSync } from '@grafana/grafana-foundation-sdk/dashboard'
 
 type DashboardItem = {
   dashboard: DashboardBuilder
@@ -61,5 +61,5 @@ async function main() {
   console.log('Done')
 }
 
-//@ts-ignore
+//@ts-expect-error
 await main()

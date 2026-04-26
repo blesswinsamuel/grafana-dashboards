@@ -120,6 +120,7 @@
     "list": []
   },
   "title": "Smartctl",
+  "links": [],
   "panels": [
     {
       "type": "text",
@@ -133,7 +134,7 @@
       },
       "options": {
         "mode": "html",
-        "content": "<div style=\"background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;\">\n<h4>This dashboard was generated from code</h4>\n\n<p>Any edits will be lost when the dashboard is regenerated.</p>\n</div>"
+        "content": "<div style=\"background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;\">\n<h4>This dashboard was generated from code</h4>\n<p>Any edits will be lost when the dashboard is regenerated.</p>\n</div>"
       }
     },
     {
@@ -157,7 +158,6 @@
         {
           "expr": "sum(smartctl_devices{instance=~\"$instance\", job=\"$job\"})",
           "refId": "A",
-          "format": "time_series",
           "range": true,
           "instant": false
         }
@@ -213,7 +213,6 @@
         {
           "expr": "sum(smartctl_devices{instance=~\"$instance\", job=\"$job\"}) - sum(smartctl_device{instance=~\"$instance\", job=\"$job\"})",
           "refId": "A",
-          "format": "time_series",
           "range": true,
           "instant": false
         }
@@ -273,7 +272,6 @@
         {
           "expr": "max(smartctl_device_smartctl_exit_status{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"})",
           "refId": "A",
-          "format": "time_series",
           "range": true,
           "instant": false
         }
@@ -333,7 +331,6 @@
         {
           "expr": "sum(smartctl_device_num_err_log_entries{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"})",
           "refId": "A",
-          "format": "time_series",
           "range": true,
           "instant": false
         }
@@ -393,7 +390,6 @@
         {
           "expr": "sum(smartctl_device_media_errors{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"})",
           "refId": "A",
-          "format": "time_series",
           "range": true,
           "instant": false
         }
@@ -453,7 +449,6 @@
         {
           "expr": "sum(smartctl_device_error_log_count{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"})",
           "refId": "A",
-          "format": "time_series",
           "range": true,
           "instant": false
         }
@@ -513,7 +508,6 @@
         {
           "expr": "sum(smartctl_device_critical_warning{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"})",
           "refId": "A",
-          "format": "time_series",
           "range": true,
           "instant": false
         }
@@ -573,7 +567,6 @@
         {
           "expr": "sum(1 - smartctl_device_smart_status{instance=~\"$instance\", job=\"$job\"} * on (device, instance) smartctl_device{serial_number=~\"$serial_number\"})",
           "refId": "A",
-          "format": "time_series",
           "range": true,
           "instant": false
         }
@@ -1568,7 +1561,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "percentunit",
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -3887,7 +3879,6 @@
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "short",
               "custom": {
                 "axisCenteredZero": false,
                 "axisColorMode": "text",

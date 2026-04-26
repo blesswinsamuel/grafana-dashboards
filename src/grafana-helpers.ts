@@ -1,35 +1,9 @@
 // https://github.com/grafana/grafana/tree/main/packages/grafana-schema
-import * as cog from '@grafana/grafana-foundation-sdk/cog'
+import type * as cog from '@grafana/grafana-foundation-sdk/cog'
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
 import * as text from '@grafana/grafana-foundation-sdk/text'
 
-// Exports
-export { goRuntimeMetricsPanels } from './common-panels/go-runtime'
-export { type GrafanaAnnotationOpts, type LogAnnotationOpts, NewElasticsearchAnnotation as NewLogAnnotation, NewGrafanaAnnotation } from './helpers/annotations'
-export { NewDatasourceVariable, NewLokiDatasourceVariable, NewPrometheusDatasourceVariable, NewQueryVariable, NewTextboxVariable } from './helpers/variables'
-
-export { writePrometheusRules } from './helpers/alerting-rules'
-export { writeDashboardAndPostToGrafana } from './helpers/grafana'
-export { type BarChartPanelOpts, NewBarChartPanel } from './helpers/panels/barchart'
-export { type BarGaugePanelOpts, NewBarGaugePanel } from './helpers/panels/bargauge'
-export { overridesMatchByName } from './helpers/panels/commons'
-export { type LokiLogsPanelOpts, NewLokiLogsPanel } from './helpers/panels/loki'
-export { NewPieChartPanel, type PieChartPanelOpts } from './helpers/panels/piechart'
-export { NewStatPanel, type StatPanelOpts } from './helpers/panels/stat'
-export { NewTablePanel, type TablePanelOpts } from './helpers/panels/table'
-export { tableExcludeByName, tableIndexByName } from './helpers/panels/table'
-export { NewTextPanel, type TextPanelOpts } from './helpers/panels/text'
-export { NewTimeSeriesPanel, type TimeSeriesPanelOpts } from './helpers/panels/timeseries'
-export type { CommonMetricOpts, CommonQueryOpts } from './helpers/promql'
-export { CounterMetric, formatLegendFormat, GaugeMetric, HistogramMetric, mergeSelectors, SummaryMetric } from './helpers/promql'
-
-// PromQL
-export * as promql from '@grafana/promql-builder'
-
-// Units
-export * as units from '@grafana/grafana-foundation-sdk/units'
-
-// Panels
+// SDK namespaces
 export * as barchart from '@grafana/grafana-foundation-sdk/barchart'
 export * as common from '@grafana/grafana-foundation-sdk/common'
 export * as dashboard from '@grafana/grafana-foundation-sdk/dashboard'
@@ -38,6 +12,116 @@ export * as piechart from '@grafana/grafana-foundation-sdk/piechart'
 export * as stat from '@grafana/grafana-foundation-sdk/stat'
 export * as table from '@grafana/grafana-foundation-sdk/table'
 export * as timeseries from '@grafana/grafana-foundation-sdk/timeseries'
+// Units
+export * as units from '@grafana/grafana-foundation-sdk/units'
+// PromQL
+export * as promql from '@grafana/promql-builder'
+// ============================================================
+// Core helpers re-exports
+// ============================================================
+export { goRuntimeMetricsPanels } from './common-panels/go-runtime'
+export { writePrometheusRules } from './helpers/alerting-rules'
+export { type GrafanaAnnotationOpts, type LogAnnotationOpts, NewElasticsearchAnnotation as NewLogAnnotation, NewGrafanaAnnotation } from './helpers/annotations'
+export { writeDashboardAndPostToGrafana } from './helpers/grafana'
+// Panel builders
+export { type BarChartPanelOpts, NewBarChartPanel } from './helpers/panels/barchart'
+export { type BarGaugePanelOpts, NewBarGaugePanel } from './helpers/panels/bargauge'
+export { overridesMatchByName } from './helpers/panels/commons'
+export { type LokiLogsPanelOpts, NewLokiLogsPanel } from './helpers/panels/loki'
+export { NewPieChartPanel, type PieChartPanelOpts } from './helpers/panels/piechart'
+export { NewStatPanel, type StatPanelOpts } from './helpers/panels/stat'
+export { NewTablePanel, type TableColumn, type TablePanelOpts, tableExcludeByName, tableIndexByName } from './helpers/panels/table'
+export { NewTextPanel, type TextPanelOpts } from './helpers/panels/text'
+export { NewTimeSeriesPanel, type TimeSeriesPanelOpts, type TimeseriesChartType } from './helpers/panels/timeseries'
+// Query chain
+export {
+  applyBinaryOp,
+  CounterMetric,
+  type CounterQueryOpts,
+  GaugeMetric,
+  type GaugeQueryOpts,
+  HistogramMetric,
+  type MetricOpts,
+  type PrometheusQuery,
+  type PrometheusTarget,
+  type QueryHints,
+  rawTarget,
+  type SqlTarget,
+  SummaryMetric,
+  sel,
+  sqlTarget,
+  type Target,
+  type TargetOpts,
+  tv,
+  type Unit,
+  wrapConditional,
+  wrapMultiply,
+} from './helpers/promql'
+export { NewDatasourceVariable, NewLokiDatasourceVariable, NewPrometheusDatasourceVariable, NewQueryVariable, NewTextboxVariable } from './helpers/variables'
+
+import type * as barchart from '@grafana/grafana-foundation-sdk/barchart'
+import type * as bargauge from '@grafana/grafana-foundation-sdk/bargauge'
+import type { PanelBuilder as LogsPanelBuilder } from '@grafana/grafana-foundation-sdk/logs'
+import type * as piechart from '@grafana/grafana-foundation-sdk/piechart'
+import type * as stat from '@grafana/grafana-foundation-sdk/stat'
+import type * as timeseries from '@grafana/grafana-foundation-sdk/timeseries'
+import type { BarChartPanelOpts } from './helpers/panels/barchart'
+import { NewBarChartPanel } from './helpers/panels/barchart'
+import type { BarGaugePanelOpts } from './helpers/panels/bargauge'
+import { NewBarGaugePanel } from './helpers/panels/bargauge'
+import type { LokiLogsPanelOpts } from './helpers/panels/loki'
+import { NewLokiLogsPanel } from './helpers/panels/loki'
+import type { PieChartPanelOpts } from './helpers/panels/piechart'
+import { NewPieChartPanel } from './helpers/panels/piechart'
+import type { StatPanelOpts } from './helpers/panels/stat'
+import { NewStatPanel } from './helpers/panels/stat'
+import type { TablePanelOpts } from './helpers/panels/table'
+import type { TimeSeriesPanelOpts } from './helpers/panels/timeseries'
+import { NewTimeSeriesPanel } from './helpers/panels/timeseries'
+// ============================================================
+// Compact panel alias helpers
+// ============================================================
+import type { Target } from './helpers/promql'
+
+/** Compact time series panel: `ts('Title', target1, target2)` or `ts({ title: 'Title', ...opts }, target1)` */
+export function ts(titleOrOpts: string | Omit<TimeSeriesPanelOpts, 'targets'>, ...targets: Target[]): timeseries.PanelBuilder {
+  const opts = typeof titleOrOpts === 'string' ? { title: titleOrOpts } : titleOrOpts
+  return NewTimeSeriesPanel({ ...opts, targets: [...((opts as any).targets ?? []), ...targets] })
+}
+
+/** Compact stat panel: `statPanel('Title', target)` or `statPanel({ title: 'Title', ...opts }, target)` */
+export function statPanel(titleOrOpts: string | Omit<StatPanelOpts, 'targets'>, ...targets: Target[]): stat.PanelBuilder {
+  const opts = typeof titleOrOpts === 'string' ? { title: titleOrOpts } : titleOrOpts
+  return NewStatPanel({ ...opts, targets: [...((opts as any).targets ?? []), ...targets] })
+}
+
+/** Compact pie chart panel */
+export function pie(titleOrOpts: string | Omit<PieChartPanelOpts, 'targets'>, ...targets: Target[]): piechart.PanelBuilder {
+  const opts = typeof titleOrOpts === 'string' ? { title: titleOrOpts } : titleOrOpts
+  return NewPieChartPanel({ ...opts, targets: [...((opts as any).targets ?? []), ...targets] })
+}
+
+/** Compact bar chart panel */
+export function barChart(titleOrOpts: string | Omit<BarChartPanelOpts, 'targets'>, ...targets: Target[]): barchart.PanelBuilder {
+  const opts = typeof titleOrOpts === 'string' ? { title: titleOrOpts } : titleOrOpts
+  return NewBarChartPanel({ ...opts, targets: [...((opts as any).targets ?? []), ...targets] })
+}
+
+/** Compact bar gauge panel */
+export function barGauge(titleOrOpts: string | Omit<BarGaugePanelOpts, 'targets'>, ...targets: Target[]): bargauge.PanelBuilder {
+  const opts = typeof titleOrOpts === 'string' ? { title: titleOrOpts } : titleOrOpts
+  return NewBarGaugePanel({ ...opts, targets: [...((opts as any).targets ?? []), ...targets] })
+}
+
+/** Compact Loki logs panel */
+export function lokiLogs(titleOrOpts: string | Omit<LokiLogsPanelOpts, 'targets'>, ...targets: Target[]): LogsPanelBuilder {
+  const opts = typeof titleOrOpts === 'string' ? { title: titleOrOpts } : titleOrOpts
+  return NewLokiLogsPanel({ ...opts, targets: [...((opts as any).targets ?? []), ...targets] })
+}
+
+// ============================================================
+// Layout helpers
+// ============================================================
 
 export type PanelRow = {
   type: 'panel-row'
@@ -79,7 +163,6 @@ export function NewPanelRow(opts: PanelArrayOpts, panels: Array<cog.Builder<dash
     }
     panelsBuilt.push(panel)
   }
-
   return {
     type: 'panel-row',
     panels: panelsBuilt,
@@ -139,7 +222,6 @@ export function newDashboard(opts: DashboardOpts): dashboard.DashboardBuilder {
         .content(
           `<div style="background: oklch(44.3% 0.11 240.79); color: #fff; padding: 16px;">
 <h4>This dashboard was generated from code</h4>
-
 <p>Any edits will be lost when the dashboard is regenerated.</p>
 </div>`,
         )
@@ -154,16 +236,15 @@ export function withPanels(db: dashboard.DashboardBuilder, panelRows: PanelRowAn
   function autoLayoutInner(b: dashboard.DashboardBuilder | dashboard.RowBuilder, panelRowsAndGroups: PanelRowAndGroups) {
     for (const panelRowOrGroup of panelRowsAndGroups) {
       if (panelRowOrGroup.type === 'panel-group') {
-        let b = new dashboard.RowBuilder(panelRowOrGroup.title).collapsed(panelRowOrGroup.collapsed)
+        const rb = new dashboard.RowBuilder(panelRowOrGroup.title).collapsed(panelRowOrGroup.collapsed)
         if (panelRowOrGroup.repeat) {
-          b.repeat(panelRowOrGroup.repeat)
+          rb.repeat(panelRowOrGroup.repeat)
         }
-
         if (panelRowOrGroup.collapsed) {
-          autoLayoutInner(b, panelRowOrGroup.panelRows)
-          db.withRow(b)
+          autoLayoutInner(rb, panelRowOrGroup.panelRows)
+          db.withRow(rb)
         } else {
-          db.withRow(b)
+          db.withRow(rb)
           autoLayoutInner(db, panelRowOrGroup.panelRows)
         }
         continue
@@ -171,7 +252,6 @@ export function withPanels(db: dashboard.DashboardBuilder, panelRows: PanelRowAn
       const rowPanels = panelRowOrGroup.panels
       const panelCountInThisRowWithoutW = rowPanels.filter((panel) => !panel.gridPos?.w).length
       const availableRemainingWidth = 24 - rowPanels.map((panel) => panel.gridPos?.w || 0).reduce((a, b) => a + b, 0)
-      // console.log(`Row with ${rowPanels.length} panels, available width: ${availableRemainingWidth}, panels without width: ${panelCountInThisRowWithoutW}`)
 
       let maxHeight = 0
       for (const panel of rowPanels) {

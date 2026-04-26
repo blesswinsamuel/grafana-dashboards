@@ -1,16 +1,12 @@
 import * as common from '@grafana/grafana-foundation-sdk/common'
 import * as logs from '@grafana/grafana-foundation-sdk/logs'
-import * as loki from '@grafana/grafana-foundation-sdk/loki'
-import { CommonPanelOpts, withCommonOpts } from './commons'
-import { PrometheusTarget } from './target'
+import type { Target } from '../promql'
+import { type CommonPanelOpts, withCommonOpts } from './commons'
 
-export type LokiLogsPanelOpts = CommonPanelOpts<PrometheusTarget> & {
-  reduceCalc?: 'lastNotNull' | 'last' | 'first' | 'mean' | 'min' | 'max' | 'sum' | 'count' | 'median' | 'diff' | 'range'
-  graphMode?: common.BigValueGraphMode
-}
+export type LokiLogsPanelOpts = CommonPanelOpts
 
-export function NewLokiLogsPanel(opts: LokiLogsPanelOpts, ...targets: PrometheusTarget[]): logs.PanelBuilder {
-  opts.targets = [...(opts.targets || []), ...(targets || [])]
+export function NewLokiLogsPanel(opts: LokiLogsPanelOpts, ...extraTargets: Target[]): logs.PanelBuilder {
+  if (extraTargets.length > 0) opts = { ...opts, targets: [...(opts.targets ?? []), ...extraTargets] }
   const b = new logs.PanelBuilder()
   withCommonOpts(b, opts)
   b.showTime(true)
@@ -22,6 +18,5 @@ export function NewLokiLogsPanel(opts: LokiLogsPanelOpts, ...targets: Prometheus
   b.showLogContextToggle(false)
   b.dedupStrategy(common.LogsDedupStrategy.None)
   b.sortOrder(common.LogsSortOrder.Descending)
-
   return b
 }
