@@ -1,0 +1,36 @@
+# Local development for grafana-dashboards: watch mode that regenerates
+# dashboards on change and posts them to Grafana.
+#
+# Prerequisites:
+#   - bun (see bun.lock)
+#   - A running local-compose daemon (started automatically by `up`)
+#
+# Usage (from repo root):
+#
+#   local-compose up          # foreground; Ctrl-C stops
+#   local-compose up -d       # detached
+#   local-compose logs -f
+#   local-compose down
+#
+# Tasks:
+#   local-compose run generate
+#   local-compose run typecheck
+#   local-compose run check
+#
+# Set GRAFANA_URL (and optionally GRAFANA_API_TOKEN / GRAFANA_USERNAME +
+# GRAFANA_PASSWORD) in your environment to push dashboards to a Grafana
+# instance; without it, dashboards are only written to dashboards/dist/.
+
+version: "1"
+name: grafana-dashboards
+
+services:
+  dev:
+    command: bun run dev
+    build: bun install
+    restart: always
+
+tasks:
+  generate: bun run generate
+  typecheck: bun run typecheck
+  check: bun run check
